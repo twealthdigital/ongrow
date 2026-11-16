@@ -68,14 +68,27 @@ main{display:block;min-width:0;padding-bottom:110px}
   main{padding-bottom:48px}
 }
 
-/* mobile and tablet: header sits on top of the green hero on the home page */
+/* mobile and tablet: header sits on top of the green hero on the home page.
+   CSS-first: the transparent white-on-green look is the default, so it never depends on JS timing.
+   JS only adds .is-solid once the hero has scrolled away. */
 @media (max-width:1099.98px){
   body[data-page="home"]{--head-h:76px}
-  .head.on-hero{background:transparent}
-  .head.on-hero .tile{background:#fff;color:var(--green);--rib:#fff}
-  .head.on-hero .word{color:#fff}
-  .head.on-hero .circle{background:rgba(255,255,255,.16);box-shadow:none;color:#fff}
-  .head.on-hero .circle:hover{background:#fff;color:var(--green)}
+  [data-include*="header"]{display:block;min-height:76px}
+  body[data-page="home"] .head:not(.is-solid){background:transparent!important}
+  body[data-page="home"] .head:not(.is-solid) .tile{background:#fff!important;color:var(--green)!important;--rib:#fff}
+  body[data-page="home"] .head:not(.is-solid) .word{color:#fff!important}
+  body[data-page="home"] .head:not(.is-solid) .circle{background:rgba(255,255,255,.16)!important;box-shadow:none!important;color:#fff!important}
+  body[data-page="home"] .head:not(.is-solid) .circle:hover{background:#fff!important;color:var(--green)!important}
+  /* cart + hamburger always shown, Start selling always hidden in the mobile header */
+  .head .head-actions{display:flex!important;gap:10px}
+  .head .head-cta{display:none!important}
+  .head .circle.cart,.head .circle.burger{display:grid!important;width:48px;height:48px}
+  /* floating bottom nav: white pill, dark active tab with label, green sell circle */
+  .dock{display:flex!important;position:fixed!important;z-index:50}
+  body[data-page="home"] .dock a[data-nav="home"]{background:var(--ink);color:#fff}
+  body[data-page="home"] .dock a[data-nav="home"] span{max-width:96px;opacity:1;margin-left:8px}
+  body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open){background:transparent;color:inherit}
+  body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open) span{max-width:0;opacity:0;margin-left:0}
 }
 
 /* very narrow phones: tighten the dock so all five icons and the open label fit */

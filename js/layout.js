@@ -20,6 +20,7 @@
       if (!head) return;
       var over = !!hero && hero.getBoundingClientRect().bottom > head.offsetHeight;
       head.classList.toggle('on-hero', over);
+      head.classList.toggle('is-solid', !over);
     }
     syncHead();
     window.addEventListener('scroll', syncHead, { passive: true });
