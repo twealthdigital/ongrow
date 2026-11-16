@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ohgrow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/loading.css">
+</head>
+<body>
+  <main class="page" aria-label="Loading Ohgrow">
+    <div class="load-center">
+      <div class="logo-anim" id="loaderLogo" role="img" aria-label="Ohgrow leaf logo">
+        <div class="la-wrap">
+          <svg class="la-outline" viewBox="0 0 64 64"><path pathLength="1" d="M12 52C12 27 27 12 52 12C52 37 37 52 12 52Z"/><path pathLength="1" d="M12 52 6 58"/></svg>
+          <div class="la-fill"><svg viewBox="0 0 64 64"><use href="assets/icons/sprite.svg#leaf"/></svg></div>
+        </div>
+      </div>
+      <div class="word">ohgrow</div>
+      <div class="bar"><i id="barFill"></i></div>
+      <p class="load-msg" id="loadMsg" aria-live="polite">Preparing the soil</p>
+    </div>
+    <div class="load-pct" id="pct" aria-hidden="true">0</div>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script src="js/loading.js"></script>
+</body>
+</html>

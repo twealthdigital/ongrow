@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="leaf" viewBox="0 0 64 64">
+    <path d="M12 52C12 27 27 12 52 12C52 37 37 52 12 52Z" fill="currentColor"/>
+    <path d="M12 52 6 58" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    <path d="M19 45 39 25" fill="none" style="stroke:var(--rib,#fff)" stroke-width="3.6" stroke-linecap="round"/>
+  </symbol>
+
+  <symbol id="home" viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5h-5v5H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="basket" viewBox="0 0 24 24"><path d="M4 9h16l-1.6 9.2a2 2 0 0 1-2 1.8H7.6a2 2 0 0 1-2-1.8z"/><path d="M8.5 9 12 4l3.5 5"/></symbol>
+  <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V5m0 0L8 9m4-4 4 4"/><path d="M5 15v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3"/></symbol>
+  <symbol id="sprout" viewBox="0 0 24 24"><path d="M12 20v-8"/><path d="M12 12c0-3.5-2.5-5.5-6-5.5 0 3.5 2.5 5.5 6 5.5Z"/><path d="M12 14c0-3 2.2-5 5.5-5 0 3-2.2 5-5.5 5Z"/></symbol>
+  <symbol id="chat" viewBox="0 0 24 24"><path d="M5 6h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-7l-4 3.5V16H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M19 12H5m5-5-5 5 5 5"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="pin" viewBox="0 0 24 24"><path d="M12 21s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M16 14.2c2.4.2 4 1.7 4.5 4.3"/></symbol>
+
+  <symbol id="tomato" viewBox="0 0 64 64">
+    <circle cx="32" cy="37" r="22" fill="#D8452F"/>
+    <ellipse cx="23" cy="29" rx="6" ry="4" transform="rotate(-30 23 29)" fill="#EE7B67"/>
+    <path d="M32 14 26 22 18 19 25 27 32 25 39 27 46 19 38 22Z" fill="#1E7B3A"/>
+  </symbol>
+  <symbol id="yam" viewBox="0 0 64 64">
+    <ellipse cx="32" cy="36" rx="11" ry="25" transform="rotate(38 32 36)" fill="#B98A5B"/>
+    <path d="M22 42 28 40M30 50 36 47M36 32 42 30M26 30 31 29M41 41 46 38" stroke="#8F6539" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M48 12c6 0 9 3 9 8-6 0-9-3-9-8Z" fill="#1E7B3A"/>
+  </symbol>
+  <symbol id="plantain" viewBox="0 0 64 64">
+    <path d="M10 40C13 20 32 8 52 11 45 16 40 24 38 34 35 47 24 54 10 40Z" fill="#E6B422"/>
+    <path d="M14 46C20 30 34 22 54 24 46 28 40 36 38 44 36 54 26 58 14 46Z" fill="#D9A412"/>
+    <path d="M52 11 56 8" stroke="#0D110B" stroke-width="4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="maize" viewBox="0 0 64 64">
+    <ellipse cx="34" cy="28" rx="11" ry="23" transform="rotate(22 34 28)" fill="#E6B422"/>
+    <path d="M26 16 33 14M28 25 36 22M30 34 38 31M33 42 40 39" stroke="#C7940F" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M32 58C18 54 14 40 20 30 26 38 32 44 32 58Z" fill="#1E7B3A"/>
+    <path d="M32 58C46 54 50 42 46 34 40 40 34 46 32 58Z" fill="#15602C"/>
+  </symbol>
+</svg>

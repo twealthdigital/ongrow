@@ -1,0 +1,9 @@
+.page{min-height:100svh;display:grid;grid-template-rows:1fr auto;
+  padding-block:calc(env(safe-area-inset-top,0px) + 20px) calc(env(safe-area-inset-bottom,0px) + 20px)}
+.load-center{display:grid;place-content:center;justify-items:center;gap:22px;text-align:center}
+.load-center .logo-anim{--s:clamp(120px,22vw,170px)}
+.load-center .word{font-size:34px}
+.bar{width:min(260px,70vw);height:6px;border-radius:9px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:var(--green);transform:scaleX(0);transform-origin:left}
+.load-msg{color:var(--ink2);font-size:15px;min-height:24px}
+.load-pct{font:600 clamp(80px,16vw,200px)/.85 var(--font-display);letter-spacing:-.05em;font-variant-numeric:tabular-nums;color:transparent;-webkit-text-stroke:1.5px var(--green);padding-bottom:6px}
