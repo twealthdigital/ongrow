@@ -55,7 +55,7 @@
   #home{padding-top:0}
   .hero{--pad:max(16px,env(safe-area-inset-left,0px));position:relative;isolation:isolate;display:block;
     margin:calc(var(--head-h,76px)*-1) calc(var(--pad)*-1) 0;
-    padding:calc(var(--head-h,76px) + 14px) var(--pad) 150px}
+    padding:calc(var(--head-h,76px) + 14px) var(--pad) 120px}
   .hero-copy{gap:82px}
   .hero-art{position:absolute;inset:0;z-index:-1;min-height:0;padding:0;border-radius:0 0 38px 38px;display:block}
         .hero-art::after{border-radius:inherit;content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(13,17,11,.45),rgba(13,17,11,.2) 60%,rgba(13,17,11,0))}
