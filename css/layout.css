@@ -65,9 +65,13 @@ main{display:block;min-width:0;padding-bottom:110px}
   .head{display:grid;grid-template-columns:1fr auto 1fr}
   .head-actions{justify-self:end}
   .dock{display:none}
-  .content{display:grid;grid-template-columns:236px minmax(0,1fr);gap:28px}
+  .content{display:grid;grid-template-columns:76px minmax(0,1fr);gap:28px}
   .rail{display:block}
   .rail nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 100px)}
+  /* icons only on desktop */
+  .rail .rl-text{display:none}
+  .rail-link{justify-content:center;padding:0}
+  .rail-link:hover{padding:0}
   /* the sidebar replaces the hamburger on desktop */
   .head .circle.burger{display:none}
   main{padding-bottom:48px}
