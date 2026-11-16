@@ -21,6 +21,7 @@
       var over = !!hero && hero.getBoundingClientRect().bottom > head.offsetHeight;
       head.classList.toggle('on-hero', over);
       head.classList.toggle('is-solid', !over);
+      head.classList.toggle('is-scrolled', window.scrollY > 4);
     }
     syncHead();
     window.addEventListener('scroll', syncHead, { passive: true });
