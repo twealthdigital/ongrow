@@ -13,6 +13,33 @@
       if (on) a.setAttribute('aria-current', 'page');
     });
 
+
+    /* header turns transparent over the green hero on the home page (mobile) */
+    var head = $('.head'), hero = $('.hero');
+    function syncHead(){
+      if (!head) return;
+      var over = !!hero && hero.getBoundingClientRect().bottom > head.offsetHeight;
+      head.classList.toggle('on-hero', over);
+    }
+    syncHead();
+    window.addEventListener('scroll', syncHead, { passive: true });
+    window.addEventListener('resize', syncHead);
+
+    /* bottom dock: tapping an icon opens it to show the name, then goes to the page */
+    var dock = $('.dock');
+    if (dock){
+      dock.addEventListener('click', function(e){
+        var a = e.target.closest('a');
+        if (!a || e.metaKey || e.ctrlKey || e.shiftKey) return;
+        if (a.classList.contains('is-active')) return;
+        e.preventDefault();
+        $$('a', dock).forEach(function(x){ x.classList.remove('open'); });
+        dock.classList.add('has-open');
+        a.classList.add('open');
+        setTimeout(function(){ O.go(a.getAttribute('href')); }, O.reduce ? 0 : 380);
+      });
+    }
+
     /* slide panel */
     function openPanel(){
       panel.inert = false;
