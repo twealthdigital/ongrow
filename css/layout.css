@@ -4,10 +4,15 @@ main{display:block;min-width:0;padding-bottom:110px}
 
 /* header */
 .head{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px;transition:background .3s}
-.nav-pill{display:none;gap:4px;background:var(--soft);padding:6px;border-radius:999px}
-.nav-pill a{display:flex;align-items:center;padding:11px 20px;border-radius:999px;font-weight:500;transition:background .3s,color .3s}
+.nav-pill{position:relative;display:none;gap:4px;background:var(--soft);padding:6px;border-radius:999px}
+.nav-pill a{position:relative;z-index:1;display:flex;align-items:center;padding:11px 20px;border-radius:999px;font-weight:500;transition:background .3s,color .3s,transform .4s var(--ease)}
 .nav-pill a:hover{background:var(--surface)}
 .nav-pill a.is-active{background:var(--ink);color:#fff}
+.nav-pill a:active{transform:scale(.95)}
+.nav-pill.has-ind a.is-active,.nav-pill.has-ind a.is-active:hover{background:transparent;color:#fff}
+.nav-ind{position:absolute;z-index:0;top:6px;bottom:6px;left:0;width:0;border-radius:999px;background:var(--ink);opacity:0;pointer-events:none;will-change:transform,width}
+.nav-ind.on{opacity:1}
+.nav-ind.anim{transition:transform .45s var(--ease),width .45s var(--ease)}
 .head-actions{display:flex;align-items:center;gap:10px}
 .head-cta{display:none}
 .head .tile,.head .word,.head .circle{transition:background .3s,color .3s,box-shadow .3s,transform .4s var(--ease)}
@@ -28,15 +33,15 @@ main{display:block;min-width:0;padding-bottom:110px}
 @keyframes wind{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}60%{transform:rotate(10deg)}}
 
 /* mobile taskbar: icons only, the tapped one opens to show its name */
-.dock{position:fixed;z-index:50;left:0;right:0;margin-inline:auto;width:max-content;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;gap:3px;background:var(--surface);padding:6px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--line);max-width:calc(100% - 24px);overflow:hidden}
-.dock a{display:flex;align-items:center;justify-content:center;height:46px;min-width:46px;padding:0 13px;border-radius:999px;white-space:nowrap;font-size:13px;font-weight:700;transition:background .3s,color .3s,transform .4s var(--ease),padding .45s var(--ease)}
+.dock{position:fixed;z-index:50;left:0;right:0;margin-inline:auto;width:max-content;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;gap:3px;background:var(--ink);padding:6px;border-radius:999px;box-shadow:inset 0 0 0 1.5px #2A3326;max-width:calc(100% - 24px);overflow:hidden}
+.dock a{color:#fff;display:flex;align-items:center;justify-content:center;height:46px;min-width:46px;padding:0 13px;border-radius:999px;white-space:nowrap;font-size:13px;font-weight:700;transition:background .3s,color .3s,transform .4s var(--ease),padding .45s var(--ease)}
 .dock a span{display:block;max-width:0;opacity:0;margin-left:0;overflow:hidden;transition:max-width .45s var(--ease),opacity .3s,margin .45s var(--ease)}
 .dock a:active{transform:scale(.94)}
-.dock a.is-active,.dock a.open{background:var(--ink);color:#fff}
+.dock a.is-active,.dock a.open{background:#fff;color:var(--ink)}
 .dock a.is-active span,.dock a.open span{max-width:96px;opacity:1;margin-left:8px}
 .dock a.dock-sell{background:var(--green);color:#fff}
-.dock a.dock-sell.is-active,.dock a.dock-sell.open{background:var(--ink)}
-.dock.has-open a.is-active:not(.open){background:transparent;color:inherit}
+.dock a.dock-sell.is-active,.dock a.dock-sell.open{background:var(--green);color:#fff}
+.dock.has-open a.is-active:not(.open){background:transparent;color:#fff}
 .dock.has-open a.is-active:not(.open) span{max-width:0;opacity:0;margin-left:0}
 .dock.has-open a.dock-sell.is-active:not(.open){background:var(--green);color:#fff}
 
@@ -85,9 +90,9 @@ main{display:block;min-width:0;padding-bottom:110px}
   .head .circle.cart,.head .circle.burger{display:grid!important;width:48px;height:48px}
   /* floating bottom nav: white pill, dark active tab with label, green sell circle */
   .dock{display:flex!important;position:fixed!important;z-index:50}
-  body[data-page="home"] .dock a[data-nav="home"]{background:var(--ink);color:#fff}
+  body[data-page="home"] .dock a[data-nav="home"]{background:#fff;color:var(--ink)}
   body[data-page="home"] .dock a[data-nav="home"] span{max-width:96px;opacity:1;margin-left:8px}
-  body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open){background:transparent;color:inherit}
+  body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open){background:transparent;color:#fff}
   body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open) span{max-width:0;opacity:0;margin-left:0}
 }
 
