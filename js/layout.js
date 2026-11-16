@@ -63,7 +63,6 @@
       scrim.addEventListener('click', closePanel);
       panel.addEventListener('click', function(e){ if (e.target.closest('a')) closePanel(); });
       document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePanel(); });
-      window.matchMedia('(min-width:1100px)').addEventListener('change', function(m){ if (m.matches) closePanel(); });
     }
 
     /* replay intro */

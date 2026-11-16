@@ -63,7 +63,7 @@ main{display:block;min-width:0;padding-bottom:110px}
   .nav-pill{display:flex}
   .head{display:grid;grid-template-columns:1fr auto 1fr}
   .head-actions{justify-self:end}
-  .burger,.cart,.dock,.scrim,.panel{display:none}
+  .dock{display:none}
   .content{display:grid;grid-template-columns:72px minmax(0,1fr);gap:28px}
   .rail{display:block}
   .rail nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 100px);border-radius:36px}
