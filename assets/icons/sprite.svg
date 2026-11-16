@@ -28,12 +28,12 @@
   <symbol id="tomato" viewBox="0 0 64 64">
     <circle cx="32" cy="37" r="22" fill="#D8452F"/>
     <ellipse cx="23" cy="29" rx="6" ry="4" transform="rotate(-30 23 29)" fill="#EE7B67"/>
-    <path d="M32 14 26 22 18 19 25 27 32 25 39 27 46 19 38 22Z" fill="#1E7B3A"/>
+    <path d="M32 14 26 22 18 19 25 27 32 25 39 27 46 19 38 22Z" fill="#F5B800"/>
   </symbol>
   <symbol id="yam" viewBox="0 0 64 64">
     <ellipse cx="32" cy="36" rx="11" ry="25" transform="rotate(38 32 36)" fill="#B98A5B"/>
     <path d="M22 42 28 40M30 50 36 47M36 32 42 30M26 30 31 29M41 41 46 38" stroke="#8F6539" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M48 12c6 0 9 3 9 8-6 0-9-3-9-8Z" fill="#1E7B3A"/>
+    <path d="M48 12c6 0 9 3 9 8-6 0-9-3-9-8Z" fill="#F5B800"/>
   </symbol>
   <symbol id="plantain" viewBox="0 0 64 64">
     <path d="M10 40C13 20 32 8 52 11 45 16 40 24 38 34 35 47 24 54 10 40Z" fill="#E6B422"/>
@@ -43,7 +43,7 @@
   <symbol id="maize" viewBox="0 0 64 64">
     <ellipse cx="34" cy="28" rx="11" ry="23" transform="rotate(22 34 28)" fill="#E6B422"/>
     <path d="M26 16 33 14M28 25 36 22M30 34 38 31M33 42 40 39" stroke="#C7940F" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M32 58C18 54 14 40 20 30 26 38 32 44 32 58Z" fill="#1E7B3A"/>
-    <path d="M32 58C46 54 50 42 46 34 40 40 34 46 32 58Z" fill="#15602C"/>
+    <path d="M32 58C18 54 14 40 20 30 26 38 32 44 32 58Z" fill="#F5B800"/>
+    <path d="M32 58C46 54 50 42 46 34 40 40 34 46 32 58Z" fill="#D99A00"/>
   </symbol>
 </svg>
