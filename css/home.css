@@ -15,9 +15,11 @@
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;display:block}
 .hero-fade{position:absolute;left:0;right:0;bottom:0;height:55%;z-index:1;pointer-events:none;background:linear-gradient(to top,rgba(13,17,11,.92) 0%,rgba(13,17,11,.6) 40%,rgba(13,17,11,0) 100%)}
 .hero-fade::before{content:"";position:absolute;inset:0;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);-webkit-mask-image:linear-gradient(to top,#000 25%,transparent 100%);mask-image:linear-gradient(to top,#000 25%,transparent 100%)}
-.float{position:absolute;left:18px;bottom:18px;z-index:3;display:flex;align-items:center;gap:12px;background:var(--surface);padding:9px 10px 9px 9px;border-radius:24px}
-.float .mini{display:block;flex:none;width:52px;height:52px;border-radius:16px;background:#FBE3DC;overflow:hidden}
-.float .mini img{width:100%;height:100%;object-fit:cover;display:block}
+.float{position:absolute;left:18px;bottom:18px;z-index:3;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:8px 10px 8px 8px;border-radius:28px;box-shadow:0 12px 32px rgba(13,17,11,.28),0 0 0 1px rgba(255,255,255,.5)}
+.float .mini{position:relative;display:block;flex:none;width:64px;height:64px;border-radius:20px;background:#FBE3DC;overflow:hidden;box-shadow:0 4px 12px rgba(13,17,11,.18),inset 0 0 0 1.5px rgba(255,255,255,.7)}
+.float .mini img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .5s var(--ease)}
+.float:hover .mini img{transform:scale(1.08)}
+.float .mini.no-img::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='37' r='22' fill='%23D8452F'/%3E%3Cpath d='M32 14 26 22 18 19 25 27 32 25 39 27 46 19 38 22Z' fill='%23367C2B'/%3E%3C/svg%3E") center/62% no-repeat}
 .float b{display:block;font-weight:700;line-height:1.2}
 .float small{color:var(--ink2);font-size:13px}
 .float .tag{background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:9px 14px;border-radius:999px}

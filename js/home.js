@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=14#';
+  var SPRITE = 'assets/icons/sprite.svg?v=15#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
