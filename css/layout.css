@@ -77,3 +77,10 @@ main{display:block;min-width:0;padding-bottom:110px}
   .head.on-hero .circle{background:rgba(255,255,255,.16);box-shadow:none;color:#fff}
   .head.on-hero .circle:hover{background:#fff;color:var(--green)}
 }
+
+/* very narrow phones: tighten the dock so all five icons and the open label fit */
+@media (max-width:359.98px){
+  .dock{gap:2px;padding:5px}
+  .dock a{height:42px;min-width:42px;padding:0 11px;font-size:12px}
+  .dock a.is-active span,.dock a.open span{max-width:80px;margin-left:6px}
+}
