@@ -1,13 +1,10 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=10#';
+  var SPRITE = 'assets/icons/sprite.svg?v=11#';
 
   O.ready.then(function(){
-    /* hero entrance: headline slides up, logo draws and fills */
+    /* hero entrance: headline slides up, hero image */
     document.body.classList.add('hero-in');
-    var logo = $('#heroLogo');
-    O.replay(logo);
-    logo.addEventListener('click', function(){ O.replay(logo); });
 
     /* featured harvest card */
     var feats = [
