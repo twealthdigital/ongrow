@@ -97,3 +97,15 @@ main{display:block;min-width:0;padding-bottom:110px}
   .dock a{height:42px;min-width:42px;padding:0 11px;font-size:12px}
   .dock a.is-active span,.dock a.open span{max-width:80px;margin-left:6px}
 }
+
+/* touch screens: no sticky hover. A tap must never leave buttons filled/recoloured (iOS keeps :hover after tapping) */
+@media (hover:none){
+  .btn:hover::before,.btn:focus-visible::before{transform:translateY(105%)!important;border-radius:50% 50% 0 0/55% 55% 0 0!important}
+  .btn:hover .ico,.btn:hover .ico svg{transform:none!important}
+  .btn-ghost:hover{color:inherit;box-shadow:inset 0 0 0 1.5px var(--ink)}
+  .hero .btn-ghost:hover,.hero .btn-ghost:focus-visible{color:#fff!important;box-shadow:inset 0 0 0 1.5px #fff!important}
+  .circle:hover{background:var(--surface);color:inherit;transform:none}
+  body[data-page="home"] .head:not(.is-solid) .circle:hover{background:rgba(255,255,255,.16)!important;color:#fff!important}
+  .panel li a:hover{padding-left:0;color:inherit}
+  .cta:hover .go{transform:none;background:var(--green)}
+}
