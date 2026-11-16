@@ -16,7 +16,7 @@ window.Ohgrow = (function(){
     var nodes = $$('[data-include]');
     return Promise.all(nodes.map(function(n){
       var url = n.getAttribute('data-include');
-      return fetch(url)
+      return fetch(url, { cache: 'no-cache' })
         .then(function(r){
           if (!r.ok) throw new Error('Could not load ' + url);
           return r.text();
