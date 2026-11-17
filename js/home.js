@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=35#';
+  var SPRITE = 'assets/icons/sprite.svg?v=36#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -83,23 +83,13 @@
     document.getElementById('arcPrev').addEventListener('click', function(){ go(-1); restart(); });
     cards.forEach(function(c, i){
       c.addEventListener('click', function(e){
-        if(moved || e.target.closest('a,button')) return;
+        if(moved || e.target.closest('a')) return;
         var k = Math.round(off(i));
         if(k !== 0){ e.preventDefault(); go(k); restart(); }
         else {                                         /* active card with no View button (desktop / tablet): the card itself opens it */
           var l = c.querySelector('a');
           if(l && getComputedStyle(l).display === 'none') location.href = l.href;
         }
-      });
-    });
-
-    /* Add to cart (phones, active card): quick "Added" confirmation */
-    cards.forEach(function(c){
-      var b = c.querySelector('.arc-cart'); if(!b) return;
-      b.addEventListener('click', function(e){
-        e.stopPropagation(); if(moved) return;
-        var t = b.querySelector('span'); b.classList.add('is-added'); t.textContent = 'Added';
-        clearTimeout(b._t); b._t = setTimeout(function(){ b.classList.remove('is-added'); t.textContent = 'Add to cart'; }, 1600);
       });
     });
 
