@@ -79,6 +79,12 @@
   .stat svg{display:none}
   .stat b{font-size:clamp(26px,7.4vw,34px);font-variant-numeric:tabular-nums}
   .stat span{color:rgba(255,255,255,.82);font-size:clamp(12px,3.4vw,14px);line-height:1.25}
+  /* CTA text: no card, bright green, comes before the counters */
+  .cta{order:-1;background:none;box-shadow:none;padding:0;border-radius:0;display:block}
+  .cta .tile,.cta .go{display:none}
+  .cta h3{margin:0 0 4px;color:var(--leaf);font-size:clamp(22px,6.4vw,30px)}
+  .cta p{color:var(--leaf);font-size:clamp(14px,3.9vw,16px);font-weight:500}
+  .trio{margin-top:-6px}
 }
 /* phones: scale type and buttons with the screen so the hero keeps the same shape from 320px up */
 @media (max-width:699.98px){
