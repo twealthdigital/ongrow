@@ -2,11 +2,13 @@
 :root{--pane:#EEF8E4;--rail-w:372px}
 main{padding-bottom:0}
 
-/* header + dock while the green market section is in view */
-body.in-market{--hb:var(--green)}
-body.in-market .head{background:var(--green)}
-body.in-market .head .tile{background:#fff;color:var(--green);--rib:#fff}
-body.in-market .head .word{color:#fff}
+/* header: its lower part turns green exactly where the market's top edge passes under it (--hy, set by market.js),
+   and the green bleeds to both screen edges, so there is no cream strip and no sudden colour change */
+.head::after{content:"";position:absolute;z-index:-1;left:0;right:0;top:var(--hy,100%);bottom:0;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax);pointer-events:none}
+.head.hg{--hb:var(--green)}
+.head.hg .tile{background:#fff;color:var(--green);--rib:#fff}
+.head.hg .word{color:#fff}
+.head .tile,.head .word{transition:background .3s,color .3s}
 body[data-page="home"].in-market .dock a[data-nav="home"]{background:transparent;color:#fff}
 body[data-page="home"].in-market .dock a[data-nav="home"] span{max-width:0;opacity:0;margin-left:0}
 

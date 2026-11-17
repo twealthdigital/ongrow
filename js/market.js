@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=40#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=41#', IMG = 'assets/images/';
 
   var P = [
     { n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -185,9 +185,18 @@
       if (O.placePill) O.placePill();
       if (fl){ fl.classList.toggle('is-active', sec === 'market'); if (sec === 'market') fl.setAttribute('aria-current', 'true'); else fl.removeAttribute('aria-current'); }
     }
+    var head = $('.head');
+    function paintHead(){
+      if (!head) return;
+      var r = head.getBoundingClientRect(), t = mk.getBoundingClientRect().top;
+      var y = Math.max(0, Math.min(r.height, t - r.top));
+      head.style.setProperty('--hy', y + 'px');
+      head.classList.toggle('hg', y < r.height * .5);
+    }
     var tick = false;
     function spy(){
       tick = false;
+      paintHead();
       var t = mk.getBoundingClientRect().top, vh = window.innerHeight;
       var now = inM ? t < vh * .62 : t < vh * .45;
       if (now === inM) return;
@@ -217,6 +226,6 @@
       } else window.scrollTo({ top:0, behavior:smooth });
     }, true);
 
-    render(); renderCart(); spy(); syncOpen();
+    render(); renderCart(); spy(); paintHead(); syncOpen();
   });
 })();
