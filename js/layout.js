@@ -14,6 +14,26 @@
     });
 
 
+    /* desktop rail: the top button is the menu toggle. X while the rail is open; press it and the rail folds away
+       and the button shows three staggered dashes. The choice is remembered. */
+    var rail = $('.rail'), rt = $('#railToggle');
+    if (rail && rt){
+      var RKEY = 'ohgrow.rail', rlinks = $('#railLinks');
+      var setRail = function(open, save){
+        rail.classList.toggle('is-collapsed', !open);
+        rt.setAttribute('aria-expanded', open ? 'true' : 'false');
+        rt.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        rt.title = open ? 'Close menu' : 'Open menu';
+        if (rlinks) rlinks.inert = !open;
+        if (save){ try{ localStorage.setItem(RKEY, open ? 'open' : 'closed'); }catch(_){} }
+      };
+      var savedRail = null; try{ savedRail = localStorage.getItem(RKEY); }catch(_){}
+      rail.classList.add('rail-init');
+      setRail(savedRail !== 'closed', false);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ rail.classList.remove('rail-init'); }); });
+      rt.addEventListener('click', function(){ setRail(rail.classList.contains('is-collapsed'), true); });
+    }
+
     /* header turns transparent over the green hero on the home page (mobile) */
     var head = $('.head'), hero = $('.hero');
     function syncHead(){

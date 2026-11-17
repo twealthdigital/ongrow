@@ -20,7 +20,7 @@ main{display:block;min-width:0;padding-bottom:110px}
 /* side rail (desktop) */
 .content{display:block}
 .rail{display:none}
-.rail nav{display:flex;flex-direction:column;gap:4px;align-items:stretch;background:var(--soft);padding:12px;border-radius:28px}
+.rail nav{display:flex;flex-direction:column;gap:0;align-items:stretch;background:var(--soft);padding:12px;border-radius:28px}
 .rail-link{position:relative;display:flex;align-items:center;gap:14px;width:100%;height:48px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:inherit;font:600 15px/1 var(--font-body);text-align:left;cursor:pointer;transition:background .3s,color .3s,padding .4s var(--ease)}
 .rail-link .i{flex:none}
 .rail-link:hover{background:var(--surface);padding-left:20px}
@@ -28,6 +28,19 @@ main{display:block;min-width:0;padding-bottom:110px}
 .rail-link.is-active{background:var(--ink);color:#fff}
 .rail-intro{margin-top:6px;color:var(--ink2);font-weight:500;font-size:14px}
 .rail-intro svg{color:var(--green)}
+/* menu toggle: X while the rail is open, three staggered dashes when it is folded away */
+.rail-toggle{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:48px;padding:0;border:0;border-radius:999px;background:var(--ink);color:#fff;cursor:pointer;transition:background .3s,transform .3s var(--ease);-webkit-tap-highlight-color:transparent}
+.rail-toggle:hover{background:var(--green-d)}
+.rail-toggle:active{transform:scale(.94)}
+.rail-toggle svg{width:22px;height:22px;stroke-width:2}
+.rail-toggle .bar{transform-box:fill-box;transform-origin:center;transition:transform .5s var(--ease),opacity .25s}
+.rail:not(.is-collapsed) .rail-toggle .b1{transform:translateY(5px) rotate(45deg)}
+.rail:not(.is-collapsed) .rail-toggle .b2{opacity:0;transform:scaleX(.2)}
+.rail:not(.is-collapsed) .rail-toggle .b3{transform:translate(1.5px,-5px) rotate(-45deg) scaleX(1.2308)}
+.rail-links{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .5s var(--ease),opacity .3s}
+.rail-links-in{min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:4px;padding-top:4px}
+.rail.is-collapsed .rail-links{grid-template-rows:0fr;opacity:0;pointer-events:none}
+.rail-init,.rail-init *{transition:none!important}
 @keyframes wind{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg)}60%{transform:rotate(10deg)}}
 
 /* mobile taskbar: icons only, the tapped one opens to show its name */
