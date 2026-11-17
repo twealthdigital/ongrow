@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=30#';
+  var SPRITE = 'assets/icons/sprite.svg?v=31#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -42,7 +42,7 @@
     function cs(name){ return parseFloat(getComputedStyle(stage).getPropertyValue(name)) || 0; }
 
     function render(){
-      var gap = cs('--gap'), R = cs('--R'), mobile = window.innerWidth < 1100, vis = mobile ? 1 : 2;
+      var gap = cs('--gap'), R = cs('--R'), vis = 2;
       cards.forEach(function(c, i){
         var k = off(i), y = k * gap;
         var x = R * (Math.sqrt(1 - Math.pow(Math.min(Math.abs(y) / R, .98), 2)) - 1);   /* 0 at centre, pulls left going up/down */
