@@ -86,50 +86,41 @@
   .stat:first-child{padding-left:0}
 }
 
-/* ===== curved "rainbow" carousel: straddles the hero and the green section below it ===== */
-.arc{--arc-h:340px;position:relative;isolation:isolate;z-index:6;margin-top:18px;padding-top:0}
-.arc::before{content:"";position:absolute;z-index:-1;left:0;right:0;top:0;bottom:0;background:var(--green);border-radius:38px}
-.arc-stage{position:relative;height:calc(var(--arc-h) + 40px);margin-top:0;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;
-  --w:176px;--R:560px;--step:21deg}
+/* ===== vertical curved carousel (left of the green section): cards stay upright along a ")" arc ===== */
+.arc{position:relative;isolation:isolate;z-index:6;margin-top:18px;display:flex;align-items:center;gap:18px}
+.arc::before{content:"";position:absolute;z-index:-1;inset:0;background:var(--green);border-radius:38px}
+.arc-stage{position:relative;flex:none;width:calc(var(--left) + var(--w));height:var(--sh);--w:300px;--left:160px;--ch:124px;--sh:600px;--gap:108px;--R:300px;--d:130px;cursor:grab;user-select:none;-webkit-user-select:none}
 .arc-stage.drag{cursor:grabbing}
-.arc-card{position:absolute;left:50%;top:92px;width:var(--w);margin-left:calc(var(--w)/-2);min-height:210px;padding:96px 14px 16px;border-radius:28px;background:#fff;
-  display:grid;gap:8px;justify-items:center;text-align:center;align-content:start;box-shadow:0 18px 36px rgba(8,18,6,.28);
-  transition:transform .7s var(--ease),opacity .5s,box-shadow .4s;will-change:transform}
-.arc-card h3{font:600 18px/1.15 var(--font-display);letter-spacing:-.02em}
-.arc-price{display:grid;gap:0;justify-items:center}
-.arc-price b{font:700 17px/1.2 var(--font-body);color:var(--green)}
+.arc-card{position:absolute;left:var(--left);top:calc(50% - var(--ch)/2);width:var(--w);min-height:var(--ch);padding:14px 14px 14px calc(var(--d)/2 + 18px);border-radius:26px;background:#fff;
+  display:grid;gap:5px;justify-items:start;text-align:left;align-content:center;box-shadow:0 16px 32px rgba(8,18,6,.28);
+  transition:transform .7s var(--ease),opacity .5s;will-change:transform}
+.arc-card h3{font:600 17px/1.15 var(--font-display);letter-spacing:-.02em}
+.arc-price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.arc-price b{font:700 16px/1.2 var(--font-body);color:var(--green)}
 .arc-price span{font-size:12px;color:var(--ink2)}
-.arc-go{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:13px;margin-top:2px;transition:background .3s}
+.arc-go{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font-weight:700;font-size:13px;margin-top:3px;transition:background .3s}
 .arc-go:hover{background:var(--green-d)}
 .arc-go svg{width:16px;height:16px}
-.arc-pop{position:absolute;left:50%;top:-62px;width:150px;height:150px;margin-left:-75px;pointer-events:none;transition:transform .6s var(--ease)}
-.arc-crop{border-radius:50%;background-image:url("assets/images/hero-image.png");background-size:645px 645px;background-repeat:no-repeat;box-shadow:0 0 0 6px #fff,0 16px 26px rgba(8,18,6,.35)}
-.arc-cut{width:176px;height:auto;margin-left:-88px;top:-74px;object-fit:contain;filter:drop-shadow(0 16px 18px rgba(8,18,6,.4));transform:rotate(-8deg)}
-.arc-card.is-active .arc-pop{transform:translateY(-6px) scale(1.06)}
-.arc-card.is-active .arc-cut{transform:translateY(-6px) scale(1.06) rotate(-8deg)}
+/* the image pops out of the card's left edge */
+.arc-pop{position:absolute;left:calc(var(--d)/-2 + 14px);top:50%;width:var(--d);height:var(--d);margin-top:calc(var(--d)/-2);pointer-events:none;transition:transform .6s var(--ease)}
+.arc-crop{border-radius:50%;background-image:url("../assets/images/hero-image.png");background-size:430% 430%;background-repeat:no-repeat;box-shadow:0 0 0 5px #fff,0 14px 24px rgba(8,18,6,.35)}
+.arc-cut{width:calc(var(--d)*1.18);height:auto;left:calc(var(--d)/-2 + 6px);margin-top:calc(var(--d)*-.59);object-fit:contain;filter:drop-shadow(0 14px 16px rgba(8,18,6,.4));transform:rotate(-10deg)}
+.arc-card.is-active .arc-pop{transform:scale(1.08)}
+.arc-card.is-active .arc-cut{transform:scale(1.08) rotate(-10deg)}
 .arc-card.is-hidden{opacity:0;pointer-events:none}
-.arc-nav{display:flex;justify-content:center;gap:14px;padding:6px 0 0}
+.arc-nav{display:flex;flex-direction:column;gap:12px}
 .arc-btn{background:rgba(255,255,255,.16);box-shadow:none;color:#fff}
 .arc-btn:hover{background:#fff;color:var(--green)}
-/* blank green space for the next content */
-.arc::after{content:"";display:block;height:150px}
 
-/* desktop: cards sit 50% on the hero, 50% on the green section */
 @media (min-width:1100px){
-  .arc{margin-top:calc(var(--arc-h)*-.5 + 18px)}
-  .arc::before{top:calc(var(--arc-h)*.5)}
-  .arc-stage{--w:200px;--R:760px;--step:15deg;height:calc(var(--arc-h) + 60px)}
-  .arc-card{top:112px;min-height:230px}
-  /* the floating broccoli used the same spot; it now lives in the carousel */
-  .float{display:none}
+  .arc{min-height:600px}
+  .arc-stage{margin-top:-28px}
 }
-/* mobile and tablet: cards sit right after the counter, inside the green section */
+/* mobile and tablet: sits right after the counter */
 @media (max-width:1099.98px){
-  .arc{margin-top:18px}
-  .arc::before{top:0}
-  .arc-stage{padding-top:0}
-  .arc-card{top:100px}
-}
-@media (max-width:699.98px){
-  .arc-stage{--w:170px;--R:420px;--step:24deg}
+  .arc{margin-top:18px;padding-block:18px}
+  .arc-stage{--w:min(262px,calc(100vw - 150px));--left:78px;--ch:118px;--sh:392px;--gap:108px;--R:520px;--d:100px}
+  .arc-card h3{font-size:16px}
+  .arc{flex-direction:column;align-items:flex-start;gap:6px}
+  .arc-nav{flex-direction:row;margin-left:var(--navx,78px);padding-bottom:4px}
 }
