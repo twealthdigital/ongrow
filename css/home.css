@@ -109,6 +109,7 @@
 .arc-card.is-active .arc-pop{transform:scale(1.06)}
 .arc-card.is-active .arc-cut{transform:scale(1.06) rotate(-10deg)}
 .arc-card.is-hidden{pointer-events:none}
+.arc-cart{display:none}
 .arc-nav{display:flex;flex-direction:column;gap:12px}
 .arc-btn{background:rgba(255,255,255,.16);box-shadow:none;color:#fff}
 .arc-btn:hover{background:#fff;color:var(--green)}
@@ -129,4 +130,19 @@
 @media (min-width:700px){
   .arc-go{display:none}
   .arc-card.is-active{cursor:pointer}
+}
+
+/* phones: the active card turns dark with white content and an Add to cart button (inactive cards keep View) */
+@media (max-width:699.98px){
+  .arc-card{transition:min-height .6s var(--ease),top .6s var(--ease),box-shadow .6s,background-color .45s var(--ease),color .45s}
+  .arc-card.is-active{background:var(--ink);color:#fff;box-shadow:0 22px 40px rgba(8,18,6,.5),0 0 0 1px rgba(255,255,255,.08)}
+  .arc-card.is-active h3{color:#fff}
+  .arc-card.is-active .arc-price b{color:#8EDB78}
+  .arc-card.is-active .arc-price span{color:rgba(255,255,255,.72)}
+  .arc-card.is-active .arc-go{display:none}
+  .arc-card.is-active .arc-cart{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 14px;margin-top:3px;border:0;border-radius:999px;
+    background:#fff;color:var(--ink);font:700 13px/1 var(--font-body);cursor:pointer;transition:background .3s,color .3s,transform .2s;-webkit-tap-highlight-color:transparent}
+  .arc-cart svg{width:16px;height:16px;flex:none}
+  .arc-card.is-active .arc-cart:active{transform:scale(.96)}
+  .arc-card.is-active .arc-cart.is-added{background:var(--green);color:#fff}
 }
