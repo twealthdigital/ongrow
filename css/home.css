@@ -80,7 +80,7 @@
   #home{display:grid;grid-template-columns:1.02fr .98fr;column-gap:36px;grid-template-rows:1fr auto auto 1fr;align-items:start}
   .hero{display:contents}
   .hero-copy{grid-column:1;grid-row:2}
-  .hero-art{grid-column:2;grid-row:1/-1;align-self:stretch;min-height:500px;z-index:2}
+  .hero-art{grid-column:2;grid-row:1/-1;align-self:stretch;min-height:500px;z-index:7}  /* above the green carousel panel (z 6) so the big broccoli overlaps it instead of being cut off */
   .trio{grid-column:1;grid-row:3;margin-top:34px;display:grid;grid-template-columns:1fr;gap:26px}
   .stats{grid-column:auto;background:none;padding:0;border-radius:0;max-width:min(520px,calc(100% - 150px))}
   .stat:first-child{padding-left:0}
