@@ -14,13 +14,42 @@
       <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path class="bar b1" d="M4 7h16"/><path class="bar b2" d="M4 12h10"/><path class="bar b3" d="M4 17h13"/></svg>
     </button>
     <div class="rail-links" id="railLinks"><div class="rail-links-in">
-    <a class="rail-link" href="collections.html" data-nav="collections" title="Collections" aria-label="Collections"><svg class="i"><use href="assets/icons/sprite.svg?v=39#collection"/></svg><span class="rl-text">Collections</span></a>
-    <a class="rail-link" href="market.html" data-nav="price" title="Price board" aria-label="Price board"><svg class="i"><use href="assets/icons/sprite.svg?v=39#price"/></svg><span class="rl-text">Price board</span></a>
-    <a class="rail-link" href="how-it-works.html" data-nav="guide" title="Farmer guide" aria-label="Farmer guide"><svg class="i"><use href="assets/icons/sprite.svg?v=39#guide"/></svg><span class="rl-text">Farmer guide</span></a>
-    <a class="rail-link" href="services.html" data-nav="services" title="Services" aria-label="Services"><svg class="i"><use href="assets/icons/sprite.svg?v=39#services"/></svg><span class="rl-text">Services</span></a>
-    <a class="rail-link" href="contact.html" data-nav="help" title="Help centre" aria-label="Help centre"><svg class="i"><use href="assets/icons/sprite.svg?v=39#help"/></svg><span class="rl-text">Help centre</span></a>
-    <a class="rail-link" href="about.html" data-nav="about" title="About Ohgrow" aria-label="About Ohgrow"><svg class="i"><use href="assets/icons/sprite.svg?v=39#about"/></svg><span class="rl-text">About Ohgrow</span></a>
+    <a class="rail-link" href="#market" data-nav="filters" title="Filters" aria-label="Filters"><svg class="i"><use href="assets/icons/sprite.svg?v=40#filter"/></svg><span class="rl-text">Filters</span></a>
+    <a class="rail-link" href="collections.html" data-nav="collections" title="Collections" aria-label="Collections"><svg class="i"><use href="assets/icons/sprite.svg?v=40#collection"/></svg><span class="rl-text">Collections</span></a>
+    <a class="rail-link" href="market.html" data-nav="price" title="Price board" aria-label="Price board"><svg class="i"><use href="assets/icons/sprite.svg?v=40#price"/></svg><span class="rl-text">Price board</span></a>
+    <a class="rail-link" href="how-it-works.html" data-nav="guide" title="Farmer guide" aria-label="Farmer guide"><svg class="i"><use href="assets/icons/sprite.svg?v=40#guide"/></svg><span class="rl-text">Farmer guide</span></a>
+    <a class="rail-link" href="services.html" data-nav="services" title="Services" aria-label="Services"><svg class="i"><use href="assets/icons/sprite.svg?v=40#services"/></svg><span class="rl-text">Services</span></a>
+    <a class="rail-link" href="contact.html" data-nav="help" title="Help centre" aria-label="Help centre"><svg class="i"><use href="assets/icons/sprite.svg?v=40#help"/></svg><span class="rl-text">Help centre</span></a>
+    <a class="rail-link" href="about.html" data-nav="about" title="About Ohgrow" aria-label="About Ohgrow"><svg class="i"><use href="assets/icons/sprite.svg?v=40#about"/></svg><span class="rl-text">About Ohgrow</span></a>
     </div></div>
+    <div class="rail-filters" id="filters" role="group" aria-label="Market filters">
+      <div class="rf-in">
+        <div class="rf-top">
+          <h2>Filters</h2>
+          <button class="rf-reset" type="button" id="rfReset">Reset</button>
+          <button class="rf-x" type="button" id="rfClose" aria-label="Close filters"><svg class="i"><use href="assets/icons/sprite.svg?v=40#close"/></svg></button>
+        </div>
+        <div class="rf-g"><h3>Category</h3>
+          <div class="rf-chips" data-f="cat">
+            <button type="button" data-v="all" class="on">All</button><button type="button" data-v="Vegetables">Vegetables</button><button type="button" data-v="Leafy greens">Leafy greens</button><button type="button" data-v="Fruits">Fruits</button><button type="button" data-v="Tubers">Tubers</button><button type="button" data-v="Grains">Grains</button>
+          </div>
+        </div>
+        <div class="rf-g"><h3>Max price <output id="fPriceOut">₦50,000</output></h3>
+          <input type="range" id="fPrice" min="5000" max="50000" step="500" value="50000" aria-label="Maximum price">
+        </div>
+        <div class="rf-g"><h3>Location</h3>
+          <select id="fState" aria-label="Location"><option value="all">All states</option></select>
+        </div>
+        <div class="rf-g"><h3>Harvested</h3>
+          <div class="rf-chips" data-f="fresh">
+            <button type="button" data-v="any" class="on">Any time</button><button type="button" data-v="today">Today</button><button type="button" data-v="week">This week</button>
+          </div>
+        </div>
+        <label class="rf-sw"><input type="checkbox" id="fOrganic"><span class="sw"></span>Organic only</label>
+        <label class="rf-sw"><input type="checkbox" id="fVerified"><span class="sw"></span>Verified farmers</label>
+        <button class="rf-done" type="button" id="rfDone">Show products</button>
+      </div>
+    </div>
   </nav>
 </aside>
 

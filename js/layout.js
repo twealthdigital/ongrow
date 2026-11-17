@@ -77,6 +77,7 @@
         ind.classList.add('on');
         pill.classList.add('has-ind');
       };
+      O.placePill = place;
       place();
       requestAnimationFrame(function(){ requestAnimationFrame(function(){ ind.classList.add('anim'); }); });
       window.addEventListener('resize', place);

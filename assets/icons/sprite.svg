@@ -46,4 +46,9 @@
     <path d="M32 58C18 54 14 40 20 30 26 38 32 44 32 58Z" fill="#367C2B"/>
     <path d="M32 58C46 54 50 42 46 34 40 40 34 46 32 58Z" fill="#285F20"/>
   </symbol>
+
+<symbol id="filter" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
 </svg>
