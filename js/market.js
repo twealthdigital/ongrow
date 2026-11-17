@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=41#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=42#', IMG = 'assets/images/';
 
   var P = [
     { n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -17,6 +17,48 @@
   var fmt = function(n){ return '\u20A6' + n.toLocaleString('en-NG'); };
   var ic = function(n){ return '<svg class="i"><use href="' + SP + n + '"/></svg>'; };
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); };
+
+
+  /* custom dropdown: swaps a native <select> for a styled button + listbox; the select stays as the source of truth */
+  function dropdown(sel){
+    var w = document.createElement('div'), btn = document.createElement('button'), menu = document.createElement('ul'), hl = -1;
+    w.className = 'dd'; btn.type = 'button'; btn.className = 'dd-btn'; btn.setAttribute('aria-haspopup', 'listbox'); btn.setAttribute('aria-expanded', 'false');
+    if (sel.getAttribute('aria-label')) btn.setAttribute('aria-label', sel.getAttribute('aria-label'));
+    menu.className = 'dd-menu'; menu.setAttribute('role', 'listbox');
+    sel.parentNode.insertBefore(w, sel); w.appendChild(sel); sel.tabIndex = -1; w.appendChild(btn); w.appendChild(menu);
+    function paint(){
+      var o = sel.options[sel.selectedIndex];
+      btn.innerHTML = '<span>' + esc(o ? o.textContent : '') + '</span>' + ic('chev');
+      menu.innerHTML = Array.prototype.map.call(sel.options, function(x, i){
+        return '<li class="dd-opt" role="option" data-i="' + i + '" aria-selected="' + (i === sel.selectedIndex) + '">' + esc(x.textContent) + '</li>';
+      }).join('');
+    }
+    function mark(i){
+      hl = Math.max(0, Math.min(sel.options.length - 1, i));
+      Array.prototype.forEach.call(menu.children, function(li, k){ li.classList.toggle('hl', k === hl); });
+      if (menu.children[hl]) menu.children[hl].scrollIntoView({ block:'nearest' });
+    }
+    function open(){ w.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); mark(sel.selectedIndex); setTimeout(function(){ menu.scrollIntoView({ block:'nearest' }); }, 30); }
+    function close(){ w.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+    function pick(i){
+      if (i !== sel.selectedIndex){ sel.selectedIndex = i; sel.dispatchEvent(new Event('change', { bubbles:true })); }
+      paint(); close();
+    }
+    btn.addEventListener('click', function(){ if (w.classList.contains('open')) close(); else open(); });
+    menu.addEventListener('click', function(e){ var li = e.target.closest('.dd-opt'); if (li) { pick(+li.dataset.i); btn.focus({ preventScroll:true }); } });
+    btn.addEventListener('keydown', function(e){
+      var isOpen = w.classList.contains('open');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); if (!isOpen) open(); else mark(hl + (e.key === 'ArrowDown' ? 1 : -1)); }
+      else if (e.key === 'Home' && isOpen){ e.preventDefault(); mark(0); }
+      else if (e.key === 'End' && isOpen){ e.preventDefault(); mark(sel.options.length - 1); }
+      else if ((e.key === 'Enter' || e.key === ' ') && isOpen){ e.preventDefault(); pick(hl); }
+      else if (e.key === 'Escape' && isOpen){ e.stopPropagation(); close(); }
+      else if (e.key === 'Tab') close();
+    });
+    document.addEventListener('click', function(e){ if (!w.contains(e.target)) close(); });
+    sel.addEventListener('dd-sync', paint);
+    paint();
+  }
 
   O.ready.then(function(){
     var mk = $('#market'); if (!mk) return;
@@ -116,6 +158,8 @@
       var o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o);
     });
 
+    $$('select').forEach(dropdown);
+
     function list(){
       var q = F.q.trim().toLowerCase();
       var r = P.filter(function(p){
@@ -164,8 +208,8 @@
     function resetAll(){
       F = Object.assign({}, DEF);
       $$('.rf-chips').forEach(function(box){ $$('button', box).forEach(function(x, i){ x.classList.toggle('on', i === 0); }); });
-      range.value = DEF.max; out.textContent = fmt(DEF.max); sel.value = 'all';
-      $('#fOrganic').checked = false; $('#fVerified').checked = false; $('#mSearch').value = ''; $('#mSort').value = 'rec';
+      range.value = DEF.max; out.textContent = fmt(DEF.max); sel.value = 'all'; sel.dispatchEvent(new Event('dd-sync'));
+      $('#fOrganic').checked = false; $('#fVerified').checked = false; $('#mSearch').value = ''; $('#mSort').value = 'rec'; $('#mSort').dispatchEvent(new Event('dd-sync'));
       render();
     }
     $('#rfReset').addEventListener('click', resetAll);
