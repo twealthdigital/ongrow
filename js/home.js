@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=20#';
+  var SPRITE = 'assets/icons/sprite.svg?v=21#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -25,5 +25,24 @@
     $('#featPrev').addEventListener('click', function(){ showFeat(fi - 1); });
     $('#featNext').addEventListener('click', function(){ showFeat(fi + 1); });
     showFeat(0);
+
+    /* mobile/tablet: make the hero image end just inside the bottom of the featured card */
+    var mq = window.matchMedia('(max-width:1099.98px)');
+    function fitHero(){
+      var h = document.querySelector('.hero'), f = document.querySelector('.feat');
+      if(!h || !f) return;
+      if(mq.matches){
+        var d = f.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom - 14;
+        h.style.setProperty('--ext', Math.max(0, Math.round(d)) + 'px');
+      } else {
+        h.style.removeProperty('--ext');
+      }
+    }
+    fitHero();
+    window.addEventListener('resize', fitHero);
+    window.addEventListener('load', fitHero);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
+    $('#featPrev').addEventListener('click', function(){ setTimeout(fitHero, 0); });
+    $('#featNext').addEventListener('click', function(){ setTimeout(fitHero, 0); });
   });
 })();

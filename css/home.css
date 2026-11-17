@@ -60,7 +60,7 @@
   .hero-art{position:absolute;inset:0;z-index:-1;min-height:0;padding:0;border-radius:0 0 38px 38px;display:block}
         .hero-art::after{border-radius:inherit;content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(13,17,11,.45),rgba(13,17,11,.2) 60%,rgba(13,17,11,0))}
   .hero-art .hero-fade{height:62%}
-  .hero-art .float{--s:140px;left:-8px;bottom:-70px}
+  .hero-art .float{--s:140px;--fy:-70px;left:-8px;bottom:calc(var(--ext,150px) + var(--fy))}
   .hero h1{color:#fff}
   .hero h1 .outline{-webkit-text-stroke-color:#fff}
   @supports not (-webkit-text-stroke:1px #000){.hero h1 .outline{color:#fff}}
@@ -69,6 +69,18 @@
   .hero .btn-ghost::before{background:#fff}
   .hero .btn-ghost:hover{color:var(--ink);box-shadow:inset 0 0 0 1.5px #fff}
   .trio{margin-top:18px}
+}
+/* mobile and tablet: the hero image runs down behind the featured card.
+   --ext (set from JS) is how far the image continues below the hero block */
+@media (max-width:1099.98px){
+  #home{position:relative;isolation:isolate}
+  .hero{isolation:auto;z-index:auto}
+  .hero-copy{position:relative;z-index:2}
+  .hero-art{z-index:auto;bottom:calc(var(--ext,150px)*-1)}
+  .hero-art::after{bottom:var(--ext,150px)}
+  .hero-art .hero-fade{bottom:var(--ext,150px);height:calc((100% - var(--ext,150px))*.62);border-radius:0}
+  .hero-art .hero-fade::after{content:"";position:absolute;left:0;right:0;top:100%;height:var(--ext,150px);background:rgba(13,17,11,.92);border-radius:0 0 38px 38px}
+  .trio{position:relative;z-index:3}
 }
 /* phones: scale type and buttons with the screen so the hero keeps the same shape from 320px up */
 @media (max-width:699.98px){
