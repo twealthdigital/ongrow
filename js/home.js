@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=36#';
+  var SPRITE = 'assets/icons/sprite.svg?v=37#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -59,6 +59,7 @@
         c.setAttribute('aria-hidden', hid ? 'true' : 'false');
         var l = c.querySelector('a'); if(l) l.tabIndex = hid ? -1 : 0;
       });
+      syncDetail();
     }
 
     function animateTo(target, dur){
@@ -86,10 +87,6 @@
         if(moved || e.target.closest('a')) return;
         var k = Math.round(off(i));
         if(k !== 0){ e.preventDefault(); go(k); restart(); }
-        else {                                         /* active card with no View button (desktop / tablet): the card itself opens it */
-          var l = c.querySelector('a');
-          if(l && getComputedStyle(l).display === 'none') location.href = l.href;
-        }
       });
     });
 
@@ -132,8 +129,89 @@
     stage.addEventListener('pointercancel', end);
     stage.addEventListener('dragstart', function(e){ e.preventDefault(); });
 
+    /* ---- product view: a panel beside the cards (tablet / desktop) that follows the active card;
+            on phones View slides the carousel out, the container turns black and the same view slides in ---- */
+    var arc = document.getElementById('arc'), panel = document.getElementById('arcDetail');
+    var side = window.matchMedia('(min-width:700px)');
+    var $ = function(id){ return document.getElementById(id); };
+    var dBody = $('adBody');
+    var cur = { i: -1, qty: 1, price: 0, name: '', unit: '' }, detailOpen = false, idleT = null, lastIdx = -1, addT = null;
+    function money(v){ return '₦' + v.toLocaleString('en-NG'); }
+    function qtyUI(){ $('adQty').textContent = cur.qty; $('adTotal').textContent = money(cur.price * cur.qty); $('adMinus').disabled = cur.qty <= 1; $('adPlus').disabled = cur.qty >= 99; }
+    function fill(i){
+      var c = cards[i], d = c.dataset, img = c.querySelector('img.arc-cut');
+      cur.i = i; lastIdx = i; cur.qty = 1;
+      cur.name = c.querySelector('h3').textContent;
+      cur.price = parseInt(c.querySelector('.arc-price b').textContent.replace(/\D/g, ''), 10) || 0;
+      cur.unit = c.querySelector('.arc-price span').textContent;
+      $('adCat').textContent = d.cat || '';
+      $('adName').textContent = cur.name;
+      $('adPrice').textContent = money(cur.price);
+      $('adUnit').textContent = cur.unit;
+      $('adDesc').textContent = d.desc || '';
+      $('adImg').src = img ? img.getAttribute('src') : 'assets/images/product-image.png';
+      var add = $('adAdd'); clearTimeout(addT); add.classList.remove('is-added'); add.querySelector('span').textContent = 'Add to cart';
+      qtyUI();
+      dBody.classList.remove('in'); void dBody.offsetWidth; dBody.classList.add('in');
+    }
+    function syncDetail(){                                    /* tablet / desktop: follow whichever card is in the middle */
+      if(detailOpen || !side.matches) return;
+      var idx = ((Math.round(pos) % n) + n) % n;
+      if(idx !== lastIdx) fill(idx);
+    }
+    function openDetail(i){                                   /* phone */
+      detailOpen = true; stop(); clearTimeout(idleT);
+      fill(i);
+      arc.style.height = arc.offsetHeight + 'px'; void arc.offsetWidth;
+      arc.classList.add('is-detail');
+      arc.style.height = Math.max(stage.offsetHeight, panel.offsetHeight) + 'px';
+      stage.inert = true; panel.inert = false;
+      $('arcBack').focus({ preventScroll: true });
+    }
+    function closeDetail(restoreFocus){
+      if(!detailOpen) return;
+      detailOpen = false;
+      arc.classList.remove('is-detail');
+      arc.style.height = stage.offsetHeight + 'px';
+      setTimeout(function(){ if(!detailOpen) arc.style.height = ''; }, 650);
+      stage.inert = false; panel.inert = true;
+      if(restoreFocus){ var l = cards[cur.i] && cards[cur.i].querySelector('a'); if(l) l.focus({ preventScroll: true }); }
+      start();
+    }
+    function syncMode(){
+      if(side.matches){
+        if(detailOpen){ detailOpen = false; arc.classList.remove('is-detail'); arc.style.height = ''; stage.inert = false; }
+        panel.inert = false; lastIdx = -1; syncDetail(); start();
+      } else if(!detailOpen){ panel.inert = true; }
+    }
+    function hold(){ stop(); clearTimeout(idleT); if(!detailOpen) idleT = setTimeout(start, 9000); }   /* using the panel pauses auto-scroll */
+
+    cards.forEach(function(c, i){                              /* phone: View opens the product view */
+      var l = c.querySelector('a');
+      if(l) l.addEventListener('click', function(e){
+        if(moved){ e.preventDefault(); return; }
+        if(!side.matches){ e.preventDefault(); openDetail(i); }
+      });
+    });
+    $('arcBack').addEventListener('click', function(){ closeDetail(true); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeDetail(true); });
+    $('adMinus').addEventListener('click', function(){ cur.qty = Math.max(1, cur.qty - 1); qtyUI(); hold(); });
+    $('adPlus').addEventListener('click', function(){ cur.qty = Math.min(99, cur.qty + 1); qtyUI(); hold(); });
+    $('adAdd').addEventListener('click', function(){
+      var b = this, t = b.querySelector('span');
+      document.dispatchEvent(new CustomEvent('ohgrow:add-to-cart', { detail: { name: cur.name, qty: cur.qty, unit: cur.unit, price: cur.price } }));
+      b.classList.add('is-added'); t.textContent = 'Added · ' + cur.qty + ' in cart';
+      clearTimeout(addT); addT = setTimeout(function(){ b.classList.remove('is-added'); t.textContent = 'Add to cart'; }, 2000);
+      hold();
+    });
+    panel.addEventListener('mouseenter', stop);
+    panel.addEventListener('mouseleave', function(){ if(!detailOpen) start(); });
+    panel.addEventListener('pointerdown', hold);
+    panel.addEventListener('focusin', hold);
+    if(side.addEventListener) side.addEventListener('change', syncMode); else side.addListener(syncMode);
+
     /* auto-advance (off for reduced motion, paused on hover / drag / hidden tab) */
-    function start(){ if(O.reduce || timer) return; timer = setInterval(function(){ go(1); }, 3600); }
+    function start(){ if(O.reduce || timer || detailOpen) return; timer = setInterval(function(){ go(1); }, 3600); }
     function stop(){ clearInterval(timer); timer = null; }
     function restart(){ stop(); start(); }
     stage.addEventListener('mouseenter', stop);
@@ -141,6 +219,6 @@
     document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
     window.addEventListener('resize', function(){ measure(); render(); });
 
-    measure(); render(); start();
+    measure(); render(); syncMode(); start();
   });
 })();

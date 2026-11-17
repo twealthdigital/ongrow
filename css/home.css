@@ -125,10 +125,9 @@
   .arc-card h3{font-size:16px}
   .arc-nav{display:none}   /* no arrows on mobile / tablet: drag the cards with your finger */
 }
-/* desktop + tablet (cards have the open space in front): no View button, the active card is the link */
+/* desktop + tablet: no View button, the product panel beside the cards shows the active product */
 @media (min-width:700px){
   .arc-go{display:none}
-  .arc-card.is-active{cursor:pointer}
 }
 
 /* the active card is dark with white content on every screen size (inactive cards stay white) */
@@ -140,3 +139,83 @@
 /* phones keep a View button on the active card; it flips to a white pill so it matches the dark card */
 .arc-card.is-active .arc-go{background:#fff;color:var(--ink)}
 .arc-card.is-active .arc-go:hover{background:#8EDB78}
+
+/* ===== product panel =====
+   desktop / tablet: a dark card beside the carousel that shows the active product (quantity, total, add to cart)
+   phone: View slides the carousel away, the green container turns black and the same view slides in, with a back icon */
+.arc-detail{position:relative;flex:1 1 0;min-width:0;max-width:640px;margin:0 36px 0 14px;padding:30px;border-radius:30px;background:var(--ink);color:#fff;
+  box-shadow:0 24px 48px rgba(8,18,6,.42),0 0 0 1px rgba(255,255,255,.07)}
+.arc-detail::before{content:"";position:absolute;left:-8px;top:calc(50% - 9px);width:18px;height:18px;border-radius:4px;background:var(--ink);transform:rotate(45deg)}  /* small tail pointing at the active card */
+.arc-back{display:none}
+.ad-body{display:grid;gap:22px}
+.ad-body.in{animation:adIn .5s var(--ease) both}
+@keyframes adIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ad-body.in{animation:none}}
+.ad-top{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.ad-cat{display:inline-block;font:600 11.5px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;color:#8EDB78;background:rgba(142,219,120,.13);padding:7px 11px;border-radius:999px}
+.ad-info h3{font:600 clamp(26px,2.3vw,34px)/1.08 var(--font-display);letter-spacing:-.03em;margin:12px 0 8px;color:#fff}
+.ad-price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ad-price b{font:700 24px/1 var(--font-body);color:#8EDB78}
+.ad-price span{font-size:14px;color:rgba(255,255,255,.7)}
+.ad-desc{margin-top:12px;max-width:46ch;font-size:15px;line-height:1.55;color:rgba(255,255,255,.78)}
+.ad-img{width:clamp(110px,13vw,170px);aspect-ratio:1}
+.ad-img img{display:block;width:100%;height:100%;object-fit:contain;transform:rotate(-8deg);filter:drop-shadow(0 14px 16px rgba(0,0,0,.45))}
+.ad-qty{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:14px 16px;border-radius:20px;background:rgba(255,255,255,.07)}
+.ad-qgroup{display:grid;gap:8px;justify-items:start}
+.ad-lbl{font-size:12.5px;color:rgba(255,255,255,.66)}
+.ad-step{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.1)}
+.ad-step button{display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:50%;background:#fff;color:var(--ink);font:700 20px/1 var(--font-body);cursor:pointer;transition:transform .2s,opacity .2s,background .2s;-webkit-tap-highlight-color:transparent}
+.ad-step button:hover:not(:disabled){background:#8EDB78}
+.ad-step button:active:not(:disabled){transform:scale(.92)}
+.ad-step button:disabled{opacity:.35;cursor:default}
+.ad-step output{min-width:40px;text-align:center;font:700 17px/1 var(--font-body)}
+.ad-total{display:grid;gap:6px;text-align:right}
+.ad-total b{font:700 24px/1 var(--font-body);color:#fff}
+.ad-actions{display:grid;grid-template-columns:1fr auto;gap:12px}
+.ad-add{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 22px;border:0;border-radius:999px;background:#8EDB78;color:var(--ink);font:700 15px/1 var(--font-body);cursor:pointer;transition:background .3s,color .3s,transform .2s;-webkit-tap-highlight-color:transparent}
+.ad-add:hover{background:#a7e794}
+.ad-add:active{transform:scale(.98)}
+.ad-add.is-added{background:#fff}
+.ad-add svg,.ad-more svg{width:18px;height:18px;flex:none}
+.ad-more{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 20px;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35);color:#fff;font-weight:700;font-size:14px;transition:background .3s,color .3s}
+.ad-more:hover{background:#fff;color:var(--ink)}
+
+@media (min-width:1100px){
+  .arc-detail{transform:translateY(22px)}              /* sits a touch low so the big broccoli above never overlaps it */
+  .arc-detail::before{top:calc(50% - 9px - 22px)}      /* ...and the tail stays level with the active card */
+}
+/* tablet: cards on the left, panel fills the rest of the green */
+@media (min-width:700px) and (max-width:1099.98px){
+  .arc{flex-direction:row;align-items:center;gap:0}
+  .arc-detail{margin:18px 16px 18px 12px;padding:24px}
+  .ad-info h3{font-size:26px}
+  .ad-price b{font-size:22px}
+  .ad-img{width:clamp(84px,14vw,130px)}
+}
+@media (min-width:700px) and (max-width:960px){
+  .ad-desc{font-size:14px}
+  .ad-actions{grid-template-columns:1fr}
+  .ad-more{height:46px}
+}
+
+/* phone: the whole green container becomes the product view */
+@media (max-width:699.98px){
+  .arc{transition:background-color .55s var(--ease),height .55s var(--ease)}
+  .arc.is-detail{background:var(--ink)}
+  .arc-stage{transition:transform .6s var(--ease),opacity .45s}
+  .arc.is-detail .arc-stage{transform:translateX(-115%);opacity:0;pointer-events:none}
+  .arc-detail{position:absolute;left:0;right:0;top:0;max-width:none;margin:0;padding:16px 20px 26px;border-radius:0;background:none;box-shadow:none;
+    transform:translateX(100%);opacity:0;visibility:hidden;transition:transform .6s var(--ease),opacity .4s,visibility 0s .6s}
+  .arc-detail::before{display:none}
+  .arc.is-detail .arc-detail{transform:none;opacity:1;visibility:visible;transition:transform .6s var(--ease) .05s,opacity .45s .1s,visibility 0s}
+  .arc-back{display:grid;place-items:center;width:44px;height:44px;margin-bottom:6px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;transition:background .3s,color .3s;-webkit-tap-highlight-color:transparent}
+  .arc-back:hover,.arc-back:active{background:#fff;color:var(--ink)}
+  .arc-back svg{width:20px;height:20px}
+  .ad-top{grid-template-columns:1fr;justify-items:center;text-align:center;gap:6px}
+  .ad-img{order:-1;width:min(54vw,210px)}
+  .ad-info h3{font-size:28px}
+  .ad-price{justify-content:center}
+  .ad-desc{margin-inline:auto;font-size:14.5px}
+  .ad-actions{grid-template-columns:1fr}
+  .ad-more{height:46px}
+}
