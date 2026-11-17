@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=23#';
+  var SPRITE = 'assets/icons/sprite.svg?v=24#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -10,16 +10,14 @@
     var mq = window.matchMedia('(max-width:1099.98px)');
     function fitHero(){
       var root = document.getElementById('home'), h = document.querySelector('.hero'),
-          st = document.querySelector('.stats'), f = document.querySelector('.hero-art .float');
-      if(!root || !h || !st) return;
+          cta = document.querySelector('.cta');
+      if(!root || !h || !cta) return;
       if(mq.matches){
-        /* image ends 36px under the counter; broccoli sits beside the counter, so the counter starts after its width */
-        var d = st.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom + 36;
+        /* image runs down behind the counter and the black card, ending 16px under the card */
+        var d = cta.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom + 16;
         root.style.setProperty('--ext', Math.max(0, Math.round(d)) + 'px');
-        root.style.setProperty('--fw', (f ? Math.round(f.getBoundingClientRect().width) : 120) + 'px');
       } else {
         root.style.removeProperty('--ext');
-        root.style.removeProperty('--fw');
       }
     }
     fitHero();
