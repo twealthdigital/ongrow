@@ -1,29 +1,10 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=26#';
+  var SPRITE = 'assets/icons/sprite.svg?v=27#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
     document.body.classList.add('hero-in');
-
-    /* mobile/tablet: make the hero image end just inside the bottom of the featured card */
-    var mq = window.matchMedia('(max-width:1099.98px)');
-    function fitHero(){
-      var root = document.getElementById('home'), h = document.querySelector('.hero'),
-          cta = document.querySelector('.trio');
-      if(!root || !h || !cta) return;
-      if(mq.matches){
-        /* image runs down behind the CTA text and the counters, ending 18px under them */
-        var d = cta.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom + 18;
-        root.style.setProperty('--ext', Math.max(0, Math.round(d)) + 'px');
-      } else {
-        root.style.removeProperty('--ext');
-      }
-    }
-    fitHero();
-    window.addEventListener('resize', fitHero);
-    window.addEventListener('load', fitHero);
-    if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHero);
 
     /* counter: numbers count up once when they scroll into view */
     var nums = document.querySelectorAll('.stat b[data-count]');
