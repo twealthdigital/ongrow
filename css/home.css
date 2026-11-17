@@ -89,11 +89,11 @@
 /* ===== vertical curved carousel (left of the green section): cards stay upright along a ")" arc.
    The green panel clips them, so the first/last cards look like they are sliding in through its top and bottom edge ===== */
 .arc{position:relative;isolation:isolate;z-index:6;margin-top:18px;display:flex;align-items:center;gap:18px;overflow:hidden;border-radius:38px;background:var(--green)}
-.arc-stage{position:relative;flex:none;width:calc(var(--left) + var(--w));height:var(--sh);--w:320px;--left:190px;--ch:124px;--sh:600px;--gap:162px;--R:360px;--d:120px;--grow:1.24;cursor:grab;user-select:none;-webkit-user-select:none}
+.arc-stage{position:relative;flex:none;width:calc(var(--left) + var(--w));height:var(--sh);--w:320px;--left:190px;--ch:124px;--sh:600px;--gap:162px;--R:360px;--d:120px;--grow:1.24;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:pan-x;-webkit-tap-highlight-color:transparent}
 .arc-stage.drag{cursor:grabbing}
 .arc-card{position:absolute;left:var(--left);top:calc(50% - var(--ch)/2);width:var(--w);min-height:var(--ch);padding:14px 16px 14px calc(var(--d)/2 + 36px);border-radius:26px;background:#fff;
   display:grid;gap:5px;justify-items:start;text-align:left;align-content:center;box-shadow:0 16px 32px rgba(8,18,6,.28);
-  transition:transform .8s var(--ease),opacity .5s,min-height .6s var(--ease),top .6s var(--ease),box-shadow .6s;will-change:transform}
+  transition:min-height .6s var(--ease),top .6s var(--ease),box-shadow .6s;will-change:transform,opacity}
 .arc-card h3{font:600 17px/1.15 var(--font-display);letter-spacing:-.02em}
 .arc-price{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 .arc-price b{font:700 16px/1.2 var(--font-body);color:var(--green)}
@@ -108,7 +108,7 @@
 .arc-card.is-active{min-height:calc(var(--ch)*var(--grow,1.24));top:calc(50% - var(--ch)*var(--grow,1.24)/2);box-shadow:0 22px 40px rgba(8,18,6,.34)}
 .arc-card.is-active .arc-pop{transform:scale(1.06)}
 .arc-card.is-active .arc-cut{transform:scale(1.06) rotate(-10deg)}
-.arc-card.is-hidden{opacity:0;pointer-events:none}
+.arc-card.is-hidden{pointer-events:none}
 .arc-nav{display:flex;flex-direction:column;gap:12px}
 .arc-btn{background:rgba(255,255,255,.16);box-shadow:none;color:#fff}
 .arc-btn:hover{background:#fff;color:var(--green)}
@@ -120,8 +120,13 @@
 }
 /* mobile and tablet: sits right after the counter */
 @media (max-width:1099.98px){
-  .arc{margin-top:18px;padding-bottom:18px;flex-direction:column;align-items:flex-start;gap:8px}
+  .arc{margin-top:18px;padding-bottom:0;flex-direction:column;align-items:flex-start;gap:0}
   .arc-stage{--w:min(272px,calc(100vw - 140px));--left:82px;--ch:112px;--sh:372px;--gap:136px;--R:440px;--d:96px;--grow:1.22}
   .arc-card h3{font-size:16px}
-  .arc-nav{flex-direction:row;margin-left:82px}
+  .arc-nav{display:none}   /* no arrows on mobile / tablet: drag the cards with your finger */
+}
+/* desktop + tablet (cards have the open space in front): no View button, the active card is the link */
+@media (min-width:700px){
+  .arc-go{display:none}
+  .arc-card.is-active{cursor:pointer}
 }

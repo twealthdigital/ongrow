@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=33#';
+  var SPRITE = 'assets/icons/sprite.svg?v=34#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -28,73 +28,119 @@
     }
   });
 })();
-/* vertical curved carousel: cards stay upright and sit on a ")" arc, the centre card sticks out furthest */
+/* vertical curved carousel: cards stay upright on a ")" arc. Position is continuous so a finger / mouse drag
+   moves the cards 1:1, and letting go flicks with momentum then snaps to the nearest card */
 (function(){
   var O = window.Ohgrow;
   O.ready.then(function(){
     var stage = document.getElementById('arcStage');
     if(!stage) return;
     var cards = Array.prototype.slice.call(stage.querySelectorAll('.arc-card'));
-    var n = cards.length, half = Math.floor(n / 2), active = 0, timer = null;
-    var prevOff = cards.map(function(_, i){ return off(i); });
+    var n = cards.length, half = n / 2, vis = 2;
+    var pos = 0, raf = 0, timer = null, gap = 0, R = 0;
+    var RATIO = 1.5;                       /* finger travel -> card travel (higher = faster) */
 
-    function off(i){ var k = ((i - active) % n + n) % n; return k > half ? k - n : k; }
     function cs(name){ return parseFloat(getComputedStyle(stage).getPropertyValue(name)) || 0; }
+    function measure(){ gap = cs('--gap'); R = cs('--R'); }
+    function off(i){ var k = ((i - pos) % n + n) % n; return k >= half ? k - n : k; }   /* -n/2 .. n/2 */
 
     function render(){
-      var gap = cs('--gap'), R = cs('--R'), vis = 2;
       cards.forEach(function(c, i){
-        var k = off(i), y = k * gap;
+        var k = off(i), a = Math.abs(k), y = k * gap;
         var x = R * (Math.sqrt(1 - Math.pow(Math.min(Math.abs(y) / R, .98), 2)) - 1);   /* 0 at centre, pulls left going up/down */
-        var s = 1 - Math.abs(k) * .06;
-        var jump = Math.abs(k - prevOff[i]) > 1;
-        if(jump) c.style.transition = 'none';
-        c.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
-        c.style.zIndex = 10 - Math.abs(k);
-        c.classList.toggle('is-active', k === 0);
-        c.classList.toggle('is-hidden', Math.abs(k) > vis);
-        c.setAttribute('aria-hidden', Math.abs(k) > vis ? 'true' : 'false');
-        c.querySelector('a').tabIndex = Math.abs(k) > vis ? -1 : 0;
-        if(jump){ void c.offsetWidth; c.style.transition = ''; }
-        prevOff[i] = k;
+        var s = 1 - Math.min(a, 2) * .06;
+        var op = Math.max(0, Math.min(1, (vis + .5 - a) / .5));                          /* fades out before it wraps round */
+        var hid = a > vis + .25;
+        c.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(3) + ')';
+        c.style.opacity = op.toFixed(3);
+        c.style.zIndex = Math.round(100 - a * 10);
+        c.classList.toggle('is-active', a < .5);
+        c.classList.toggle('is-hidden', hid);
+        c.setAttribute('aria-hidden', hid ? 'true' : 'false');
+        var l = c.querySelector('a'); if(l) l.tabIndex = hid ? -1 : 0;
       });
     }
-    function go(d){ active = ((active + d) % n + n) % n; render(); }
+
+    function animateTo(target, dur){
+      cancelAnimationFrame(raf);
+      if(O.reduce){ pos = ((target % n) + n) % n; render(); return; }
+      var from = pos, t0 = null;
+      dur = dur || Math.min(900, 380 + Math.abs(target - from) * 140);
+      function step(t){
+        if(!t0) t0 = t;
+        var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        pos = from + (target - from) * e;
+        if(k >= 1) pos = ((target % n) + n) % n;
+        render();
+        if(k < 1) raf = requestAnimationFrame(step);
+      }
+      raf = requestAnimationFrame(step);
+    }
+    function go(d){ animateTo(Math.round(pos) + d); }
 
     var moved = false;
     document.getElementById('arcNext').addEventListener('click', function(){ go(1); restart(); });
     document.getElementById('arcPrev').addEventListener('click', function(){ go(-1); restart(); });
     cards.forEach(function(c, i){
       c.addEventListener('click', function(e){
-        if(moved) return;
-        var k = off(i);
-        if(k !== 0 && !e.target.closest('a')){ e.preventDefault(); go(k); restart(); }
+        if(moved || e.target.closest('a')) return;
+        var k = Math.round(off(i));
+        if(k !== 0){ e.preventDefault(); go(k); restart(); }
+        else {                                         /* active card with no View button (desktop / tablet): the card itself opens it */
+          var l = c.querySelector('a');
+          if(l && getComputedStyle(l).display === 'none') location.href = l.href;
+        }
       });
     });
 
-    /* mouse drag up / down (touch keeps normal page scrolling; use the arrows or tap a card) */
-    var sy = 0, dy = 0, down = false;
-    stage.addEventListener('pointerdown', function(e){ if(e.pointerType !== 'mouse') return; down = true; moved = false; sy = e.clientY; dy = 0; });
-    window.addEventListener('pointermove', function(e){
-      if(!down) return; dy = e.clientY - sy;
-      if(Math.abs(dy) > 8){ moved = true; stage.classList.add('drag'); }
+    /* touch + mouse drag up / down: follows the finger, flicks with momentum */
+    var sy = 0, startPos = 0, down = false, pid = null, samples = [];
+    stage.addEventListener('pointerdown', function(e){
+      if(e.pointerType === 'mouse' && e.button !== 0) return;
+      cancelAnimationFrame(raf); stop();
+      down = true; moved = false; pid = e.pointerId; sy = e.clientY; startPos = pos;
+      samples = [{ t: e.timeStamp, y: e.clientY }];
     });
-    window.addEventListener('pointerup', function(){
-      if(!down) return; down = false; stage.classList.remove('drag');
-      if(Math.abs(dy) > 40){ go(dy < 0 ? 1 : -1); restart(); }
+    stage.addEventListener('pointermove', function(e){
+      if(!down || e.pointerId !== pid) return;
+      var dy = e.clientY - sy;
+      if(!moved){
+        if(Math.abs(dy) < 6) return;
+        moved = true; stage.classList.add('drag');
+        try{ stage.setPointerCapture(pid); }catch(_){}
+      }
+      pos = startPos - dy * RATIO / gap;
+      samples.push({ t: e.timeStamp, y: e.clientY });
+      while(samples.length > 2 && e.timeStamp - samples[0].t > 100) samples.shift();
+      render();
+    });
+    function end(e){
+      if(!down || e.pointerId !== pid) return;
+      down = false; stage.classList.remove('drag');
+      if(moved){
+        var a = samples[0], b = samples[samples.length - 1];
+        var v = b.t > a.t ? (b.y - a.y) / (b.t - a.t) : 0;            /* px per ms, negative = finger moving up */
+        var base = Math.round(startPos);
+        var target = Math.round(pos - v * RATIO * 240 / gap);
+        target = Math.max(base - 4, Math.min(base + 4, target));
+        animateTo(target);
+      }
+      restart();
       setTimeout(function(){ moved = false; }, 0);
-    });
+    }
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
     stage.addEventListener('dragstart', function(e){ e.preventDefault(); });
 
-    /* auto-advance (off for reduced motion, paused on hover / hidden tab) */
+    /* auto-advance (off for reduced motion, paused on hover / drag / hidden tab) */
     function start(){ if(O.reduce || timer) return; timer = setInterval(function(){ go(1); }, 3600); }
     function stop(){ clearInterval(timer); timer = null; }
     function restart(){ stop(); start(); }
     stage.addEventListener('mouseenter', stop);
     stage.addEventListener('mouseleave', start);
     document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
-    window.addEventListener('resize', render);
+    window.addEventListener('resize', function(){ measure(); render(); });
 
-    render(); start();
+    measure(); render(); start();
   });
 })();
