@@ -53,4 +53,6 @@
 <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
 
 <symbol id="chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+
+<symbol id="smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.4 14c.9 1.6 2.2 2.4 3.6 2.4s2.7-.8 3.6-2.4"/><path d="M9 9.6h.01M15 9.6h.01" stroke-width="2.6"/></symbol>
 </svg>

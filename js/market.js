@@ -1,17 +1,17 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=42#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=43#', IMG = 'assets/images/';
 
   var P = [
-    { n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
-    { n:'Ripe tomatoes',  c:'Vegetables',   p:38000, u:'per basket',    s:'Ekiti',   f:'Adeola Farms',       h:'today', o:0, v:1, i:'tomato.png',        t:'#FCE1DA' },
-    { n:'Sweet peppers',  c:'Vegetables',   p:29500, u:'per crate',     s:'Kaduna',  f:'Zaria Greens',       h:'today', o:1, v:1, i:'pepper.png',        t:'#FAD9D4' },
-    { n:'Juicy oranges',  c:'Fruits',       p:24000, u:'per crate',     s:'Ondo',    f:'Akure Orchards',     h:'week',  o:0, v:1, i:'orange.png',        t:'#FCE3C2' },
-    { n:'Leafy greens',   c:'Leafy greens', p:12500, u:'per bundle',    s:'Oyo',     f:'Bola & Sons',        h:'today', o:1, v:0, i:'greens.png',        t:'#D6EBC4' },
-    { n:'Yam tubers',     c:'Tubers',       p:24500, u:'per 10 tubers', s:'Benue',   f:'Terkimbi Growers',   h:'week',  o:1, v:1, y:'yam',               t:'#F3E6CF' },
-    { n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, y:'plantain',          t:'#F8EFC2' },
-    { n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, y:'maize',             t:'#FBF0B5' }
+    { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
+    { d:'Firm, sun-ripened tomatoes picked at their best. Perfect for stews, sauces and salads.', n:'Ripe tomatoes',  c:'Vegetables',   p:38000, u:'per basket',    s:'Ekiti',   f:'Adeola Farms',       h:'today', o:0, v:1, i:'tomato.png',        t:'#FCE1DA' },
+    { d:'Bright, crunchy bell peppers with a sweet, mild flavour. Great in stir-fries and salads.', n:'Sweet peppers',  c:'Vegetables',   p:29500, u:'per crate',     s:'Kaduna',  f:'Zaria Greens',       h:'today', o:1, v:1, i:'pepper.png',        t:'#FAD9D4' },
+    { d:'Sweet, juicy oranges packed with vitamin C. Peel and eat fresh, or squeeze for juice.', n:'Juicy oranges',  c:'Fruits',       p:24000, u:'per crate',     s:'Ondo',    f:'Akure Orchards',     h:'week',  o:0, v:1, i:'orange.png',        t:'#FCE3C2' },
+    { d:'Fresh-cut leafy greens bundled the same day. Tender and ready for soups, salads and smoothies.', n:'Leafy greens',   c:'Leafy greens', p:12500, u:'per bundle',    s:'Oyo',     f:'Bola & Sons',        h:'today', o:1, v:0, i:'greens.png',        t:'#D6EBC4' },
+    { d:'Hearty, starchy tubers with a firm bite. Boil, roast or pound for a classic Nigerian meal.', n:'Yam tubers',     c:'Tubers',       p:24500, u:'per 10 tubers', s:'Benue',   f:'Terkimbi Growers',   h:'week',  o:1, v:1, y:'yam',               t:'#F3E6CF' },
+    { d:'Golden plantains with a deep natural sweetness. Fry, roast or boil them.', n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, y:'plantain',          t:'#F8EFC2' },
+    { d:'Sweet, tender cobs harvested young. Boil or roast fresh, or cut off the kernels for soups.', n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, y:'maize',             t:'#FBF0B5' }
   ];
   var byName = {}; P.forEach(function(p){ byName[p.n] = p; });
   var fmt = function(n){ return '\u20A6' + n.toLocaleString('en-NG'); };
@@ -67,13 +67,18 @@
     var DEF = { cat:'all', fresh:'any', max:50000, st:'all', org:false, ver:false, q:'', sort:'rec' };
     var F = Object.assign({}, DEF);
 
-    /* ---------- cart ---------- */
+    /* ---------- cart: one line per product + chosen options ---------- */
+    var DEFO = { g:'Standard', d:'Pickup', w:'This week' }, GR = { Standard:1, Select:1.1, Export:1.25 };
+    var priceFor = function(p, g){ return Math.round(p.p * (GR[g] || 1) / 100) * 100; };
+    var lk = function(n, o){ return [n, o.g, o.d, o.w].join('|'); };
     var cart = {};
     try { cart = JSON.parse(localStorage.getItem('ohgrow.cart') || '{}') || {}; } catch(_){ cart = {}; }
-    Object.keys(cart).forEach(function(k){ var c = cart[k]; if (!c || !(c.q > 0) || !(c.p > 0)) delete cart[k]; });
+    Object.keys(cart).forEach(function(k){ var c = cart[k]; if (!c || !c.n || !(c.q > 0) || !(c.p > 0)) delete cart[k]; });
     var save = function(){ try { localStorage.setItem('ohgrow.cart', JSON.stringify(cart)); } catch(_){} };
-    var count = function(){ return Object.keys(cart).reduce(function(a, k){ return a + cart[k].q; }, 0); };
-    var total = function(){ return Object.keys(cart).reduce(function(a, k){ return a + cart[k].q * cart[k].p; }, 0); };
+    var keys = function(){ return Object.keys(cart); };
+    var count = function(){ return keys().reduce(function(a, k){ return a + cart[k].q; }, 0); };
+    var total = function(){ return keys().reduce(function(a, k){ return a + cart[k].q * cart[k].p; }, 0); };
+    var inCart = function(n){ return keys().reduce(function(a, k){ return a + (cart[k].n === n ? cart[k].q : 0); }, 0); };
 
     var cb = $('.circle.cart'), badge = document.createElement('span');
     badge.className = 'cart-n'; badge.hidden = true; if (cb) cb.appendChild(badge);
@@ -86,71 +91,163 @@
         '<div class="c-foot"><div class="c-total"><span>Total</span><b id="cTotal"></b></div>' +
         '<button class="btn btn-dark c-go" id="cGo" type="button"><span>Checkout</span><span class="ico">' + ic('arrow') + '</span></button>' +
         '<p class="c-note" id="cNote" aria-live="polite"></p></div>' +
-      '</aside>');
-    var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList');
+      '</aside>' +
+      '<div class="pd" id="pd" inert><div class="pd-scroll" id="pdScroll"><div class="pd-box" role="dialog" aria-modal="true" aria-labelledby="pdName">' +
+        '<button class="circle pd-x" id="pdX" type="button" aria-label="Close">' + ic('close') + '</button>' +
+        '<div class="pd-stage"><span class="pd-disc"></span><div class="pd-img" id="pdImg"></div></div>' +
+        '<div class="pd-info">' +
+          '<span class="ad-cat" id="pdCat"></span>' +
+          '<h3 class="pd-name" id="pdName"></h3>' +
+          '<p class="ad-price"><b id="pdPrice"></b><span id="pdUnit"></span></p>' +
+          '<p class="ad-desc" id="pdDesc"></p>' +
+          '<div class="pd-tags" id="pdTags"></div>' +
+          '<div id="pdSel"></div>' +
+          '<div class="ad-qty"><div class="ad-qgroup"><span class="ad-lbl" id="pdQL">Quantity</span>' +
+            '<div class="ad-step" role="group" aria-labelledby="pdQL"><button type="button" id="pdMinus" aria-label="Decrease quantity">&minus;</button><output id="pdQty" aria-live="polite">1</output><button type="button" id="pdPlus" aria-label="Increase quantity">+</button></div></div>' +
+            '<p class="ad-total"><span class="ad-lbl">Total</span><b id="pdTotal"></b></p></div>' +
+          '<button class="ad-add pd-add" id="pdAdd" type="button">' + ic('cart') + '<span>Add to cart</span></button>' +
+        '</div></div></div></div>');
+    var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList'), pd = $('#pd');
 
     function art(p, cls){
       if (p && p.i) return '<img class="' + cls + '" src="' + IMG + p.i + '" alt="" loading="lazy" draggable="false">';
       if (p && p.y) return '<svg class="' + cls + '"><use href="' + SP + p.y + '"/></svg>';
       return '';
     }
-    function actHTML(name){
-      var q = cart[name] ? cart[name].q : 0, e = esc(name);
-      return q
-        ? '<div class="p-step"><button type="button" data-act="dec" aria-label="Remove one ' + e + '">' + ic('minus') + '</button><b aria-live="polite">' + q + '</b><button type="button" data-act="inc" aria-label="Add one more ' + e + '">' + ic('plus') + '</button></div>'
-        : '<button class="p-add" type="button" data-act="inc" aria-label="Add ' + e + ' to cart">' + ic('plus') + '</button>';
-    }
-    function syncCard(name){
-      var el = grid.querySelector('[data-name="' + (window.CSS && CSS.escape ? CSS.escape(name) : name) + '"] .p-act');
-      if (!el) return;
-      var had = el.contains(document.activeElement);
-      el.innerHTML = actHTML(name);
-      if (had){ var b = el.querySelector('[data-act="inc"]'); if (b) b.focus({ preventScroll: true }); }
+    function syncCard(n){
+      var el = grid.querySelector('[data-name="' + (window.CSS && CSS.escape ? CSS.escape(n) : n) + '"] .p-inc'); if (!el) return;
+      var q = inCart(n); el.hidden = !q; el.textContent = q + ' in cart';
     }
     function renderCart(){
-      var keys = Object.keys(cart), n = count();
+      var ks = keys(), n = count();
       badge.hidden = !n; badge.textContent = n > 99 ? '99+' : n;
       $('#cTotal').textContent = fmt(total());
       $('#cGo').disabled = !n;
-      cList.innerHTML = keys.length ? keys.map(function(k){
-        var c = cart[k], p = byName[k], e = esc(k);
-        return '<div class="c-item" data-name="' + e + '"' + (p ? ' style="--t:' + p.t + '"' : '') + '>' +
+      cList.innerHTML = ks.length ? ks.map(function(k){
+        var c = cart[k], p = byName[c.n], e = esc(c.n);
+        return '<div class="c-item" data-k="' + esc(k) + '"' + (p ? ' style="--t:' + p.t + '"' : '') + '>' +
           '<div class="c-art">' + art(p, '') + '</div>' +
-          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' +
+          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' +
           '<div class="p-step"><button type="button" data-act="dec" aria-label="Remove one ' + e + '">' + ic('minus') + '</button><b>' + c.q + '</b><button type="button" data-act="inc" aria-label="Add one more ' + e + '">' + ic('plus') + '</button></div></div>';
       }).join('') : '<p class="c-empty">Your cart is empty. Add something fresh from the market.</p>';
     }
-    function change(name, d, meta){
-      var c = cart[name];
-      if (!c){ if (d < 1) return; c = cart[name] = { q:0, p:(meta && meta.p) || (byName[name] && byName[name].p) || 0, u:(meta && meta.u) || (byName[name] && byName[name].u) || '' }; }
-      c.q += d;
-      if (c.q <= 0) delete cart[name];
-      save(); syncCard(name); renderCart();
-      if (d > 0){ badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop'); }
+    function add(n, q, o, meta){
+      o = Object.assign({}, DEFO, o || {});
+      var p = byName[n], k = lk(n, o);
+      if (!cart[k]) cart[k] = { n:n, p:p ? priceFor(p, o.g) : (meta && meta.p) || 0, u:p ? p.u : (meta && meta.u) || '', q:0, g:o.g, d:o.d, w:o.w };
+      if (!(cart[k].p > 0)){ delete cart[k]; return; }
+      cart[k].q = Math.min(99, cart[k].q + q);
+      save(); syncCard(n); renderCart();
+      badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
     }
     cList.addEventListener('click', function(e){
       var b = e.target.closest('[data-act]'); if (!b) return;
-      change(b.closest('.c-item').dataset.name, b.dataset.act === 'inc' ? 1 : -1);
+      var k = b.closest('.c-item').dataset.k, c = cart[k]; if (!c) return;
+      c.q += b.dataset.act === 'inc' ? 1 : -1;
+      if (c.q <= 0) delete cart[k]; else if (c.q > 99) c.q = 99;
+      save(); syncCard(c.n); renderCart();
     });
     /* the product view in the carousel above reports its own "Add to cart" */
     document.addEventListener('ohgrow:add-to-cart', function(e){
       var d = e.detail || {}; if (!d.name || !(d.price > 0)) return;
-      change(d.name, Math.max(1, d.qty | 0), { p:d.price, u:d.unit });
+      add(d.name, Math.max(1, d.qty | 0), null, { p:d.price, u:d.unit });
     });
     $('#cGo').addEventListener('click', function(){ $('#cNote').textContent = 'Checkout is coming soon. Your cart is saved.'; });
 
-    function openCart(){ closeSheet(); renderCart(); drawer.inert = false; drawer.classList.add('open'); scrim.classList.add('open'); body.classList.add('lock'); setTimeout(function(){ $('#cClose').focus({ preventScroll: true }); }, 50); }
-    function closeCart(){ if (!drawer.classList.contains('open')) return; drawer.classList.remove('open'); drawer.inert = true; $('#cNote').textContent = ''; if (!body.classList.contains('sheet-open')){ scrim.classList.remove('open'); body.classList.remove('lock'); } }
+    function lockOff(){ if (!drawer.classList.contains('open') && !body.classList.contains('sheet-open') && !pd.classList.contains('open')){ scrim.classList.remove('open'); body.classList.remove('lock'); } }
+    function openCart(){ closeSheet(); closeProduct(); renderCart(); drawer.inert = false; drawer.classList.add('open'); scrim.classList.add('open'); body.classList.add('lock'); setTimeout(function(){ $('#cClose').focus({ preventScroll: true }); }, 50); }
+    function closeCart(){ if (!drawer.classList.contains('open')) return; drawer.classList.remove('open'); drawer.inert = true; $('#cNote').textContent = ''; lockOff(); }
     $('#cClose').addEventListener('click', closeCart);
 
+    /* ---------- product dialog: big image pops out of the box, options + quantity + add to cart ---------- */
+    var D = null, lastFocus = null, ht = 0;
+    var SEL = [
+      { k:'g', l:'Quality',   o:[['Standard','Standard'], ['Select','Select +10%'], ['Export','Export +25%']] },
+      { k:'d', l:'Delivery',  o:[['Pickup','Farm pickup'], ['Doorstep','Doorstep delivery']] },
+      { k:'w', l:'Needed by', o:[['Today','Today'], ['Tomorrow','Tomorrow'], ['This week','This week']] }
+    ];
+    function paintD(){
+      var price = priceFor(D.p, D.g);
+      $('#pdPrice').textContent = fmt(price);
+      $('#pdQty').textContent = D.q;
+      $('#pdTotal').textContent = fmt(price * D.q);
+      $('#pdMinus').disabled = D.q <= 1; $('#pdPlus').disabled = D.q >= 99;
+      $$('#pdSel .pd-chips').forEach(function(box){
+        $$('button', box).forEach(function(b){ var on = b.dataset.v === D[box.dataset.k]; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      });
+    }
+    function openProduct(n, trigger){
+      var p = byName[n]; if (!p) return;
+      closeSheet(); closeCart();
+      D = { p:p, g:DEFO.g, d:DEFO.d, w:DEFO.w, q:1 }; lastFocus = trigger || document.activeElement;
+      $('.pd-box', pd).style.setProperty('--t', p.t);
+      $('#pdImg').innerHTML = art(p, '');
+      $('#pdCat').textContent = p.c;
+      $('#pdName').textContent = p.n;
+      $('#pdUnit').textContent = p.u;
+      $('#pdDesc').textContent = p.d;
+      $('#pdTags').innerHTML = '<span class="pd-tag">' + ic('pin') + esc(p.s) + ' \u00B7 ' + esc(p.f) + '</span>' +
+        '<span class="pd-tag">' + (p.h === 'today' ? 'Harvested today' : 'Harvested this week') + '</span>' + (p.o ? '<span class="pd-tag">Organic</span>' : '') + (p.v ? '<span class="pd-tag">Verified farmer</span>' : '');
+      $('#pdSel').innerHTML = SEL.map(function(g, i){
+        return '<div class="pd-sel"><span class="ad-lbl" id="pdL' + i + '">' + g.l + '</span><div class="pd-chips" role="group" aria-labelledby="pdL' + i + '" data-k="' + g.k + '">' +
+          g.o.map(function(o){ return '<button type="button" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div></div>';
+      }).join('');
+      paintD();
+      pd.inert = false; pd.classList.add('open'); body.classList.add('lock'); scrim.classList.remove('open');
+      $('#pdScroll').scrollTop = 0;
+      setTimeout(function(){ $('#pdX').focus({ preventScroll: true }); }, 60);
+    }
+    function closeProduct(){
+      if (!pd.classList.contains('open')) return;
+      pd.classList.remove('open'); pd.inert = true; D = null; lockOff();
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    }
+    $('#pdX').addEventListener('click', closeProduct);
+    $('#pdScroll').addEventListener('click', function(e){ if (e.target === e.currentTarget) closeProduct(); });
+    $('#pdSel').addEventListener('click', function(e){
+      var b = e.target.closest('button'); if (!b || !D) return;
+      D[b.parentNode.dataset.k] = b.dataset.v; paintD();
+    });
+    $('#pdMinus').addEventListener('click', function(){ if (D){ D.q = Math.max(1, D.q - 1); paintD(); } });
+    $('#pdPlus').addEventListener('click', function(){ if (D){ D.q = Math.min(99, D.q + 1); paintD(); } });
+
+    /* the picture flies into the cart, which then smiles */
+    function happy(){
+      if (!cb) return;
+      var u = cb.querySelector('use');
+      cb.classList.remove('happy'); void cb.offsetWidth; cb.classList.add('happy');
+      if (u) u.setAttribute('href', SP + 'smile');
+      clearTimeout(ht);
+      ht = setTimeout(function(){ cb.classList.remove('happy'); if (u) u.setAttribute('href', SP + 'cart'); }, 1400);
+    }
+    function fly(){
+      var src = $('#pdImg').firstElementChild, c = cb && cb.getBoundingClientRect();
+      if (!src || !c || O.reduce || !src.animate){ happy(); return; }
+      var r = src.getBoundingClientRect(), el = src.cloneNode(true);
+      el.className = 'fly'; el.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px';
+      document.body.appendChild(el);
+      var dx = c.left + c.width / 2 - (r.left + r.width / 2), dy = c.top + c.height / 2 - (r.top + r.height / 2);
+      var a = el.animate([
+        { transform:'translate(0,0) scale(1) rotate(-8deg)', opacity:1 },
+        { transform:'translate(' + dx * .5 + 'px,' + (dy * .5 - 140) + 'px) scale(.42) rotate(12deg)', opacity:1, offset:.55 },
+        { transform:'translate(' + dx + 'px,' + dy + 'px) scale(.07) rotate(28deg)', opacity:.85 }
+      ], { duration:900, easing:'cubic-bezier(.45,0,.25,1)' });
+      a.onfinish = function(){ el.remove(); happy(); };
+    }
+    $('#pdAdd').addEventListener('click', function(){
+      if (!D) return;
+      add(D.p.n, D.q, { g:D.g, d:D.d, w:D.w });
+      fly(); closeProduct();
+    });
+
     /* ---------- filter sheet (phones and tablets) ---------- */
-    function openSheet(){ closeCart(); body.classList.add('sheet-open'); scrim.classList.add('open'); body.classList.add('lock'); }
-    function closeSheet(){ if (!body.classList.contains('sheet-open')) return; body.classList.remove('sheet-open'); if (!drawer.classList.contains('open')){ scrim.classList.remove('open'); body.classList.remove('lock'); } }
+    function openSheet(){ closeCart(); closeProduct(); body.classList.add('sheet-open'); scrim.classList.add('open'); body.classList.add('lock'); }
+    function closeSheet(){ if (!body.classList.contains('sheet-open')) return; body.classList.remove('sheet-open'); lockOff(); }
     $('#openFilters').addEventListener('click', openSheet);
     $('#rfClose').addEventListener('click', closeSheet);
     $('#rfDone').addEventListener('click', closeSheet);
     scrim.addEventListener('click', function(){ closeSheet(); closeCart(); });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ closeSheet(); closeCart(); } });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ closeSheet(); closeCart(); closeProduct(); } });
 
     /* ---------- products + filters ---------- */
     var sel = $('#fState');
@@ -179,15 +276,14 @@
       grid.innerHTML = n ? r.map(function(p, i){
         var e = esc(p.n);
         return '<article class="p-card" data-name="' + e + '" style="--i:' + i + ';--t:' + p.t + '">' +
-          '<div class="p-tile"><span class="p-chip">' + (p.h === 'today' ? 'Harvested today' : 'This week') + '</span>' + (p.o ? '<span class="p-org">Organic</span>' : '') + art(p, 'p-art') + '</div>' +
+          '<div class="p-tile"><span class="p-chip">' + (p.h === 'today' ? 'Harvested today' : 'This week') + '</span>' + (p.o ? '<span class="p-org">Organic</span>' : '') + art(p, 'p-art') + '<span class="p-inc"' + (inCart(p.n) ? '>' + inCart(p.n) + ' in cart' : ' hidden>') + '</span></div>' +
           '<div class="p-body"><h3>' + e + '</h3><p class="p-meta">' + ic('pin') + esc(p.s) + ' \u00B7 ' + esc(p.f) + (p.v ? ' \u00B7 Verified' : '') + '</p>' +
-          '<div class="p-foot"><div class="p-price"><b>' + fmt(p.p) + '</b><span>' + esc(p.u) + '</span></div><div class="p-act">' + actHTML(p.n) + '</div></div></div></article>';
+          '<div class="p-foot"><div class="p-price"><b>' + fmt(p.p) + '</b><span>' + esc(p.u) + '</span></div><button class="btn btn-dark p-view" type="button" aria-label="View ' + e + '"><span>View</span><span class="ico">' + ic('arrow') + '</span></button></div></div></article>';
       }).join('') : '<div class="m-empty"><p>Nothing matches those filters.</p><button type="button" data-reset>Reset filters</button></div>';
     }
     grid.addEventListener('click', function(e){
       if (e.target.closest('[data-reset]')){ resetAll(); return; }
-      var b = e.target.closest('[data-act]'); if (!b) return;
-      change(b.closest('.p-card').dataset.name, b.dataset.act === 'inc' ? 1 : -1);
+      var c = e.target.closest('.p-card'); if (c) openProduct(c.dataset.name, c.querySelector('.p-view'));
     });
 
     $$('.rf-chips').forEach(function(box){
