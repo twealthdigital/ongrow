@@ -49,7 +49,7 @@
   .hero-art{position:absolute;inset:0;z-index:-1;min-height:0;padding:0;border-radius:0 0 38px 38px;display:block}
         .hero-art::after{border-radius:inherit;content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(13,17,11,.45),rgba(13,17,11,.2) 60%,rgba(13,17,11,0))}
   .hero-art .hero-fade{height:62%}
-  .hero-art .float{--s:140px;--fy:-70px;left:-8px;bottom:var(--fy)}
+  .hero-art .float{--s:120px;--fy:-36px;left:-8px;bottom:var(--fy)}
   .hero h1{color:#fff}
   .hero h1 .outline{-webkit-text-stroke-color:#fff}
   @supports not (-webkit-text-stroke:1px #000){.hero h1 .outline{color:#fff}}
@@ -70,14 +70,14 @@
   .hero-art .hero-fade{bottom:var(--ext,150px);height:calc((100% - var(--ext,150px))*.62);border-radius:0}
   .hero-art .hero-fade::after{content:"";position:absolute;left:0;right:0;top:100%;height:var(--ext,150px);background:rgba(13,17,11,.92);border-radius:0 0 38px 38px}
   .trio{position:relative;z-index:3}
-  .hero-art .float .tag{background:#fff;color:var(--ink)}
+  .hero-art .float .tag{background:#fff;color:var(--ink);bottom:-8px}
   /* counter sits on the image: no box, just the numbers */
-  .stats{background:none;box-shadow:none;color:#fff;padding:0;grid-column:1/-1;margin-bottom:calc(var(--ov,70px) + 10px)}
+  .stats{background:none;box-shadow:none;color:#fff;padding:0 0 0 calc(var(--fw,120px) - 18px);gap:10px;grid-column:1/-1;margin-bottom:32px}
   .stat{padding-inline:0}
   .stat+.stat{border-left:0;padding-left:0}
   .stat svg{display:none}
   .stat b{font-size:clamp(26px,7.4vw,34px);font-variant-numeric:tabular-nums}
-  .stat span{color:rgba(255,255,255,.82);font-size:clamp(12px,3.4vw,14px)}
+  .stat span{color:rgba(255,255,255,.82);font-size:clamp(12px,3.4vw,14px);line-height:1.25}
 }
 /* phones: scale type and buttons with the screen so the hero keeps the same shape from 320px up */
 @media (max-width:699.98px){

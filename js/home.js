@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=22#';
+  var SPRITE = 'assets/icons/sprite.svg?v=23#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -13,15 +13,13 @@
           st = document.querySelector('.stats'), f = document.querySelector('.hero-art .float');
       if(!root || !h || !st) return;
       if(mq.matches){
-        var fh = f ? f.getBoundingClientRect().height : 0;
-        var fy = f ? (parseFloat(getComputedStyle(f).getPropertyValue('--fy')) || 0) : 0;
-        var ov = Math.max(0, Math.round(fh + fy));   /* how far the broccoli reaches up into the image */
-        var d = st.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom + ov + 14;
+        /* image ends 36px under the counter; broccoli sits beside the counter, so the counter starts after its width */
+        var d = st.getBoundingClientRect().bottom - h.getBoundingClientRect().bottom + 36;
         root.style.setProperty('--ext', Math.max(0, Math.round(d)) + 'px');
-        root.style.setProperty('--ov', ov + 'px');
+        root.style.setProperty('--fw', (f ? Math.round(f.getBoundingClientRect().width) : 120) + 'px');
       } else {
         root.style.removeProperty('--ext');
-        root.style.removeProperty('--ov');
+        root.style.removeProperty('--fw');
       }
     }
     fitHero();
