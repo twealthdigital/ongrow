@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=54#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=55#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){
@@ -69,6 +69,8 @@
     /* ---------- account buttons ---------- */
     function renderAccount(){
       var u = store.user();
+      document.documentElement.classList.toggle('is-authed', !!u);   /* hides the Sell tab (header + mobile dock) */
+      if (O.placePill) O.placePill();                                /* the header pill re-measures without it */
       $$('.acct-btn').forEach(function(b){
         b.dataset.state = u ? 'in' : 'out';
         b.setAttribute('aria-label', u ? 'Account, ' + u.name : 'Account');
@@ -147,7 +149,11 @@
       var it = e.target.closest('[data-act]'); if (!it) return;
       var btn = mst.btn, act = it.dataset.act;
       closeMenu(false);
-      if (act === 'signout'){ store.signOut(); renderAccount(); toast('You are signed out'); }
+      if (act === 'signout'){
+        store.signOut(); renderAccount();
+        if (document.body.dataset.page === 'sell'){ O.go('home.html'); return; }
+        toast('You are signed out');
+      }
       else openAuth({ anchor:btn, mode:act, intent:null });
     });
     $$('.acct-btn').forEach(function(b){
@@ -254,6 +260,34 @@
       }
     }, true);
 
+    /* ---------- loading screen: shown after sign up, before the sell page ---------- */
+    var ld = $('#auLoad');
+    function showLoader(u, fresh){
+      st.busy = true;
+      if (!ld){ O.go(SELL_URL); return; }
+      var msgs = fresh ? ['Creating your account', 'Setting up your seller space', 'Almost ready']
+                       : ['Signing you in', 'Opening your seller space', 'Almost ready'];
+      var dur = O.reduce ? 700 : 3000, msg = $('#alMsg'), fill = $('#alFill');
+      $('#alHi').textContent = (fresh ? 'Welcome to Ohgrow, ' : 'Welcome back, ') + first(u);
+      msg.textContent = msgs[0];
+      fill.style.transitionDuration = dur + 'ms';
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      ld.inert = false; ld.setAttribute('aria-hidden', 'false');
+      body.classList.add('lock');
+      ld.classList.add('on');
+      O.replay($('#alLogo'));
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ ld.classList.add('run'); }); });
+      setTimeout(function(){ msg.textContent = msgs[1]; }, dur * .38);
+      setTimeout(function(){ msg.textContent = msgs[2]; }, dur * .76);
+      setTimeout(function(){ O.go(SELL_URL); }, dur);
+    }
+    /* coming back with the browser's back button must not leave the loader on screen */
+    window.addEventListener('pageshow', function(e){
+      if (!e.persisted || !ld) return;
+      ld.classList.remove('on', 'run'); ld.inert = true; ld.setAttribute('aria-hidden', 'true');
+      body.classList.remove('lock'); st.busy = false;
+    });
+
     /* ---------- forms ---------- */
     function fieldOf(form, name){ return $('[name="' + name + '"]', form).closest('.au-f'); }
     function setErr(form, name, msg){
@@ -298,8 +332,9 @@
           if (res.error){ setErr(form, res.field || 'password', res.error); shake(form); $('[name="' + (res.field || 'password') + '"]', form).focus(); return; }
           var intent = st.intent;
           closeAuth(false); renderAccount();
-          toast((up ? 'Welcome to Ohgrow, ' : 'Welcome back, ') + first(res.user));
-          if (intent === 'sell') setTimeout(function(){ O.go(SELL_URL); }, 900);
+          /* a new account, or a sign in that came from the sell gate, goes through the loading screen to the sell page */
+          if (up || intent === 'sell'){ showLoader(res.user, up); return; }
+          toast('Welcome back, ' + first(res.user));
         });
       });
     });
