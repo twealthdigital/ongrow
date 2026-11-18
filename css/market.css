@@ -15,8 +15,7 @@ body[data-page="home"].in-shop .dock a[data-nav="home"] span{max-width:0;opacity
 /* section: full-bleed solid green */
 #market{position:relative;margin-top:64px;padding:96px 0 110px;color:#fff;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax)}
 .m-head{display:grid;gap:18px;justify-items:start}
-.m-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.14);font:700 13px/1 var(--font-body)}
-.m-eyebrow i{width:8px;height:8px;border-radius:50%;background:#8EDB78;animation:mPulse 1.8s ease-in-out infinite}
+.m-eyebrow,.co-eyebrow{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--ink);color:#8EDB78;font:700 12.5px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase}
 .m-head h2{font:600 clamp(42px,6.2vw,84px)/.97 var(--font-display);letter-spacing:-.04em}
 .m-head h2 span{display:block}
 #market .outline{-webkit-text-stroke:1.5px #fff}
@@ -87,8 +86,6 @@ svg.p-art{width:120px;height:120px}
 /* collections: ready-made baskets on the cream page, the rail stays folded here */
 #collections{position:relative;padding:96px 0 120px}
 .co-head{display:grid;gap:18px;justify-items:start}
-.co-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;background:var(--soft);font:700 13px/1 var(--font-body)}
-.co-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:mPulse 1.8s ease-in-out infinite}
 .co-head h2{font:600 clamp(42px,6.2vw,84px)/.97 var(--font-display);letter-spacing:-.04em}
 .co-head h2 span{display:block}
 .co-head p{max-width:46ch;font-size:clamp(16px,1.5vw,19px);color:var(--ink2)}
@@ -247,7 +244,6 @@ svg.p-art{width:120px;height:120px}
 
 @keyframes railDrop{0%{transform:translateY(-44px);opacity:.4}55%{transform:translateY(9px);opacity:1}100%{transform:none}}
 @keyframes cardIn{from{opacity:0;transform:translateY(26px)}}
-@keyframes mPulse{50%{transform:scale(1.7);opacity:.5}}
 @keyframes mPop{40%{transform:scale(1.35)}}
 
 /* desktop: the rail grows into a shorter filter panel while Filters is active; the panel scrolls inside itself */
