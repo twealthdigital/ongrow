@@ -136,3 +136,9 @@ main{display:block;min-width:0;padding-bottom:110px}
   body[data-page="home"] .head:not(.is-solid) .circle:hover{background:rgba(255,255,255,.16)!important;color:#fff!important}
   .panel li a:hover{padding-left:0;color:inherit}
 }
+
+/* desktop: the solid header bar bleeds to both screen edges, so no strip of blur, black section or page shows beside it.
+   It sits behind the header content (z-index -1), under the market's green part (.head::after paints after it). */
+@media (min-width:1100px){
+  .head::before{content:"";position:absolute;z-index:-1;inset:0;background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax);pointer-events:none}
+}
