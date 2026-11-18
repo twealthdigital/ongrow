@@ -126,3 +126,36 @@
     });
   });
 })();
+/* bottom dock: dark pill over light screens, greenish white pill over dark or green ones.
+   It looks at the colour of whatever sits behind it (left, middle and right of the pill) and flips with the scroll. */
+(function(){
+  var O = window.Ohgrow;
+  O.ready.then(function(){
+    var dock = document.querySelector('.dock'); if (!dock) return;
+    var tick = false, cur = '';
+    function rgba(c){ var m = /rgba?\(([^)]+)\)/.exec(c); if (!m) return null; var p = m[1].split(/[\s,\/]+/).filter(Boolean).map(parseFloat); return { r:p[0], g:p[1], b:p[2], a:p.length > 3 ? p[3] : 1 }; }
+    function darkAt(x, y){
+      var els = document.elementsFromPoint(x, y);
+      for (var i = 0; i < els.length; i++){
+        var el = els[i];
+        if (dock.contains(el) || el.classList.contains('m-scrim') || el.classList.contains('au-scrim')) continue;
+        var c = rgba(getComputedStyle(el).backgroundColor);
+        if (c && c.a >= .6) return (.2126 * c.r + .7152 * c.g + .0722 * c.b) / 255 < .5;
+      }
+      return false;
+    }
+    function sync(){
+      tick = false;
+      var r = dock.getBoundingClientRect(); if (!r.width) return;
+      var y = r.top + r.height / 2, dark = 0;
+      [r.left + 22, r.left + r.width / 2, r.right - 22].forEach(function(x){ if (darkAt(x, y)) dark++; });
+      var t = dark >= 2 ? 'dark' : 'light';
+      if (t !== cur){ cur = t; dock.dataset.behind = t; }
+    }
+    function queue(){ if (!tick){ tick = true; requestAnimationFrame(sync); } }
+    window.addEventListener('scroll', queue, { passive:true });
+    window.addEventListener('resize', queue);
+    window.addEventListener('load', queue);
+    setTimeout(queue, 400); setTimeout(queue, 1200); sync();
+  });
+})();

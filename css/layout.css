@@ -139,3 +139,21 @@ main{display:block;min-width:0;padding-bottom:110px}
 @media (min-width:1100px){
   .head::before{content:"";position:absolute;z-index:-1;inset:0;background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax);pointer-events:none}
 }
+
+/* mobile header: the solid bar runs to both screen edges, so no strip of the page or a dark section shows beside it */
+@media (max-width:1099.98px){
+  body[data-page] .head.is-solid::before,
+  body:not([data-page="home"]) .head::before{content:"";position:absolute;z-index:-1;inset:0;background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax);pointer-events:none;
+    -webkit-mask-image:none;mask-image:none;-webkit-backdrop-filter:none;backdrop-filter:none;opacity:1}
+}
+
+/* bottom dock follows what is behind it: dark pill on light screens (default), greenish white on dark or green ones */
+.dock{transition:background .4s,box-shadow .4s}
+.dock[data-behind="dark"]{background:var(--soft);box-shadow:inset 0 0 0 1.5px rgba(13,17,11,.12)}
+body.in-market .dock[data-behind="dark"]{background:var(--pane)}
+.dock[data-behind="dark"] a{color:var(--ink)}
+.dock[data-behind="dark"] a.is-active,.dock[data-behind="dark"] a.open,
+body[data-page="home"] .dock[data-behind="dark"] a[data-nav="home"]{background:var(--ink);color:#fff}
+.dock[data-behind="dark"].has-open a.is-active:not(.open),
+body[data-page="home"] .dock[data-behind="dark"].has-open a[data-nav="home"]:not(.open),
+body[data-page="home"].in-shop .dock[data-behind="dark"] a[data-nav="home"]{background:transparent;color:var(--ink)}
