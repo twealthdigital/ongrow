@@ -36,7 +36,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=62#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=63#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */
@@ -160,10 +160,11 @@
       if (!/^\+?[0-9\s()-]+$/.test(v.phone) || digits.length < 10 || digits.length > 14) no('phone', 'Enter a valid phone number.');
       [['select', 'o_select_p'], ['export', 'o_export_p'], ['today', 'o_today_p'], ['tomorrow', 'o_tomorrow_p'], ['week', 'o_week_p']].forEach(function(t){
         var raw = form.elements[t[1]].value, on = form.elements['o_' + t[0]].checked;
-        if (on && raw !== '' && !(+raw >= 0 && +raw <= 5000000)) no(t[1], 'Enter 0 or more.');
+        if (!on) return;
+        if (raw === '') no(t[1], 'Add a price (0 for no extra) or untick it.');
+        else if (!(+raw >= 0 && +raw <= 5000000)) no(t[1], 'Enter 0 or more.');
       });
       if (form.elements.delivery.checked && form.elements.fee.value !== '' && !(+form.elements.fee.value >= 0 && +form.elements.fee.value <= 5000000)) no('fee', 'Enter 0 or more.');
-      if (v.opts.need.today == null && v.opts.need.tomorrow == null && v.opts.need.week == null) no('o_week', 'Offer at least one date.');
       if (!v.pickup && !v.delivery){ var fb = $('#slFul'); fb.classList.add('has-err'); var m = $('.sl-err', fb); m.textContent = 'Choose pickup, delivery or both.'; m.hidden = false; bad.push('pickup'); }
       return bad;
     }
@@ -171,7 +172,7 @@
     /* ---------- edit a listing: the same form, filled with what was published ---------- */
     var editing = null, lbl = $('.sl-lbl', form), cancel = $('#slCancel'), chip = $('#slChip');
     function fillForm(l){
-      var f = form.elements, o = l.opts || {}, n = o.need || { today:0, tomorrow:0, week:0 };
+      var f = form.elements, o = l.opts || {}, n = o.need || {};
       f.name.value = l.name; f.cat.value = l.cat; f.desc.value = l.desc; count.textContent = l.desc.length + ' / 400';
       f.price.value = l.price; f.unit.value = l.unit; f.qty.value = l.qty; f.harvest.value = l.harvest; f.organic.checked = !!l.organic;
       f.state.value = l.state; f.town.value = l.town; f.farm.value = l.farm === session().name ? '' : l.farm; f.phone.value = l.phone;

@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=62#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=63#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -21,13 +21,12 @@
       pick:true, door:true, fee:0, w:[{ v:'Today', a:0 }, { v:'Tomorrow', a:0 }, { v:'This week', a:0 }] };
   }
   function listingX(l){
-    var o = l.opts || {}, n = o.need || { today:0, tomorrow:0, week:0 };
+    var o = l.opts || {}, n = o.need || {};   /* only what the seller ticked is offered */
     var g = [{ v:'Standard', a:0 }];
     if (o.select != null) g.push({ v:'Select', a:o.select });
     if (o.export != null) g.push({ v:'Export', a:o.export });
     var w = [['today', 'Today'], ['tomorrow', 'Tomorrow'], ['week', 'This week']].filter(function(t){ return n[t[0]] != null; })
       .map(function(t){ return { v:t[1], a:n[t[0]] }; });
-    if (!w.length) w = [{ v:'This week', a:0 }];
     var pick = l.pickup !== false, door = !!l.delivery;
     if (!pick && !door) pick = true;
     return { g:g, w:w, pick:pick, door:door, fee:o.fee > 0 ? o.fee : 0 };
@@ -122,6 +121,7 @@
     };
     /* start on the cheapest date (This week wins a tie) so the first price a buyer sees is the lowest one */
     var cheapest = function(w){
+      if (!w.length) return '';
       var lo = Math.min.apply(null, w.map(function(o){ return o.a; })), ok = w.filter(function(o){ return o.a === lo; });
       return (found(ok, 'This week') || ok[0]).v;
     };
@@ -193,7 +193,7 @@
         }
         return '<div class="c-item" data-k="' + esc(k) + '"' + (p ? ' style="--t:' + p.t + '"' : '') + '>' +
           '<div class="c-art">' + art(p, '') + '</div>' +
-          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + (c.f ? ' \u00B7 ' + fmt(c.f) + ' delivery' : '') + '</p><p><b>' + fmt(lineTotal(c)) + '</b></p></div>' + side + '</div>';
+          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + [c.g, c.d, c.w].filter(Boolean).map(esc).join(' \u00B7 ') + (c.f ? ' \u00B7 ' + fmt(c.f) + ' delivery' : '') + '</p><p><b>' + fmt(lineTotal(c)) + '</b></p></div>' + side + '</div>';
       }).join('') : '<p class="c-empty">Your cart is empty. Add something fresh from the market.</p>';
     }
     function add(n, q, o, meta){
@@ -242,7 +242,7 @@
         { k:'g', l:'Quality',   o:p.x.g.map(function(o){ return [o.v, o.l || o.v + plus(o.a)]; }) },
         { k:'d', l:'Delivery',  o:deliveries(p).map(function(o){ return [o.v, o.l]; }) },
         { k:'w', l:'Needed by', o:p.x.w.map(function(o){ return [o.v, o.v + plus(o.a)]; }) }
-      ];
+      ].filter(function(g){ return g.o.length > (g.k === 'g' ? 1 : 0); });   /* a choice the seller did not set up is not shown (Standard alone is not a choice) */
     }
     function paintD(){
       var price = unitPrice(D.p, D), fee = feeFor(D.p, D);
