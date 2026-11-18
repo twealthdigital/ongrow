@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=43#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=44#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -220,8 +220,8 @@
       clearTimeout(ht);
       ht = setTimeout(function(){ cb.classList.remove('happy'); if (u) u.setAttribute('href', SP + 'cart'); }, 1400);
     }
-    function fly(){
-      var src = $('#pdImg').firstElementChild, c = cb && cb.getBoundingClientRect();
+    function fly(src){
+      var c = cb && cb.getBoundingClientRect();
       if (!src || !c || O.reduce || !src.animate){ happy(); return; }
       var r = src.getBoundingClientRect(), el = src.cloneNode(true);
       el.className = 'fly'; el.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px';
@@ -237,7 +237,7 @@
     $('#pdAdd').addEventListener('click', function(){
       if (!D) return;
       add(D.p.n, D.q, { g:D.g, d:D.d, w:D.w });
-      fly(); closeProduct();
+      fly($('#pdImg').firstElementChild); closeProduct();
     });
 
     /* ---------- filter sheet (phones and tablets) ---------- */
@@ -310,40 +310,73 @@
     }
     $('#rfReset').addEventListener('click', resetAll);
 
+    /* ---------- collections: ready-made baskets ---------- */
+    var BUNDLES = [
+      { n:'Stew starter',  t:'dark',  d:'Everything for a rich pot of stew, picked the same morning.',        items:['Ripe tomatoes', 'Sweet peppers', 'Leafy greens'] },
+      { n:'Green kitchen', t:'green', d:'Crunchy, leafy and bright for salads, steaming and stir-fries.',     items:['Fresh broccoli', 'Leafy greens', 'Sweet peppers'] },
+      { n:'Vitamin boost', t:'light', d:'Juicy oranges, broccoli and tomatoes to keep the week fresh.',       items:['Juicy oranges', 'Fresh broccoli', 'Ripe tomatoes'] }
+    ];
+    var coGrid = $('#coGrid');
+    if (coGrid){
+      coGrid.innerHTML = BUNDLES.map(function(b, i){
+        var ps = b.items.map(function(n){ return byName[n]; }), sum = ps.reduce(function(a, p){ return a + p.p; }, 0);
+        return '<article class="co-card" data-tone="' + b.t + '" data-i="' + i + '" style="--i:' + i + '">' +
+          '<div class="co-art" aria-hidden="true">' + ps.map(function(p){ return art(p, ''); }).join('') + '</div>' +
+          '<p class="co-n">' + ps.length + ' items</p><h3>' + esc(b.n) + '</h3><p class="co-d">' + esc(b.d) + '</p>' +
+          '<p class="co-list">' + ps.map(function(p){ return esc(p.n); }).join(' \u00B7 ') + '</p>' +
+          '<div class="co-foot"><div class="co-price"><span>Basket total</span><b>' + fmt(sum) + '</b></div>' +
+          '<button class="btn co-add" type="button" aria-label="Add the ' + esc(b.n) + ' basket to cart"><span>Add basket</span><span class="ico">' + ic('plus') + '</span></button></div></article>';
+      }).join('');
+      var coT = 0;
+      coGrid.addEventListener('click', function(e){
+        var btn = e.target.closest('.co-add'); if (!btn) return;
+        var card = btn.closest('.co-card'), b = BUNDLES[+card.dataset.i];
+        b.items.forEach(function(n){ add(n, 1); });
+        fly(card.querySelector('.co-art img, .co-art svg'));
+        var t = btn.querySelector('span'); t.textContent = 'Added to cart'; btn.classList.add('done');
+        clearTimeout(coT); coT = setTimeout(function(){ t.textContent = 'Add basket'; btn.classList.remove('done'); }, 2000);
+      });
+    }
+
     /* ---------- the rail drops into the market as you scroll to it ---------- */
     var inM = false, off = false, fl = $('.rail-link[data-nav="filters"]'), desk = window.matchMedia('(min-width:1100px)');
     function syncOpen(){
       var open = inM && !off && desk.matches && !(rail && rail.classList.contains('is-collapsed'));
       body.classList.toggle('filters-open', open);
     }
+    var co = $('#collections'), cl = $('.rail-link[data-nav="collections"]'), cur = 'home';
+    function mark(el, on){ if (!el) return; el.classList.toggle('is-active', on); if (on) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); }
     function setNav(sec){
+      var top = sec === 'home' ? 'home' : 'market';   /* header + dock: Collections still counts as shopping */
       $$('.nav-pill a,.dock a').forEach(function(a){
-        var on = a.dataset.nav === sec;
+        var on = a.dataset.nav === top;
         a.classList.toggle('is-active', on);
         if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
       });
       if (O.placePill) O.placePill();
-      if (fl){ fl.classList.toggle('is-active', sec === 'market'); if (sec === 'market') fl.setAttribute('aria-current', 'true'); else fl.removeAttribute('aria-current'); }
+      mark(fl, sec === 'market'); mark(cl, sec === 'collections');
     }
-    var head = $('.head');
-    function paintHead(){
+    var head = $('.head'), clamp = function(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); };
+    function paintHead(){   /* the header is green only where the market sits under it */
       if (!head) return;
-      var r = head.getBoundingClientRect(), t = mk.getBoundingClientRect().top;
-      var y = Math.max(0, Math.min(r.height, t - r.top));
-      head.style.setProperty('--hy', y + 'px');
-      head.classList.toggle('hg', y < r.height * .5);
+      var r = head.getBoundingClientRect(), m = mk.getBoundingClientRect(), H = r.height;
+      var y = clamp(m.top - r.top, 0, H), z = clamp(H - (m.bottom - r.top), 0, H);
+      head.style.setProperty('--hy', y + 'px'); head.style.setProperty('--hz', z + 'px');
+      head.classList.toggle('hg', H - y - z > H * .5);
     }
     var tick = false;
     function spy(){
       tick = false;
       paintHead();
-      var t = mk.getBoundingClientRect().top, vh = window.innerHeight;
-      var now = inM ? t < vh * .62 : t < vh * .45;
-      if (now === inM) return;
-      inM = now; off = false;
+      var vh = window.innerHeight, sec = 'home';
+      if (mk.getBoundingClientRect().top < vh * (cur === 'market' ? .62 : .45)) sec = 'market';
+      if (co && co.getBoundingClientRect().top < vh * (cur === 'collections' ? .62 : .45)) sec = 'collections';
+      if (sec === cur) return;
+      cur = sec; inM = sec === 'market'; off = false;
       body.classList.toggle('in-market', inM);
-      setNav(inM ? 'market' : 'home');
-      syncOpen();
+      body.classList.toggle('in-shop', sec !== 'home');
+      setNav(sec);
+      syncOpen();   /* the filter panel only opens in the market, so the rail folds back to icons in Collections */
     }
     window.addEventListener('scroll', function(){ if (!tick){ tick = true; requestAnimationFrame(spy); } }, { passive:true });
     window.addEventListener('resize', function(){ spy(); syncOpen(); });
@@ -354,13 +387,14 @@
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
       var a = e.target.closest('a'); if (!a) return;
       var nav = a.dataset.nav, isCart = a.classList.contains('cart');
-      var toM = nav === 'market' || nav === 'filters', toH = nav === 'home' || a.classList.contains('brand');
-      if (!toM && !toH && !isCart) return;
+      var toM = nav === 'market' || nav === 'filters', toH = nav === 'home' || a.classList.contains('brand'), toC = nav === 'collections' && !!co;
+      if (!toM && !toH && !toC && !isCart) return;
       e.preventDefault(); e.stopPropagation();
       var pc = $('#closePanel'); if ($('#panel.open') && pc) pc.click();
       if (isCart){ openCart(); return; }
       closeSheet();
-      if (toM){
+      if (toC) co.scrollIntoView({ behavior:smooth, block:'start' });
+      else if (toM){
         if (nav === 'filters' && inM){ off = !off; syncOpen(); return; }
         mk.scrollIntoView({ behavior:smooth, block:'start' });
       } else window.scrollTo({ top:0, behavior:smooth });

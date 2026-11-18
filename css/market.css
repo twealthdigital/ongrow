@@ -4,16 +4,16 @@ main{padding-bottom:0}
 
 /* header: its lower part turns green exactly where the market's top edge passes under it (--hy, set by market.js),
    and the green bleeds to both screen edges, so there is no cream strip and no sudden colour change */
-.head::after{content:"";position:absolute;z-index:-1;left:0;right:0;top:var(--hy,100%);bottom:0;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax);pointer-events:none}
+.head::after{content:"";position:absolute;z-index:-1;left:0;right:0;top:var(--hy,100%);bottom:var(--hz,0px);background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax);pointer-events:none}
 .head.hg{--hb:var(--green)}
 .head.hg .tile{background:#fff;color:var(--green);--rib:#fff}
 .head.hg .word{color:#fff}
 .head .tile,.head .word{transition:background .3s,color .3s}
-body[data-page="home"].in-market .dock a[data-nav="home"]{background:transparent;color:#fff}
-body[data-page="home"].in-market .dock a[data-nav="home"] span{max-width:0;opacity:0;margin-left:0}
+body[data-page="home"].in-shop .dock a[data-nav="home"]{background:transparent;color:#fff}
+body[data-page="home"].in-shop .dock a[data-nav="home"] span{max-width:0;opacity:0;margin-left:0}
 
 /* section: full-bleed solid green */
-#market{position:relative;margin-top:64px;padding:96px 0 140px;color:#fff;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax)}
+#market{position:relative;margin-top:64px;padding:96px 0 110px;color:#fff;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax)}
 .m-head{display:grid;gap:18px;justify-items:start}
 .m-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;background:rgba(255,255,255,.14);font:700 13px/1 var(--font-body)}
 .m-eyebrow i{width:8px;height:8px;border-radius:50%;background:#8EDB78;animation:mPulse 1.8s ease-in-out infinite}
@@ -83,6 +83,41 @@ svg.p-art{width:120px;height:120px}
 .rf-sw input:checked+.sw::after{transform:translateX(18px)}
 .rf-sw input:focus-visible+.sw{outline:3px solid var(--green);outline-offset:3px}
 .rf-done{width:100%;height:52px;margin-top:6px;border-radius:999px;background:var(--ink);color:#fff;font:700 16px var(--font-body);align-items:center;justify-content:center}
+
+/* collections: ready-made baskets on the cream page, the rail stays folded here */
+#collections{position:relative;padding:96px 0 120px}
+.co-head{display:grid;gap:18px;justify-items:start}
+.co-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;background:var(--soft);font:700 13px/1 var(--font-body)}
+.co-eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--green);animation:mPulse 1.8s ease-in-out infinite}
+.co-head h2{font:600 clamp(42px,6.2vw,84px)/.97 var(--font-display);letter-spacing:-.04em}
+.co-head h2 span{display:block}
+.co-head p{max-width:46ch;font-size:clamp(16px,1.5vw,19px);color:var(--ink2)}
+.co-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:110px 20px;margin-top:110px}
+.co-card{position:relative;display:flex;flex-direction:column;padding:0 28px 28px;border-radius:40px;background:var(--cbg);color:var(--cfg);animation:cardIn .6s var(--ease) both;animation-delay:calc(var(--i,0)*90ms);transition:transform .5s var(--ease),box-shadow .5s}
+.co-card[data-tone=dark]{--cbg:var(--ink);--cfg:#fff;--cacc:#8EDB78}
+.co-card[data-tone=green]{--cbg:var(--green);--cfg:#fff;--cacc:#D6F5C9}
+.co-card[data-tone=light]{--cbg:var(--pane);--cfg:var(--ink);--cacc:var(--green)}
+.co-card:hover{transform:translateY(-6px);box-shadow:0 26px 44px rgba(8,18,6,.22)}
+.co-art{position:relative;height:230px;margin:-70px -28px 6px}
+.co-art>*{position:absolute;display:block;object-fit:contain;filter:drop-shadow(0 22px 22px rgba(8,18,6,.45));transition:transform .6s var(--ease)}
+.co-art>:nth-child(1){left:2%;top:34px;width:46%;height:70%;transform:rotate(-14deg)}
+.co-art>:nth-child(2){left:27%;top:0;width:52%;height:92%;z-index:2;transform:rotate(4deg)}
+.co-art>:nth-child(3){right:2%;top:40px;width:44%;height:66%;transform:rotate(14deg)}
+.co-card:hover .co-art>:nth-child(1){transform:rotate(-22deg) translateY(-8px)}
+.co-card:hover .co-art>:nth-child(2){transform:rotate(0) translateY(-12px) scale(1.05)}
+.co-card:hover .co-art>:nth-child(3){transform:rotate(22deg) translateY(-8px)}
+.co-n{font:700 12px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--cacc)}
+.co-card h3{margin:10px 0 8px;font:600 clamp(32px,3vw,42px)/1 var(--font-display);letter-spacing:-.04em}
+.co-d{font-size:15px;line-height:1.5;opacity:.82;max-width:34ch}
+.co-list{margin-top:12px;font-size:13px;font-weight:600;opacity:.66}
+.co-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto;padding-top:22px}
+.co-price span{display:block;font-size:12px;opacity:.7}
+.co-price b{font:600 30px/1.1 var(--font-display);letter-spacing:-.03em}
+.co-card .btn{height:50px;background:#fff;color:var(--ink)}
+.co-card .btn .ico{background:var(--ink);color:#fff}
+.co-card[data-tone=light] .btn{background:var(--ink);color:#fff}
+.co-card[data-tone=light] .btn .ico{background:#fff;color:var(--ink)}
+.co-card .btn.done{background:#8EDB78;color:var(--ink)}
 
 /* custom dropdown (replaces every native select) */
 .dd{position:relative}
@@ -194,7 +229,8 @@ svg.p-art{width:120px;height:120px}
 
 /* phones and tablets: the same panel opens as a bottom sheet from the Filters button */
 @media (max-width:1099.98px){
-  #market{padding:84px 0 150px}
+  #market{padding:84px 0 110px}
+  #collections{padding:84px 0 150px}
   .rail{display:block;position:fixed;z-index:90;left:0;right:0;bottom:0;padding:0 10px calc(env(safe-area-inset-bottom,0px) + 10px);transform:translateY(108%);visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s}
   body.sheet-open .rail{transform:none;visibility:visible;transition:transform .55s var(--ease)}
   .rail nav{position:static;display:block;width:auto;max-height:82vh;overflow:auto;padding:22px 20px;border-radius:30px;background:var(--pane)}
