@@ -357,3 +357,6 @@ svg.p-art{width:120px;height:120px}
 .c-trio>:nth-child(1){left:4px;top:22px;transform:rotate(-12deg)}
 .c-trio>:nth-child(2){left:23px;top:5px;width:40px;height:40px;z-index:2}
 .c-trio>:nth-child(3){right:4px;top:24px;transform:rotate(12deg)}
+
+/* product dialog: how the total is made */
+.pd-break{margin:-4px 0 0;color:rgba(255,255,255,.72);font:500 13px/1.4 var(--font-body);text-align:right}

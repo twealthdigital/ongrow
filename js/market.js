@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=58#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=59#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -13,6 +13,25 @@
     { d:'Golden plantains with a deep natural sweetness. Fry, roast or boil them.', n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, i:'plantain.png', y:'plantain',          t:'#F8EFC2' },
     { d:'Sweet, tender cobs harvested young. Boil or roast fresh, or cut off the kernels for soups.', n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, i:'corn.png', y:'maize',             t:'#FBF0B5' }
   ];
+  /* each product carries its choices and what they cost: x.g quality grades, x.w needed by (extra per unit),
+     x.pick / x.door + x.fee delivery (the fee is charged once per order line). */
+  function defaultX(p){
+    var r = function(k){ return Math.round(p.p * k / 100) * 100 - p.p; };
+    return { g:[{ v:'Standard', a:0 }, { v:'Select', a:r(1.1), l:'Select +10%' }, { v:'Export', a:r(1.25), l:'Export +25%' }],
+      pick:true, door:true, fee:0, w:[{ v:'Today', a:0 }, { v:'Tomorrow', a:0 }, { v:'This week', a:0 }] };
+  }
+  function listingX(l){
+    var o = l.opts || {}, n = o.need || { today:0, tomorrow:0, week:0 };
+    var g = [{ v:'Standard', a:0 }];
+    if (o.select != null) g.push({ v:'Select', a:o.select });
+    if (o.export != null) g.push({ v:'Export', a:o.export });
+    var w = [['today', 'Today'], ['tomorrow', 'Tomorrow'], ['week', 'This week']].filter(function(t){ return n[t[0]] != null; })
+      .map(function(t){ return { v:t[1], a:n[t[0]] }; });
+    if (!w.length) w = [{ v:'This week', a:0 }];
+    var pick = l.pickup !== false, door = !!l.delivery;
+    if (!pick && !door) pick = true;
+    return { g:g, w:w, pick:pick, door:door, fee:o.fee > 0 ? o.fee : 0 };
+  }
   /* products listed from the sell page. They live in this browser until there is a server. */
   try{
     (JSON.parse(localStorage.getItem('ohgrow.listings')) || []).forEach(function(l){
@@ -20,9 +39,10 @@
       var n = l.name, taken = function(x){ return P.some(function(q){ return q.n === x; }); };
       if (taken(n)) n = l.name + ' (' + l.farm + ')';
       if (taken(n)) return;
-      P.unshift({ d:l.desc, n:n, c:l.cat, p:l.price, u:l.unit, s:l.state, f:l.farm, h:l.harvest === 'today' ? 'today' : 'week', o:l.organic ? 1 : 0, v:0, i:l.photos[0], t:'#E3EDDA' });
+      P.unshift({ d:l.desc, n:n, c:l.cat, p:l.price, u:l.unit, s:l.state, f:l.farm, h:l.harvest === 'today' ? 'today' : 'week', o:l.organic ? 1 : 0, v:0, i:l.photos[0], t:'#E3EDDA', x:listingX(l) });
     });
   }catch(_){}
+  P.forEach(function(p){ if (!p.x) p.x = defaultX(p); });
   /* the price filter always reaches the dearest product, so nothing is hidden by default */
   var TOP = 50000; P.forEach(function(p){ if (p.p > TOP) TOP = Math.ceil(p.p / 5000) * 5000; });
   var byName = {}; P.forEach(function(p){ byName[p.n] = p; });
@@ -89,8 +109,23 @@
     var F = Object.assign({}, DEF);
 
     /* ---------- cart: one line per product + chosen options ---------- */
-    var DEFO = { g:'Standard', d:'Pickup', w:'This week' }, GR = { Standard:1, Select:1.1, Export:1.25 };
-    var priceFor = function(p, g){ return Math.round(p.p * (GR[g] || 1) / 100) * 100; };
+    var DEFO = { g:'Standard', d:'Pickup', w:'This week' };
+    var found = function(list, v){ for (var i = 0; i < list.length; i++) if (list[i].v === v) return list[i]; return null; };
+    /* unit price = the farmer's price + the extra for the chosen grade + the extra for the chosen date */
+    var unitPrice = function(p, o){ var g = found(p.x.g, o.g), w = found(p.x.w, o.w); return p.p + (g ? g.a : 0) + (w ? w.a : 0); };
+    /* delivery fee is one charge per order line, only for doorstep delivery */
+    var feeFor = function(p, o){ return o.d === 'Doorstep' && p.x.door ? (p.x.fee || 0) : 0; };
+    var deliveries = function(p){
+      var r = []; if (p.x.pick) r.push({ v:'Pickup', l:'Farm pickup' });
+      if (p.x.door) r.push({ v:'Doorstep', l:'Doorstep delivery' + (p.x.fee ? ' +' + fmt(p.x.fee) : '') });
+      return r;
+    };
+    /* start on the cheapest date (This week wins a tie) so the first price a buyer sees is the lowest one */
+    var cheapest = function(w){
+      var lo = Math.min.apply(null, w.map(function(o){ return o.a; })), ok = w.filter(function(o){ return o.a === lo; });
+      return (found(ok, 'This week') || ok[0]).v;
+    };
+    var defOpts = function(p){ return { g:p.x.g[0].v, d:deliveries(p)[0].v, w:cheapest(p.x.w) }; };
     var lk = function(n, o){ return [n, o.g, o.d, o.w].join('|'); };
     var cart = {};
     try { cart = JSON.parse(localStorage.getItem('ohgrow.cart') || '{}') || {}; } catch(_){ cart = {}; }
@@ -98,7 +133,8 @@
     var save = function(){ try { localStorage.setItem('ohgrow.cart', JSON.stringify(cart)); } catch(_){} };
     var keys = function(){ return Object.keys(cart); };
     var count = function(){ return keys().reduce(function(a, k){ return a + cart[k].q; }, 0); };
-    var total = function(){ return keys().reduce(function(a, k){ return a + cart[k].q * cart[k].p; }, 0); };
+    var lineTotal = function(c){ return c.q * c.p + (c.f || 0); };
+    var total = function(){ return keys().reduce(function(a, k){ return a + lineTotal(cart[k]); }, 0); };
     var inCart = function(n){ return keys().reduce(function(a, k){ return a + (cart[k].n === n ? cart[k].q : 0); }, 0); };
 
     var cb = $('.circle.cart'), badge = document.createElement('span');
@@ -126,6 +162,7 @@
           '<div class="ad-qty"><div class="ad-qgroup"><span class="ad-lbl" id="pdQL">Quantity</span>' +
             '<div class="ad-step" role="group" aria-labelledby="pdQL"><button type="button" id="pdMinus" aria-label="Decrease quantity">&minus;</button><output id="pdQty" aria-live="polite">1</output><button type="button" id="pdPlus" aria-label="Increase quantity">+</button></div></div>' +
             '<p class="ad-total"><span class="ad-lbl">Total</span><b id="pdTotal"></b></p></div>' +
+          '<p class="pd-break" id="pdBreak" aria-live="polite"></p>' +
           '<button class="ad-add pd-add" id="pdAdd" type="button">' + ic('cart') + '<span>Add to cart</span></button>' +
         '</div></div></div></div>');
     var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList'), pd = $('#pd');
@@ -156,13 +193,13 @@
         }
         return '<div class="c-item" data-k="' + esc(k) + '"' + (p ? ' style="--t:' + p.t + '"' : '') + '>' +
           '<div class="c-art">' + art(p, '') + '</div>' +
-          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' + side + '</div>';
+          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + (c.f ? ' \u00B7 ' + fmt(c.f) + ' delivery' : '') + '</p><p><b>' + fmt(lineTotal(c)) + '</b></p></div>' + side + '</div>';
       }).join('') : '<p class="c-empty">Your cart is empty. Add something fresh from the market.</p>';
     }
     function add(n, q, o, meta){
-      o = Object.assign({}, DEFO, o || {});
-      var p = byName[n], k = lk(n, o);
-      if (!cart[k]) cart[k] = { n:n, p:p ? priceFor(p, o.g) : (meta && meta.p) || 0, u:p ? p.u : (meta && meta.u) || '', q:0, g:o.g, d:o.d, w:o.w };
+      var p = byName[n]; o = Object.assign({}, p ? defOpts(p) : DEFO, o || {});
+      var k = lk(n, o);
+      if (!cart[k]) cart[k] = { n:n, p:p ? unitPrice(p, o) : (meta && meta.p) || 0, f:p ? feeFor(p, o) : 0, u:p ? p.u : (meta && meta.u) || '', q:0, g:o.g, d:o.d, w:o.w };
       if (!(cart[k].p > 0)){ delete cart[k]; return; }
       cart[k].q = Math.min(99, cart[k].q + q);
       save(); syncCard(n); renderCart();
@@ -171,7 +208,7 @@
     /* a collection goes in as ONE line (the whole basket), not as separate products */
     function addBasket(b){
       var k = 'basket|' + b.n, ps = b.items.map(function(n){ return byName[n]; }).filter(Boolean);
-      var sum = ps.reduce(function(a, p){ return a + priceFor(p, 'Standard'); }, 0);
+      var sum = ps.reduce(function(a, p){ return a + p.p; }, 0);
       if (!cart[k]) cart[k] = { n:b.n, bk:b.items.slice(), t:b.t, p:sum, u:'per basket', q:0, g:'Standard', d:'Pickup', w:'This week' };
       cart[k].q = Math.min(99, cart[k].q + 1);
       save(); renderCart();
@@ -198,16 +235,21 @@
 
     /* ---------- product dialog: big image pops out of the box, options + quantity + add to cart ---------- */
     var D = null, lastFocus = null, ht = 0;
-    var SEL = [
-      { k:'g', l:'Quality',   o:[['Standard','Standard'], ['Select','Select +10%'], ['Export','Export +25%']] },
-      { k:'d', l:'Delivery',  o:[['Pickup','Farm pickup'], ['Doorstep','Doorstep delivery']] },
-      { k:'w', l:'Needed by', o:[['Today','Today'], ['Tomorrow','Tomorrow'], ['This week','This week']] }
-    ];
+    /* the choices a buyer sees are the ones this product's seller offered, each with the seller's own extra price */
+    function groupsFor(p){
+      var plus = function(a){ return a ? ' +' + fmt(a) : ''; };
+      return [
+        { k:'g', l:'Quality',   o:p.x.g.map(function(o){ return [o.v, o.l || o.v + plus(o.a)]; }) },
+        { k:'d', l:'Delivery',  o:deliveries(p).map(function(o){ return [o.v, o.l]; }) },
+        { k:'w', l:'Needed by', o:p.x.w.map(function(o){ return [o.v, o.v + plus(o.a)]; }) }
+      ];
+    }
     function paintD(){
-      var price = priceFor(D.p, D.g);
+      var price = unitPrice(D.p, D), fee = feeFor(D.p, D);
       $('#pdPrice').textContent = fmt(price);
       $('#pdQty').textContent = D.q;
-      $('#pdTotal').textContent = fmt(price * D.q);
+      $('#pdTotal').textContent = fmt(price * D.q + fee);
+      $('#pdBreak').textContent = fmt(price) + ' \u00D7 ' + D.q + (fee ? ' + ' + fmt(fee) + ' delivery (once per order)' : '');
       $('#pdMinus').disabled = D.q <= 1; $('#pdPlus').disabled = D.q >= 99;
       $$('#pdSel .pd-chips').forEach(function(box){
         $$('button', box).forEach(function(b){ var on = b.dataset.v === D[box.dataset.k]; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
@@ -216,7 +258,7 @@
     function openProduct(n, trigger){
       var p = byName[n]; if (!p) return;
       closeSheet(); closeCart();
-      D = { p:p, g:DEFO.g, d:DEFO.d, w:DEFO.w, q:1 }; lastFocus = trigger || document.activeElement;
+      D = Object.assign({ p:p, q:1 }, defOpts(p)); lastFocus = trigger || document.activeElement;
       $('.pd-box', pd).style.setProperty('--t', p.t);
       $('#pdImg').innerHTML = art(p, '');
       $('#pdCat').textContent = p.c;
@@ -225,7 +267,7 @@
       $('#pdDesc').textContent = p.d;
       $('#pdTags').innerHTML = '<span class="pd-tag">' + ic('pin') + esc(p.s) + ' \u00B7 ' + esc(p.f) + '</span>' +
         '<span class="pd-tag">' + (p.h === 'today' ? 'Harvested today' : 'Harvested this week') + '</span>' + (p.o ? '<span class="pd-tag">Organic</span>' : '') + (p.v ? '<span class="pd-tag">Verified farmer</span>' : '');
-      $('#pdSel').innerHTML = SEL.map(function(g, i){
+      $('#pdSel').innerHTML = groupsFor(p).map(function(g, i){
         return '<div class="pd-sel"><span class="ad-lbl" id="pdL' + i + '">' + g.l + '</span><div class="pd-chips" role="group" aria-labelledby="pdL' + i + '" data-k="' + g.k + '">' +
           g.o.map(function(o){ return '<button type="button" data-v="' + o[0] + '">' + o[1] + '</button>'; }).join('') + '</div></div>';
       }).join('');

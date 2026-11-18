@@ -32,7 +32,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=58#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=59#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */
@@ -116,9 +116,24 @@
       });
     });
 
+    /* extras: a ticked choice with an empty price means "offered, no extra" */
+    function num(name){ var v = form.elements[name].value; return v === '' ? 0 : +v; }
+    function syncOpts(){
+      var f = form.elements;
+      ['select', 'export', 'today', 'tomorrow', 'week'].forEach(function(k){
+        var on = f['o_' + k].checked, p = f['o_' + k + '_p']; p.disabled = !on; if (!on) p.value = '';
+      });
+      var d = f.delivery.checked; f.fee.disabled = !d; if (!d) f.fee.value = '';
+      $('#slFeeNote').textContent = d ? 'Doorstep delivery is on' : 'Delivery is off';
+    }
+    form.addEventListener('change', syncOpts); syncOpts();
+
     function read(){
       var f = form.elements, u = session();
-      return {
+      var opts = { select: f.o_select.checked ? Math.round(num('o_select_p')) : null, export: f.o_export.checked ? Math.round(num('o_export_p')) : null,
+        fee: f.delivery.checked ? Math.round(num('fee')) : 0,
+        need: { today: f.o_today.checked ? Math.round(num('o_today_p')) : null, tomorrow: f.o_tomorrow.checked ? Math.round(num('o_tomorrow_p')) : null, week: f.o_week.checked ? Math.round(num('o_week_p')) : null } };
+      return { opts: opts,
         name: f.name.value.trim(), cat: f.cat.value, desc: f.desc.value.trim(), price: Math.round(+f.price.value), unit: f.unit.value,
         qty: Math.round(+f.qty.value), harvest: f.harvest.value, organic: f.organic.checked, state: f.state.value, town: f.town.value.trim(),
         farm: f.farm.value.trim() || u.name, phone: f.phone.value.trim(), pickup: f.pickup.checked, delivery: f.delivery.checked
@@ -139,6 +154,12 @@
       if (v.town.length < 2) no('town', 'Enter the town or area.');
       var digits = v.phone.replace(/\D/g, '');
       if (!/^\+?[0-9\s()-]+$/.test(v.phone) || digits.length < 10 || digits.length > 14) no('phone', 'Enter a valid phone number.');
+      [['select', 'o_select_p'], ['export', 'o_export_p'], ['today', 'o_today_p'], ['tomorrow', 'o_tomorrow_p'], ['week', 'o_week_p']].forEach(function(t){
+        var raw = form.elements[t[1]].value, on = form.elements['o_' + t[0]].checked;
+        if (on && raw !== '' && !(+raw >= 0 && +raw <= 5000000)) no(t[1], 'Enter 0 or more.');
+      });
+      if (form.elements.delivery.checked && form.elements.fee.value !== '' && !(+form.elements.fee.value >= 0 && +form.elements.fee.value <= 5000000)) no('fee', 'Enter 0 or more.');
+      if (v.opts.need.today == null && v.opts.need.tomorrow == null && v.opts.need.week == null) no('o_week', 'Offer at least one date.');
       if (!v.pickup && !v.delivery){ var fb = $('#slFul'); fb.classList.add('has-err'); var m = $('.sl-err', fb); m.textContent = 'Choose pickup, delivery or both.'; m.hidden = false; bad.push('pickup'); }
       return bad;
     }
@@ -158,7 +179,7 @@
       var btn = $('.sl-submit', form); btn.classList.add('is-busy');
       var saved = store.add(item); btn.classList.remove('is-busy');
       if (!saved){ formErr.textContent = 'Your browser has no room left to save this. Remove an older listing or use fewer photos.'; formErr.hidden = false; return; }
-      form.reset(); photos = []; drawThumbs(); photoError(''); count.textContent = '0 / 400';
+      form.reset(); syncOpts(); photos = []; drawThumbs(); photoError(''); count.textContent = '0 / 400';
       renderMine(); toast('Product published. Buyers can see it in the market.');
       $('#slMine').scrollIntoView({ block:'start', behavior:O.reduce ? 'auto' : 'smooth' });
     });
