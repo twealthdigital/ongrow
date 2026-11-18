@@ -360,3 +360,17 @@ svg.p-art{width:120px;height:120px}
 
 /* product dialog: how the total is made */
 .pd-break{margin:-4px 0 0;color:rgba(255,255,255,.72);font:500 13px/1.4 var(--font-body);text-align:right}
+
+/* uploaded photos (not cut-outs) are always a circle, the picture filling it */
+.p-art.photo{width:150px;height:150px;border-radius:50%;object-fit:cover;transform:none;filter:none;box-shadow:0 0 0 5px #fff,0 12px 20px rgba(8,18,6,.25)}
+.p-card:hover .p-art.photo{transform:scale(1.06)}
+.c-art img.photo,.c-trio img.photo{border-radius:50%;object-fit:cover}
+.pd-stage.is-photo .pd-disc{display:none}
+.pd-stage.is-photo .pd-img{left:50%;top:50%;width:min(100%,340px);transform:translate(-50%,-46%) scale(.5)}
+.pd.open .pd-stage.is-photo .pd-img{transform:translate(-50%,-46%)}
+.pd-stage.is-photo .pd-img img{border-radius:50%;object-fit:cover;filter:none;box-shadow:0 0 0 8px #fff,0 26px 44px rgba(0,0,0,.5)}
+@media (max-width:819.98px){
+  .pd-stage.is-photo{min-height:230px}
+  .pd-stage.is-photo .pd-img{top:50%;width:min(70%,210px)}
+}
+@media (max-width:699.98px){.p-art.photo{width:106px;height:106px;box-shadow:0 0 0 4px #fff,0 8px 14px rgba(8,18,6,.25)}}

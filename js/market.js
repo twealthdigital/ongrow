@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=60#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=61#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -168,7 +168,7 @@
     var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList'), pd = $('#pd');
 
     function art(p, cls){
-      if (p && p.i) return '<img class="' + cls + '" src="' + (/^data:/.test(p.i) ? p.i : IMG + p.i) + '" alt="" loading="lazy" draggable="false"' + (p.y ? ' data-y="' + p.y + '"' : '') + '>';
+      if (p && p.i) return '<img class="' + (cls ? cls + ' ' : '') + (/^data:/.test(p.i) ? 'photo' : '') + '" src="' + (/^data:/.test(p.i) ? p.i : IMG + p.i) + '" alt="" loading="lazy" draggable="false"' + (p.y ? ' data-y="' + p.y + '"' : '') + '>';
       if (p && p.y) return '<svg class="' + cls + '"><use href="' + SP + p.y + '"/></svg>';
       return '';
     }
@@ -261,6 +261,7 @@
       D = Object.assign({ p:p, q:1 }, defOpts(p)); lastFocus = trigger || document.activeElement;
       $('.pd-box', pd).style.setProperty('--t', p.t);
       $('#pdImg').innerHTML = art(p, '');
+      $('.pd-stage', pd).classList.toggle('is-photo', /^data:/.test(p.i || ''));   /* uploaded photos are always shown in a circle */
       $('#pdCat').textContent = p.c;
       $('#pdName').textContent = p.n;
       $('#pdUnit').textContent = p.u;
