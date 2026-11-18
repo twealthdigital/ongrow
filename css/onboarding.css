@@ -11,8 +11,27 @@
 .slide h2{font:600 clamp(38px,6vw,76px)/1 var(--font-display);letter-spacing:-.035em;text-wrap:balance}
 .slide h2 span{display:block}
 .slide p{font-size:clamp(16px,1.6vw,19px);color:var(--ink2);max-width:46ch}
-.art{border-radius:36px;background:var(--green);overflow:hidden;aspect-ratio:5/4;width:100%}
-.art svg{display:block;width:100%;height:100%}
+.art{container-type:size;display:grid;place-items:center;aspect-ratio:5/4;width:100%}
+.stage{position:relative;width:min(100cqw,125cqh);aspect-ratio:5/4}
+.stage::before,.stage::after{content:"";position:absolute;left:50%;aspect-ratio:1;translate:-50% 0;border-radius:50%}
+.stage::before{bottom:4%;height:92%;background:var(--soft)}
+.stage::after{bottom:0;height:100%;border:2.5px solid var(--leaf);opacity:.5}
+.prod{position:absolute;left:var(--x);bottom:calc(var(--y) - var(--h) * var(--pad,0));height:var(--h);width:auto;max-width:none;
+  transform:translateX(-50%) rotate(var(--r,0deg));filter:drop-shadow(0 16px 14px rgba(13,17,11,.22));
+  user-select:none;pointer-events:none;opacity:0;scale:.82;transition:opacity .4s var(--ease),scale .5s var(--ease)}
+.slide.is-active .prod{opacity:1;scale:1;transition:opacity .6s var(--ease),scale .8s var(--ease);transition-delay:calc(var(--i,0) * 110ms + 200ms);
+  animation:bob 6s ease-in-out calc(var(--i,0) * -1.7s) infinite}
+@keyframes bob{50%{translate:0 -3.5%}}
+
+.slide:nth-child(1) .p1{--x:74%;--y:10%;--h:58%;--r:7deg;--i:0}
+.slide:nth-child(1) .p2{--x:40%;--y:8%;--h:70%;--r:-5deg;--i:1}
+.slide:nth-child(1) .p3{--x:15%;--y:5%;--h:36%;--r:-9deg;--i:2}
+.slide:nth-child(2) .p1{--x:27%;--y:10%;--h:58%;--pad:.05;--r:-6deg;--i:0}
+.slide:nth-child(2) .p2{--x:62%;--y:8%;--h:68%;--r:5deg;--i:1}
+.slide:nth-child(2) .p3{--x:85%;--y:5%;--h:34%;--r:10deg;--i:2}
+.slide:nth-child(3) .p1{--x:36%;--y:14%;--h:88%;--pad:.2;--r:-4deg;--i:0}
+.slide:nth-child(3) .p2{--x:73%;--y:8%;--h:70%;--r:5deg;--i:1}
+.slide:nth-child(3) .p3{--x:50%;--y:3%;--h:38%;--r:-4deg;--i:2}
 .onb-bot{display:flex;justify-content:space-between;align-items:center;max-width:1200px;width:100%;margin:0 auto;gap:16px}
 .dots{display:flex;gap:8px}
 .dot{width:10px;height:10px;border-radius:9px;background:var(--line);transition:width .4s var(--ease),background .3s}
