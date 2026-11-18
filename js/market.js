@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=46#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=47#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -9,9 +9,9 @@
     { d:'Bright, crunchy bell peppers with a sweet, mild flavour. Great in stir-fries and salads.', n:'Sweet peppers',  c:'Vegetables',   p:29500, u:'per crate',     s:'Kaduna',  f:'Zaria Greens',       h:'today', o:1, v:1, i:'pepper.png',        t:'#FAD9D4' },
     { d:'Sweet, juicy oranges packed with vitamin C. Peel and eat fresh, or squeeze for juice.', n:'Juicy oranges',  c:'Fruits',       p:24000, u:'per crate',     s:'Ondo',    f:'Akure Orchards',     h:'week',  o:0, v:1, i:'orange.png',        t:'#FCE3C2' },
     { d:'Fresh-cut leafy greens bundled the same day. Tender and ready for soups, salads and smoothies.', n:'Leafy greens',   c:'Leafy greens', p:12500, u:'per bundle',    s:'Oyo',     f:'Bola & Sons',        h:'today', o:1, v:0, i:'greens.png',        t:'#D6EBC4' },
-    { d:'Hearty, starchy tubers with a firm bite. Boil, roast or pound for a classic Nigerian meal.', n:'Yam tubers',     c:'Tubers',       p:24500, u:'per 10 tubers', s:'Benue',   f:'Terkimbi Growers',   h:'week',  o:1, v:1, y:'yam',               t:'#F3E6CF' },
-    { d:'Golden plantains with a deep natural sweetness. Fry, roast or boil them.', n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, y:'plantain',          t:'#F8EFC2' },
-    { d:'Sweet, tender cobs harvested young. Boil or roast fresh, or cut off the kernels for soups.', n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, y:'maize',             t:'#FBF0B5' }
+    { d:'Hearty, starchy tubers with a firm bite. Boil, roast or pound for a classic Nigerian meal.', n:'Yam tubers',     c:'Tubers',       p:24500, u:'per 10 tubers', s:'Benue',   f:'Terkimbi Growers',   h:'week',  o:1, v:1, i:'yam.png', y:'yam',               t:'#F3E6CF' },
+    { d:'Golden plantains with a deep natural sweetness. Fry, roast or boil them.', n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, i:'plantain.png', y:'plantain',          t:'#F8EFC2' },
+    { d:'Sweet, tender cobs harvested young. Boil or roast fresh, or cut off the kernels for soups.', n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, i:'corn.png', y:'maize',             t:'#FBF0B5' }
   ];
   var byName = {}; P.forEach(function(p){ byName[p.n] = p; });
   var fmt = function(n){ return '\u20A6' + n.toLocaleString('en-NG'); };
@@ -59,6 +59,13 @@
     sel.addEventListener('dd-sync', paint);
     paint();
   }
+
+
+  /* a product photo that isn't in assets/images yet falls back to its flat drawing */
+  document.addEventListener('error', function(e){
+    var im = e.target; if (!im || im.tagName !== 'IMG' || !im.dataset.y) return;
+    im.outerHTML = '<svg class="' + im.className + '"><use href="' + SP + im.dataset.y + '"/></svg>';
+  }, true);
 
   O.ready.then(function(){
     var mk = $('#market'); if (!mk) return;
@@ -112,7 +119,7 @@
     var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList'), pd = $('#pd');
 
     function art(p, cls){
-      if (p && p.i) return '<img class="' + cls + '" src="' + IMG + p.i + '" alt="" loading="lazy" draggable="false">';
+      if (p && p.i) return '<img class="' + cls + '" src="' + IMG + p.i + '" alt="" loading="lazy" draggable="false"' + (p.y ? ' data-y="' + p.y + '"' : '') + '>';
       if (p && p.y) return '<svg class="' + cls + '"><use href="' + SP + p.y + '"/></svg>';
       return '';
     }
