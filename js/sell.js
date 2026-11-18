@@ -24,6 +24,10 @@
       var l = store.all(); l.push(item);
       try{ localStorage.setItem(LKEY, JSON.stringify(l)); return true; }catch(_){ return false; }
     },
+    update: function(item){
+      var l = store.all().map(function(x){ return x.id === item.id ? item : x; });
+      try{ localStorage.setItem(LKEY, JSON.stringify(l)); return true; }catch(_){ return false; }
+    },
     remove: function(id){
       var l = store.all().filter(function(x){ return x.id !== id; });
       try{ localStorage.setItem(LKEY, JSON.stringify(l)); }catch(_){}
@@ -32,7 +36,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=59#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=60#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */
@@ -164,6 +168,37 @@
       return bad;
     }
 
+    /* ---------- edit a listing: the same form, filled with what was published ---------- */
+    var editing = null, lbl = $('.sl-lbl', form), cancel = $('#slCancel'), chip = $('#slChip');
+    function fillForm(l){
+      var f = form.elements, o = l.opts || {}, n = o.need || { today:0, tomorrow:0, week:0 };
+      f.name.value = l.name; f.cat.value = l.cat; f.desc.value = l.desc; count.textContent = l.desc.length + ' / 400';
+      f.price.value = l.price; f.unit.value = l.unit; f.qty.value = l.qty; f.harvest.value = l.harvest; f.organic.checked = !!l.organic;
+      f.state.value = l.state; f.town.value = l.town; f.farm.value = l.farm === session().name ? '' : l.farm; f.phone.value = l.phone;
+      f.pickup.checked = !!l.pickup; f.delivery.checked = !!l.delivery;
+      f.o_select.checked = o.select != null; f.o_export.checked = o.export != null;
+      f.o_today.checked = n.today != null; f.o_tomorrow.checked = n.tomorrow != null; f.o_week.checked = n.week != null;
+      syncOpts();
+      f.o_select_p.value = o.select || ''; f.o_export_p.value = o.export || '';
+      f.o_today_p.value = n.today || ''; f.o_tomorrow_p.value = n.tomorrow || ''; f.o_week_p.value = n.week || '';
+      f.fee.value = f.delivery.checked ? (o.fee || '') : '';
+      photos = l.photos.slice(); drawThumbs(); photoError('');
+      $$('.sl-f', form).forEach(clearErr); formErr.hidden = true;
+    }
+    function enterEdit(l){
+      editing = l.id; fillForm(l);
+      lbl.textContent = 'Save changes'; cancel.hidden = false; chip.textContent = 'Editing listing';
+      renderMine();
+      form.scrollIntoView({ block:'start', behavior:O.reduce ? 'auto' : 'smooth' });
+    }
+    function exitEdit(){
+      var was = editing; editing = null;
+      form.reset(); syncOpts(); photos = []; drawThumbs(); photoError(''); count.textContent = '0 / 400';
+      lbl.textContent = 'Publish product'; cancel.hidden = true; chip.textContent = 'New listing';
+      if (was) renderMine();
+    }
+    cancel.addEventListener('click', exitEdit);
+
     /* ---------- submit ---------- */
     form.addEventListener('submit', function(e){
       e.preventDefault(); if (busy) return;
@@ -175,12 +210,19 @@
         if (first){ first.focus({ preventScroll:true }); first.scrollIntoView({ block:'center', behavior:O.reduce ? 'auto' : 'smooth' }); }
         return;
       }
-      var item = Object.assign({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), owner: session().email, photos: photos.slice(), created: Date.now() }, v);
+      var item, wasEdit = !!editing;
+      if (wasEdit){
+        var old = store.all().filter(function(x){ return x.id === editing; })[0];
+        if (!old){ exitEdit(); return; }
+        item = Object.assign({}, old, v, { photos: photos.slice(), updated: Date.now() });
+      } else {
+        item = Object.assign({ id: 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), owner: session().email, photos: photos.slice(), created: Date.now() }, v);
+      }
       var btn = $('.sl-submit', form); btn.classList.add('is-busy');
-      var saved = store.add(item); btn.classList.remove('is-busy');
+      var saved = wasEdit ? store.update(item) : store.add(item); btn.classList.remove('is-busy');
       if (!saved){ formErr.textContent = 'Your browser has no room left to save this. Remove an older listing or use fewer photos.'; formErr.hidden = false; return; }
-      form.reset(); syncOpts(); photos = []; drawThumbs(); photoError(''); count.textContent = '0 / 400';
-      renderMine(); toast('Product published. Buyers can see it in the market.');
+      exitEdit();
+      renderMine(); toast(wasEdit ? 'Changes saved. The market shows them now.' : 'Product published. Buyers can see it in the market.');
       $('#slMine').scrollIntoView({ block:'start', behavior:O.reduce ? 'auto' : 'smooth' });
     });
 
@@ -195,14 +237,22 @@
         info.appendChild(el('h3', null, l.name)); info.appendChild(pr);
         info.appendChild(el('p', 'sl-meta', l.qty + ' available \u00B7 ' + l.cat + ' \u00B7 ' + l.state));
         info.appendChild(el('p', 'sl-meta', 'Published ' + day));
+        var view = el('a', 'sl-view'); view.href = 'home.html?view=' + encodeURIComponent(l.id) + '#market';
+        view.appendChild(el('span', null, 'View product')); view.appendChild(icon('arrow'));
+        view.addEventListener('click', function(e){ if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); O.go(view.getAttribute('href')); });
+        info.appendChild(view);
         var del = el('button', 'sl-del'); del.type = 'button'; del.appendChild(icon('trash')); var lb = el('span', null, 'Remove'); del.appendChild(lb);
+        var pen = el('button', 'sl-edit'); pen.type = 'button'; pen.appendChild(icon('pen')); pen.appendChild(el('span', null, 'Edit'));
+        pen.addEventListener('click', function(){ enterEdit(l); });
+        if (editing === l.id) li.classList.add('is-editing');
         var t;
         del.addEventListener('click', function(){
-          if (del.classList.contains('is-sure')){ store.remove(l.id); renderMine(); toast('Listing removed'); return; }
+          if (del.classList.contains('is-sure')){ if (editing === l.id) exitEdit(); store.remove(l.id); renderMine(); toast('Listing removed'); return; }
           del.classList.add('is-sure'); lb.textContent = 'Tap again to remove';
           clearTimeout(t); t = setTimeout(function(){ del.classList.remove('is-sure'); lb.textContent = 'Remove'; }, 3000);
         });
-        li.appendChild(im); li.appendChild(info); li.appendChild(del); ul.appendChild(li);
+        var acts = el('div', 'sl-acts'); acts.appendChild(del); acts.appendChild(pen);
+        li.appendChild(im); li.appendChild(info); li.appendChild(acts); ul.appendChild(li);
       });
     }
     renderMine();

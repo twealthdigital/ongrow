@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=59#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=60#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -39,7 +39,7 @@
       var n = l.name, taken = function(x){ return P.some(function(q){ return q.n === x; }); };
       if (taken(n)) n = l.name + ' (' + l.farm + ')';
       if (taken(n)) return;
-      P.unshift({ d:l.desc, n:n, c:l.cat, p:l.price, u:l.unit, s:l.state, f:l.farm, h:l.harvest === 'today' ? 'today' : 'week', o:l.organic ? 1 : 0, v:0, i:l.photos[0], t:'#E3EDDA', x:listingX(l) });
+      P.unshift({ d:l.desc, n:n, c:l.cat, p:l.price, u:l.unit, s:l.state, f:l.farm, h:l.harvest === 'today' ? 'today' : 'week', o:l.organic ? 1 : 0, v:0, i:l.photos[0], t:'#E3EDDA', x:listingX(l), lid:l.id });
     });
   }catch(_){}
   P.forEach(function(p){ if (!p.x) p.x = defaultX(p); });
@@ -551,5 +551,15 @@
     }, true);
 
     render(); renderCart(); spy(); paintHead(); syncOpen();
+
+    /* "View product" in a seller's own listings lands here: open that product's dialog */
+    try{
+      var vid = new URLSearchParams(window.location.search).get('view');
+      var tp = vid && P.filter(function(x){ return x.lid === vid; })[0];
+      if (tp){
+        history.replaceState(null, '', window.location.pathname + window.location.hash);
+        setTimeout(function(){ mk.scrollIntoView({ block:'start' }); openProduct(tp.n); }, 350);
+      }
+    }catch(_){}
   });
 })();

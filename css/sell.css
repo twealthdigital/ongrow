@@ -128,3 +128,21 @@
   .sl-opts{grid-column:2}
   .sl-photos{grid-row:1/5}
 }
+
+/* listing actions: View product under the details, Remove with Edit (pen) under it */
+.sl-btns{display:flex;flex-wrap:wrap;gap:10px}
+.sl-cancel[hidden]{display:none}
+.sl-view{display:inline-flex;align-items:center;gap:8px;justify-self:start;height:36px;margin-top:6px;padding:0 14px;border-radius:999px;background:var(--ink);color:#fff;font:700 13px/1 var(--font-body);transition:background .3s}
+.sl-view svg{width:16px;height:16px;transition:transform .45s var(--ease)}
+.sl-view:hover{background:var(--green)}
+.sl-view:hover svg{transform:translateX(3px)}
+.sl-acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.sl-acts .sl-del{grid-column:auto;justify-self:auto}
+.sl-edit{height:40px;padding:0 16px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--line);font:700 13px/1 var(--font-body);transition:background .3s,color .3s,box-shadow .3s}
+.sl-edit svg{width:16px;height:16px}
+.sl-edit:hover{background:var(--ink);color:#fff;box-shadow:none}
+.sl-item.is-editing{box-shadow:inset 0 0 0 2px var(--green)}
+@media (min-width:700px){
+  .sl-acts{grid-column:auto;flex-direction:column;align-items:stretch;justify-content:center}
+  .sl-acts .sl-del,.sl-acts .sl-edit{justify-content:center}
+}
