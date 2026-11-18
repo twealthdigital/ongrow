@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=61#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=62#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){
@@ -105,7 +105,9 @@
         who.appendChild(el('span', 'am-name', u.name));
         who.appendChild(el('span', 'am-mail', u.email));
         b.appendChild(who);
-        var out = el('button', 'am-item is-main'); out.type = 'button'; out.setAttribute('role', 'menuitem'); out.dataset.act = 'signout';
+        var pr = el('button', 'am-item is-main'); pr.type = 'button'; pr.setAttribute('role', 'menuitem'); pr.dataset.act = 'products';
+        pr.appendChild(el('span', null, 'My products')); pr.appendChild(arrow()); b.appendChild(pr);
+        var out = el('button', 'am-item'); out.type = 'button'; out.setAttribute('role', 'menuitem'); out.dataset.act = 'signout';
         out.appendChild(el('span', null, 'Sign out')); out.appendChild(arrow()); b.appendChild(out);
       } else {
         b.appendChild(el('p', 'am-title', 'Your account'));
@@ -156,6 +158,7 @@
         if (document.body.dataset.page === 'sell'){ O.go('home.html'); return; }
         toast('You are signed out');
       }
+      else if (act === 'products') openProducts(btn);
       else openAuth({ anchor:btn, mode:act, intent:null });
     });
     $$('.acct-btn').forEach(function(b){
@@ -164,6 +167,94 @@
         closeMenu(false); openMenu(b);
       });
     });
+
+    /* ---------- my products: a big dialog with everything the signed-in seller listed ---------- */
+    var LKEY = 'ohgrow.listings', SPR = 'assets/icons/sprite.svg?v=62#';
+    var mp = { built:false, open:false, opener:null, root:null, scrim:null, list:null, count:null };
+    var money = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
+    function sym(id){ var s = el('span', 'mp-ic'); s.innerHTML = '<svg class="i"><use href="' + SPR + id + '"/></svg>'; return s; }
+    function listings(){ try{ var l = JSON.parse(localStorage.getItem(LKEY)); return Array.isArray(l) ? l : []; }catch(_){ return []; } }
+    function mine(){ var u = store.user(); return listings().filter(function(l){ return u && l.owner === u.email; }).reverse(); }
+    function buildProducts(){
+      mp.scrim = el('div', 'mp-scrim');
+      mp.root = el('section', 'mp'); mp.root.setAttribute('role', 'dialog'); mp.root.setAttribute('aria-modal', 'true'); mp.root.setAttribute('aria-labelledby', 'mpTitle'); mp.root.inert = true;
+      var x = el('button', 'mp-x'); x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.appendChild(sym('close'));
+      var head = el('header', 'mp-head'), h = el('h2', null, 'Your products '); h.id = 'mpTitle';
+      mp.count = el('em', null, '0'); h.appendChild(mp.count); head.appendChild(h);
+      head.appendChild(el('p', null, 'Everything you listed. View it the way buyers see it, edit it, or take it down.'));
+      var add = el('a', 'mp-add'); add.href = 'sell.html'; add.appendChild(el('span', null, 'Add product')); add.appendChild(sym('plus')); head.appendChild(add);
+      mp.list = el('div', 'mp-grid');
+      mp.root.appendChild(x); mp.root.appendChild(head); mp.root.appendChild(mp.list);
+      document.body.appendChild(mp.scrim); document.body.appendChild(mp.root);
+      x.addEventListener('click', closeProducts); mp.scrim.addEventListener('click', closeProducts);
+      add.addEventListener('click', function(e){ if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) return; e.preventDefault(); closeProducts(false); O.go('sell.html'); });
+      document.addEventListener('keydown', function(e){
+        if (!mp.open) return;
+        if (e.key === 'Escape'){ e.stopPropagation(); closeProducts(); return; }
+        if (e.key !== 'Tab') return;
+        var f = $$('button,a[href]', mp.root).filter(function(n){ return !n.disabled && n.offsetParent !== null; });
+        if (!f.length) return;
+        var a0 = f[0], z = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === a0){ e.preventDefault(); z.focus(); }
+        else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a0.focus(); }
+      }, true);
+      mp.built = true;
+    }
+    function paintProducts(){
+      var l = mine(); mp.count.textContent = l.length; mp.list.textContent = '';
+      if (!l.length){
+        var em = el('div', 'mp-empty'); em.appendChild(el('p', null, 'Nothing listed yet. Add your first product and buyers can find it in the market.'));
+        var go = el('a', 'mp-add'); go.href = 'sell.html'; go.appendChild(el('span', null, 'Add product')); go.appendChild(sym('plus'));
+        go.addEventListener('click', function(e){ e.preventDefault(); closeProducts(false); O.go('sell.html'); });
+        em.appendChild(go); mp.list.appendChild(em); return;
+      }
+      l.forEach(function(it){
+        var card = el('article', 'mp-card'), tile = el('div', 'mp-tile'), im = el('img'); im.src = it.photos && it.photos[0] || ''; im.alt = ''; tile.appendChild(im);
+        var body = el('div', 'mp-body');
+        body.appendChild(el('h3', null, it.name));
+        var pr = el('p', 'mp-price', money(it.price) + ' '); pr.appendChild(el('span', null, it.unit)); body.appendChild(pr);
+        body.appendChild(el('p', 'mp-meta', it.qty + ' available \u00B7 ' + it.cat + ' \u00B7 ' + it.state));
+        var row = el('div', 'mp-acts');
+        var v = el('button', 'mp-view'); v.type = 'button'; v.appendChild(el('span', null, 'View')); v.appendChild(sym('arrow'));
+        var ed = el('button', 'mp-edit'); ed.type = 'button'; ed.appendChild(sym('pen')); ed.appendChild(el('span', null, 'Edit'));
+        var rm = el('button', 'mp-del'); rm.type = 'button'; rm.setAttribute('aria-label', 'Remove ' + it.name); rm.appendChild(sym('trash')); var rl = el('span', null, 'Remove'); rm.appendChild(rl);
+        v.addEventListener('click', function(){
+          closeProducts(false);
+          if ($('#market')) document.dispatchEvent(new CustomEvent('ohgrow:view-product', { detail:{ id:it.id } }));
+          else O.go('home.html?view=' + encodeURIComponent(it.id) + '#market');
+        });
+        ed.addEventListener('click', function(){
+          closeProducts(false);
+          if (document.body.dataset.page === 'sell') document.dispatchEvent(new CustomEvent('ohgrow:edit-listing', { detail:{ id:it.id } }));
+          else O.go('sell.html?edit=' + encodeURIComponent(it.id));
+        });
+        var t;
+        rm.addEventListener('click', function(){
+          if (rm.classList.contains('is-sure')){
+            try{ localStorage.setItem(LKEY, JSON.stringify(listings().filter(function(x){ return x.id !== it.id; }))); }catch(_){}
+            document.dispatchEvent(new CustomEvent('ohgrow:listings-changed')); paintProducts(); toast('Listing removed'); return;
+          }
+          rm.classList.add('is-sure'); rl.textContent = 'Tap again';
+          clearTimeout(t); t = setTimeout(function(){ rm.classList.remove('is-sure'); rl.textContent = 'Remove'; }, 3000);
+        });
+        row.appendChild(v); row.appendChild(ed); row.appendChild(rm);
+        body.appendChild(row); card.appendChild(tile); card.appendChild(body); mp.list.appendChild(card);
+      });
+    }
+    function openProducts(opener){
+      if (!mp.built) buildProducts();
+      if (st.open) closeAuth(true);
+      mp.opener = opener || document.activeElement; paintProducts();
+      mp.root.inert = false; mp.open = true; mp.root.scrollTop = 0;
+      requestAnimationFrame(function(){ mp.root.classList.add('open'); mp.scrim.classList.add('open'); });
+      body.classList.add('lock');
+      setTimeout(function(){ var x = $('.mp-x', mp.root); if (x && mp.open) x.focus({ preventScroll:true }); }, 80);
+    }
+    function closeProducts(restore){
+      if (!mp.open) return;
+      mp.open = false; mp.root.classList.remove('open'); mp.scrim.classList.remove('open'); mp.root.inert = true; body.classList.remove('lock');
+      if (restore !== false && mp.opener && mp.opener.focus) mp.opener.focus({ preventScroll:true });
+    }
 
     /* ---------- dialog ---------- */
     var COPY = {

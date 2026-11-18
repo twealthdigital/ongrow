@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=61#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=62#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -553,6 +553,16 @@
 
     render(); renderCart(); spy(); paintHead(); syncOpen();
 
+    /* "My products" (account menu) asks for a product's dialog, or reports that a listing was removed */
+    document.addEventListener('ohgrow:view-product', function(e){
+      var tp = P.filter(function(x){ return x.lid === (e.detail && e.detail.id); })[0];
+      if (tp){ mk.scrollIntoView({ behavior:smooth, block:'start' }); openProduct(tp.n, null); }
+    });
+    document.addEventListener('ohgrow:listings-changed', function(){
+      var ids = []; try{ ids = (JSON.parse(localStorage.getItem('ohgrow.listings')) || []).map(function(x){ return x.id; }); }catch(_){}
+      for (var i = P.length - 1; i >= 0; i--) if (P[i].lid && ids.indexOf(P[i].lid) < 0){ delete byName[P[i].n]; P.splice(i, 1); }
+      render(true);
+    });
     /* "View product" in a seller's own listings lands here: open that product's dialog */
     try{
       var vid = new URLSearchParams(window.location.search).get('view');

@@ -36,7 +36,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=61#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=62#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */
@@ -256,5 +256,14 @@
       });
     }
     renderMine();
+
+    /* "Edit" in the account menu: ?edit=<id> on arrival, or an event when this page is already open */
+    function editById(id){ var l = store.mine().filter(function(x){ return x.id === id; })[0]; if (l) enterEdit(l); }
+    document.addEventListener('ohgrow:edit-listing', function(e){ editById(e.detail && e.detail.id); });
+    document.addEventListener('ohgrow:listings-changed', function(){ if (editing && !store.all().some(function(x){ return x.id === editing; })) exitEdit(); renderMine(); });
+    try{
+      var eid = new URLSearchParams(window.location.search).get('edit');
+      if (eid){ history.replaceState(null, '', window.location.pathname); setTimeout(function(){ editById(eid); }, 150); }
+    }catch(_){}
   });
 })();
