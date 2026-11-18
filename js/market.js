@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=48#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=49#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -366,7 +366,7 @@
           '<button class="btn co-add" type="button" aria-label="Add the ' + esc(b.n) + ' basket to cart"><span>Add basket</span><span class="ico">' + ic('plus') + '</span></button></div></article>';
       }).join('');
 
-      var coCards = $$('.co-card', coGrid), coDots = $('#coDots'), coNum = $('#coNum'), coDesk = window.matchMedia('(min-width:1100px)'), coCur = 0, coN = BUNDLES.length;
+      var coCards = $$('.co-card', coGrid), coDots = $('#coDots'), coNum = $('#coNum'), coCur = 0, coN = BUNDLES.length;
       $('#coTot').textContent = '/ ' + pad2(coN);
       coDots.innerHTML = BUNDLES.map(function(b){ return '<button type="button" aria-label="Show ' + esc(b.n) + '"></button>'; }).join('');
       function coGo(i){
@@ -375,28 +375,37 @@
           var d = ((k - coCur) % coN + coN) % coN; if (d > coN / 2) d -= coN;
           var on = d === 0;
           c.dataset.pos = on ? '0' : d === 1 ? '1' : d === -1 ? '-1' : 'x';
-          if (coDesk.matches) c.setAttribute('aria-hidden', on ? 'false' : 'true'); else c.removeAttribute('aria-hidden');
-          c.querySelector('.co-add').tabIndex = !coDesk.matches || on ? 0 : -1;
+          c.setAttribute('aria-hidden', on ? 'false' : 'true');
+          c.querySelector('.co-add').tabIndex = on ? 0 : -1;
         });
         $$('button', coDots).forEach(function(x, k){ x.classList.toggle('on', k === coCur); });
         coNum.textContent = pad2(coCur + 1); coNum.classList.remove('tick'); void coNum.offsetWidth; coNum.classList.add('tick');
       }
       coGo(0);
-      if (coDesk.addEventListener) coDesk.addEventListener('change', function(){ coGo(coCur); });
       $('#coPrev').addEventListener('click', function(){ coGo(coCur - 1); });
       $('#coNext').addEventListener('click', function(){ coGo(coCur + 1); });
       coDots.addEventListener('click', function(e){
         var x = e.target.closest('button'); if (x) coGo($$('button', coDots).indexOf(x));
       });
       $('#collections').addEventListener('keydown', function(e){
-        if (!coDesk.matches) return;
         if (e.key === 'ArrowLeft') coGo(coCur - 1); else if (e.key === 'ArrowRight') coGo(coCur + 1);
       });
 
+      /* swipe or drag sideways to change basket */
+      var coX = null, coMoved = false;
+      coGrid.addEventListener('pointerdown', function(e){ coX = e.clientX; coMoved = false; });
+      coGrid.addEventListener('pointerup', function(e){
+        if (coX === null) return;
+        var dx = e.clientX - coX; coX = null;
+        if (Math.abs(dx) > 40){ coMoved = true; coGo(coCur + (dx < 0 ? 1 : -1)); }
+      });
+      coGrid.addEventListener('pointercancel', function(){ coX = null; });
+
       var coT = 0;
       coGrid.addEventListener('click', function(e){
+        if (coMoved){ coMoved = false; return; }
         var card = e.target.closest('.co-card'); if (!card) return;
-        if (coDesk.matches && card.dataset.pos !== '0'){ coGo(+card.dataset.i); return; }   /* tap a side card to bring it forward */
+        if (card.dataset.pos !== '0'){ coGo(+card.dataset.i); return; }   /* tap a side card to bring it forward */   /* tap a side card to bring it forward */
         var btn = e.target.closest('.co-add'); if (!btn) return;
         var b = BUNDLES[+card.dataset.i];
         b.items.forEach(function(n){ add(n, 1); });   /* all three go into the cart */
