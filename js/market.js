@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=49#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=50#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -134,10 +134,17 @@
       $('#cGo').disabled = !n;
       cList.innerHTML = ks.length ? ks.map(function(k){
         var c = cart[k], p = byName[c.n], e = esc(c.n);
+        var side = '<div class="c-side"><div class="p-step"><button type="button" data-act="dec" aria-label="Remove one ' + e + '">' + ic('minus') + '</button><b>' + c.q + '</b><button type="button" data-act="inc" aria-label="Add one more ' + e + '">' + ic('plus') + '</button></div>' +
+          '<button class="c-del" type="button" data-act="del" aria-label="Remove ' + e + ' from cart">' + ic('trash') + '<span>Remove</span></button></div>';
+        if (c.bk){   /* a collection basket is one line: three small pictures, the basket name and its price */
+          var ps = c.bk.map(function(n){ return byName[n]; }).filter(Boolean);
+          return '<div class="c-item c-basket" data-k="' + esc(k) + '" data-tone="' + esc(c.t || 'light') + '">' +
+            '<div class="c-art c-trio">' + ps.map(function(q){ return art(q, ''); }).join('') + '</div>' +
+            '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || 'per basket') + '</p><p class="c-opt">' + c.bk.map(esc).join(' \u00B7 ') + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' + side + '</div>';
+        }
         return '<div class="c-item" data-k="' + esc(k) + '"' + (p ? ' style="--t:' + p.t + '"' : '') + '>' +
           '<div class="c-art">' + art(p, '') + '</div>' +
-          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' +
-          '<div class="p-step"><button type="button" data-act="dec" aria-label="Remove one ' + e + '">' + ic('minus') + '</button><b>' + c.q + '</b><button type="button" data-act="inc" aria-label="Add one more ' + e + '">' + ic('plus') + '</button></div></div>';
+          '<div><h3>' + e + '</h3><p>' + fmt(c.p) + ' \u00B7 ' + esc(c.u || '') + '</p><p class="c-opt">' + esc(c.g) + ' \u00B7 ' + esc(c.d) + ' \u00B7 ' + esc(c.w) + '</p><p><b>' + fmt(c.p * c.q) + '</b></p></div>' + side + '</div>';
       }).join('') : '<p class="c-empty">Your cart is empty. Add something fresh from the market.</p>';
     }
     function add(n, q, o, meta){
@@ -149,10 +156,19 @@
       save(); syncCard(n); renderCart();
       badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
     }
+    /* a collection goes in as ONE line (the whole basket), not as separate products */
+    function addBasket(b){
+      var k = 'basket|' + b.n, ps = b.items.map(function(n){ return byName[n]; }).filter(Boolean);
+      var sum = ps.reduce(function(a, p){ return a + priceFor(p, 'Standard'); }, 0);
+      if (!cart[k]) cart[k] = { n:b.n, bk:b.items.slice(), t:b.t, p:sum, u:'per basket', q:0, g:'Standard', d:'Pickup', w:'This week' };
+      cart[k].q = Math.min(99, cart[k].q + 1);
+      save(); renderCart();
+      badge.classList.remove('pop'); void badge.offsetWidth; badge.classList.add('pop');
+    }
     cList.addEventListener('click', function(e){
       var b = e.target.closest('[data-act]'); if (!b) return;
       var k = b.closest('.c-item').dataset.k, c = cart[k]; if (!c) return;
-      c.q += b.dataset.act === 'inc' ? 1 : -1;
+      if (b.dataset.act === 'del') c.q = 0; else c.q += b.dataset.act === 'inc' ? 1 : -1;
       if (c.q <= 0) delete cart[k]; else if (c.q > 99) c.q = 99;
       save(); syncCard(c.n); renderCart();
     });
@@ -408,7 +424,7 @@
         if (card.dataset.pos !== '0'){ coGo(+card.dataset.i); return; }   /* tap a side card to bring it forward */   /* tap a side card to bring it forward */
         var btn = e.target.closest('.co-add'); if (!btn) return;
         var b = BUNDLES[+card.dataset.i];
-        b.items.forEach(function(n){ add(n, 1); });   /* all three go into the cart */
+        addBasket(b);   /* the whole basket goes into the cart as one line */
         $$('.co-art img, .co-art svg', card).forEach(function(im, k){ setTimeout(function(){ fly(im); }, k * 150); });   /* and all three pictures fly there */
         var t = btn.querySelector('span'); t.textContent = 'Added to cart'; btn.classList.add('done');
         clearTimeout(coT); coT = setTimeout(function(){ t.textContent = 'Add basket'; btn.classList.remove('done'); }, 2000);

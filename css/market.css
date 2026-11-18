@@ -341,3 +341,19 @@ svg.p-art{width:120px;height:120px}
   #coPrev{left:0}
   #coNext{right:0}
 }
+
+/* cart: delete button on every line, and a collection basket shown as one line with three small pictures */
+.c-side{display:grid;gap:8px;justify-items:end}
+.c-del{display:inline-flex;align-items:center;gap:5px;padding:4px 2px;font:700 12px/1 var(--font-body);color:var(--ink2);transition:color .25s}
+.c-del .i{width:15px;height:15px}
+.c-del:hover,.c-del:focus-visible{color:#C0392B}
+.c-basket{grid-template-columns:86px 1fr auto}
+.c-basket .c-art{width:86px}
+.c-basket[data-tone=dark] .c-art{background:var(--ink)}
+.c-basket[data-tone=green] .c-art{background:var(--green)}
+.c-basket[data-tone=light] .c-art{background:var(--soft)}
+.c-trio{position:relative;overflow:hidden}
+.c-trio img,.c-trio svg{position:absolute;width:34px;height:34px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(8,18,6,.4))}
+.c-trio>:nth-child(1){left:4px;top:22px;transform:rotate(-12deg)}
+.c-trio>:nth-child(2){left:23px;top:5px;width:40px;height:40px;z-index:2}
+.c-trio>:nth-child(3){right:4px;top:24px;transform:rotate(12deg)}
