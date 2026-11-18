@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=44#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=45#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -64,7 +64,9 @@
     var mk = $('#market'); if (!mk) return;
     var body = document.body, grid = $('#mGrid'), rail = $('.rail'), rt = $('#railToggle');
     var smooth = O.reduce ? 'auto' : 'smooth';
-    var DEF = { cat:'all', fresh:'any', max:50000, st:'all', org:false, ver:false, q:'', sort:'rec' };
+    var DEF = { cat:'all', fresh:'any', max:50000, st:'all', org:false, ver:false, q:'', sort:'rec', page:1 };
+    var small = window.matchMedia('(max-width:1099.98px)'), pager = $('#mPager');
+    var pageSize = function(){ return small.matches ? 4 : 9; };   /* phones and tablets: 2 x 2, desktop: 3 x 3 */
     var F = Object.assign({}, DEF);
 
     /* ---------- cart: one line per product + chosen options ---------- */
@@ -269,18 +271,40 @@
       else if (F.sort === 'fresh') r.sort(function(a, b){ return (a.h === 'today' ? 0 : 1) - (b.h === 'today' ? 0 : 1); });
       return r;
     }
-    function render(){
-      var r = list(), n = r.length;
-      $('#mCount').textContent = n + (n === 1 ? ' product' : ' products');
+    function pagerHTML(pages, cur){
+      if (pages < 2) return '';
+      var h = '<button class="pg pg-nav pg-prev" type="button" data-p="' + (cur - 1) + '" aria-label="Previous page"' + (cur === 1 ? ' disabled' : '') + '>' + ic('arrow') + '</button>', last = 0;
+      for (var i = 1; i <= pages; i++){
+        if (pages > 5 && i !== 1 && i !== pages && Math.abs(i - cur) > 1) continue;
+        if (last && i - last > 1) h += '<span class="pg-gap" aria-hidden="true">\u2026</span>';
+        h += '<button class="pg' + (i === cur ? ' on' : '') + '" type="button" data-p="' + i + '" aria-label="Page ' + i + '"' + (i === cur ? ' aria-current="page"' : '') + '>' + i + '</button>';
+        last = i;
+      }
+      return h + '<button class="pg pg-nav" type="button" data-p="' + (cur + 1) + '" aria-label="Next page"' + (cur === pages ? ' disabled' : '') + '>' + ic('arrow') + '</button>';
+    }
+    function render(keepPage){
+      if (keepPage !== true) F.page = 1;
+      var r = list(), n = r.length, size = pageSize(), pages = Math.max(1, Math.ceil(n / size));
+      F.page = Math.min(Math.max(1, F.page), pages);
+      var from = (F.page - 1) * size, view = r.slice(from, from + size);
+      $('#mCount').textContent = pages > 1 ? (from + 1) + '\u2013' + (from + view.length) + ' of ' + n + ' products' : n + (n === 1 ? ' product' : ' products');
       $('#rfDone').textContent = 'Show ' + n + (n === 1 ? ' product' : ' products');
-      grid.innerHTML = n ? r.map(function(p, i){
+      grid.innerHTML = n ? view.map(function(p, i){
         var e = esc(p.n);
         return '<article class="p-card" data-name="' + e + '" style="--i:' + i + ';--t:' + p.t + '">' +
-          '<div class="p-tile"><span class="p-chip">' + (p.h === 'today' ? 'Harvested today' : 'This week') + '</span>' + (p.o ? '<span class="p-org">Organic</span>' : '') + art(p, 'p-art') + '<span class="p-inc"' + (inCart(p.n) ? '>' + inCart(p.n) + ' in cart' : ' hidden>') + '</span></div>' +
-          '<div class="p-body"><h3>' + e + '</h3><p class="p-meta">' + ic('pin') + esc(p.s) + ' \u00B7 ' + esc(p.f) + (p.v ? ' \u00B7 Verified' : '') + '</p>' +
+          '<div class="p-tile"><span class="p-chip">' + (p.h === 'today' ? '<span class="p-lg">Harvested </span>today' : 'This week') + '</span>' + (p.o ? '<span class="p-org">Organic</span>' : '') + art(p, 'p-art') + '<span class="p-inc"' + (inCart(p.n) ? '>' + inCart(p.n) + ' in cart' : ' hidden>') + '</span></div>' +
+          '<div class="p-body"><h3>' + e + '</h3><p class="p-meta">' + ic('pin') + '<span>' + esc(p.s) + '<span class="p-lg"> \u00B7 ' + esc(p.f) + (p.v ? ' \u00B7 Verified' : '') + '</span></span></p>' +
           '<div class="p-foot"><div class="p-price"><b>' + fmt(p.p) + '</b><span>' + esc(p.u) + '</span></div><button class="btn btn-dark p-view" type="button" aria-label="View ' + e + '"><span>View</span><span class="ico">' + ic('arrow') + '</span></button></div></div></article>';
       }).join('') : '<div class="m-empty"><p>Nothing matches those filters.</p><button type="button" data-reset>Reset filters</button></div>';
+      pager.innerHTML = pagerHTML(pages, F.page); pager.hidden = pages < 2;
     }
+    pager.addEventListener('click', function(e){
+      var b = e.target.closest('.pg'); if (!b || b.disabled) return;
+      F.page = +b.dataset.p; render(true);
+      var cur = pager.querySelector('.pg.on'); if (cur) cur.focus({ preventScroll: true });
+      $('.m-bar').scrollIntoView({ behavior:smooth, block:'start' });
+    });
+    (small.addEventListener ? small.addEventListener.bind(small, 'change') : small.addListener.bind(small))(function(){ render(true); });
     grid.addEventListener('click', function(e){
       if (e.target.closest('[data-reset]')){ resetAll(); return; }
       var c = e.target.closest('.p-card'); if (c) openProduct(c.dataset.name, c.querySelector('.p-view'));

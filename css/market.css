@@ -119,6 +119,42 @@ svg.p-art{width:120px;height:120px}
 .co-card[data-tone=light] .btn .ico{background:#fff;color:var(--ink)}
 .co-card .btn.done{background:#8EDB78;color:var(--ink)}
 
+/* pagination */
+.m-bar{scroll-margin-top:96px}
+.m-pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;margin-top:36px}
+.m-pager[hidden]{display:none}
+.pg{display:grid;place-items:center;min-width:48px;height:48px;padding:0 8px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font:700 15px/1 var(--font-body);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);transition:background .3s,color .3s,transform .3s var(--ease)}
+.pg:hover:not(:disabled){background:rgba(255,255,255,.26)}
+.pg:active:not(:disabled){transform:scale(.94)}
+.pg.on{background:#fff;color:var(--ink);box-shadow:none}
+.pg:disabled{opacity:.4;cursor:default}
+.pg-nav{background:var(--ink);box-shadow:none}
+.pg-nav:hover:not(:disabled){background:#000}
+.pg-prev svg{transform:rotate(180deg)}
+.pg-gap{padding:0 4px;font-weight:700;color:rgba(255,255,255,.75)}
+
+/* phones: compact two-up cards */
+@media (max-width:699.98px){
+  .p-lg{display:none}
+  .p-card{padding:7px;border-radius:26px}
+  .p-tile{height:148px;border-radius:20px}
+  .p-art{width:84%;height:84%}
+  svg.p-art{width:84px;height:84px}
+  .p-chip,.p-org{top:8px;padding:5px 9px;font-size:11px}
+  .p-chip{left:8px}.p-org{right:8px}
+  .p-inc{left:8px;bottom:8px;padding:5px 9px;font-size:11px}
+  .p-body{gap:4px;padding:12px 5px 4px}
+  .p-body h3{font-size:18px}
+  .p-meta{font-size:12px;gap:4px}
+  .p-meta svg{width:13px;height:13px;flex:none}
+  .p-foot{flex-direction:column;align-items:stretch;gap:10px;margin-top:6px}
+  .p-price b{font-size:21px}
+  .p-view.btn{width:100%;height:42px;padding:4px 4px 4px 16px;justify-content:space-between;font-size:14px}
+  .p-view .ico{width:34px;height:34px}
+  .pg{min-width:42px;height:42px;font-size:14px}
+  .m-pager{gap:6px}
+}
+
 /* custom dropdown (replaces every native select) */
 .dd{position:relative}
 .dd select{display:none}
@@ -241,5 +277,5 @@ svg.p-art{width:120px;height:120px}
   .rf-done{display:flex}
   .m-fbtn{display:inline-flex}
   .m-count{margin-left:0;flex:1 0 100%}
-  .m-grid{grid-template-columns:1fr}
+  .m-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 }
