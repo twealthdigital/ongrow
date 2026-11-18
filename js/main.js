@@ -1,7 +1,5 @@
 /* Shared helpers. Every page loads this first. */
 window.Ohgrow = (function(){
-  /* signed-in visitors never see the Sell tab. Marked here, before the header is loaded, so it never flashes. */
-  try{ var sess = JSON.parse(localStorage.getItem('ohgrow.session')); if (sess && sess.email) document.documentElement.classList.add('is-authed'); }catch(_){}
   var $ = function(s, r){ return (r || document).querySelector(s); };
   var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -158,8 +158,6 @@ body.au-open .head{z-index:97}
 .au-toast.show{opacity:1;transform:translate(-50%,0)}
 @media (min-width:1100px){.au-toast{bottom:32px}}
 
-/* ---------- Sell tab: hidden for signed-in visitors (header nav pill + mobile dock) ---------- */
-html.is-authed [data-nav="sell"]{display:none!important}
 
 /* ---------- loading screen after sign up, before the sell page ---------- */
 .au-load{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:24px;background:var(--bg);

@@ -51,11 +51,8 @@ main{display:block;min-width:0;padding-bottom:110px}
 .dock a:active{transform:scale(.94)}
 .dock a.is-active,.dock a.open{background:#fff;color:var(--ink)}
 .dock a.is-active span,.dock a.open span{max-width:96px;opacity:1;margin-left:8px}
-.dock a.dock-sell{background:var(--green);color:#fff}
-.dock a.dock-sell.is-active,.dock a.dock-sell.open{background:var(--green);color:#fff}
 .dock.has-open a.is-active:not(.open){background:transparent;color:#fff}
 .dock.has-open a.is-active:not(.open) span{max-width:0;opacity:0;margin-left:0}
-.dock.has-open a.dock-sell.is-active:not(.open){background:var(--green);color:#fff}
 
 /* mobile slide panel */
 .scrim{position:fixed;inset:0;z-index:60;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .4s}
@@ -110,7 +107,7 @@ main{display:block;min-width:0;padding-bottom:110px}
   .head .head-actions{display:flex!important;gap:10px}
   .head .head-cta{display:none!important}
   .head .circle.cart,.head .circle.acct-mob,.head .circle.burger{display:grid!important;width:48px;height:48px}
-  /* floating bottom nav: white pill, dark active tab with label, green sell circle */
+  /* floating bottom nav: dark pill, white active tab with label */
   .dock{display:flex!important;position:fixed!important;z-index:50}
   body[data-page="home"] .dock a[data-nav="home"]{background:#fff;color:var(--ink)}
   body[data-page="home"] .dock a[data-nav="home"] span{max-width:96px;opacity:1;margin-left:8px}
@@ -118,7 +115,7 @@ main{display:block;min-width:0;padding-bottom:110px}
   body[data-page="home"] .dock.has-open a[data-nav="home"]:not(.open) span{max-width:0;opacity:0;margin-left:0}
 }
 
-/* very narrow phones: tighten the dock so all five icons and the open label fit */
+/* very narrow phones: tighten the dock so all four icons and the open label fit */
 @media (max-width:359.98px){
   .dock{gap:2px;padding:5px}
   .dock a{height:42px;min-width:42px;padding:0 11px;font-size:12px}

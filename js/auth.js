@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=55#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=56#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){
@@ -69,8 +69,6 @@
     /* ---------- account buttons ---------- */
     function renderAccount(){
       var u = store.user();
-      document.documentElement.classList.toggle('is-authed', !!u);   /* hides the Sell tab (header + mobile dock) */
-      if (O.placePill) O.placePill();                                /* the header pill re-measures without it */
       $$('.acct-btn').forEach(function(b){
         b.dataset.state = u ? 'in' : 'out';
         b.setAttribute('aria-label', u ? 'Account, ' + u.name : 'Account');
