@@ -32,3 +32,11 @@
 .circle{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);transition:background .3s,color .3s,transform .4s var(--ease)}
 .circle:hover{background:var(--green);color:#fff;transform:rotate(-8deg) scale(1.06)}
 .circle:disabled{opacity:.4;pointer-events:none}
+/* sell button: after sign in it reads "Add products" and its plus turns into the arrow on hover */
+.sell-cta .ico{position:relative}
+.sell-cta .ico svg{grid-area:1/1;transition:transform .45s var(--ease),opacity .35s var(--ease)}
+.sell-cta .i-plus{display:none}
+.sell-cta[data-in] .i-plus{display:block}
+.sell-cta[data-in] .i-arr{opacity:0;transform:translateX(-6px) rotate(-45deg) scale(.6)}
+.sell-cta[data-in]:hover .ico svg.i-arr,.sell-cta[data-in]:focus-visible .ico svg.i-arr{opacity:1;transform:translateX(3px)}
+.sell-cta[data-in]:hover .ico svg.i-plus,.sell-cta[data-in]:focus-visible .ico svg.i-plus{opacity:0;transform:rotate(90deg) scale(.6)}

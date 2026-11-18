@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=57#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=58#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){
@@ -69,6 +69,10 @@
     /* ---------- account buttons ---------- */
     function renderAccount(){
       var u = store.user();
+      $$('.sell-cta').forEach(function(b){
+        var l = $('.lbl', b); if (l) l.textContent = u ? 'Add products' : 'Start selling';
+        if (u) b.setAttribute('data-in', ''); else b.removeAttribute('data-in');
+      });
       $$('.acct-btn').forEach(function(b){
         b.dataset.state = u ? 'in' : 'out';
         b.setAttribute('aria-label', u ? 'Account, ' + u.name : 'Account');

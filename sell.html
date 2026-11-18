@@ -7,19 +7,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="css/base.css?v=57">
-  <link rel="stylesheet" href="css/components.css?v=57">
-  <link rel="stylesheet" href="css/layout.css?v=57">
-  <link rel="stylesheet" href="css/market.css?v=57">
-  <link rel="stylesheet" href="css/auth.css?v=57">
-  <link rel="stylesheet" href="css/sell.css?v=57">
+  <link rel="stylesheet" href="css/base.css?v=58">
+  <link rel="stylesheet" href="css/components.css?v=58">
+  <link rel="stylesheet" href="css/layout.css?v=58">
+  <link rel="stylesheet" href="css/market.css?v=58">
+  <link rel="stylesheet" href="css/auth.css?v=58">
+  <link rel="stylesheet" href="css/sell.css?v=58">
 </head>
 <body data-page="sell">
   <div class="wrap">
-    <div data-include="components/header.html?v=57"></div>
+    <div data-include="components/header.html?v=58"></div>
 
     <div class="content">
-      <div data-include="components/side-rail.html?v=57"></div>
+      <div data-include="components/side-rail.html?v=58"></div>
 
       <main id="sell" aria-labelledby="slTitle">
         <header class="sl-head">
@@ -33,7 +33,7 @@
             <h2 id="slPh">Photos <small>Up to 4. The first one is the cover.</small></h2>
             <div class="sl-drop" id="slDrop">
               <input id="slFile" type="file" accept="image/*" multiple hidden>
-              <button class="sl-pick" id="slPick" type="button"><span class="sl-up"><svg class="i"><use href="assets/icons/sprite.svg?v=57#upload"/></svg></span><b>Add photos</b><span>or drop them here</span></button>
+              <button class="sl-pick" id="slPick" type="button"><span class="sl-up"><svg class="i"><use href="assets/icons/sprite.svg?v=58#upload"/></svg></span><b>Add photos</b><span>or drop them here</span></button>
             </div>
             <ul class="sl-thumbs" id="slThumbs" aria-label="Chosen photos"></ul>
             <small class="sl-err" id="slPhotoErr" role="alert" hidden></small>
@@ -46,7 +46,7 @@
                 <input name="name" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Fresh tomatoes" required>
                 <small class="sl-err" role="alert" hidden></small></label>
               <label class="sl-f"><span class="sl-l">Category</span>
-            <span class="sl-sel"><select name="cat" required><option value="" disabled selected>Choose a category</option><option>Vegetables</option><option>Leafy greens</option><option>Fruits</option><option>Tubers</option><option>Grains</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=57#chev"/></svg></span>
+            <span class="sl-sel"><select name="cat" required><option value="" disabled selected>Choose a category</option><option>Vegetables</option><option>Leafy greens</option><option>Fruits</option><option>Tubers</option><option>Grains</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=58#chev"/></svg></span>
             <small class="sl-err" role="alert" hidden></small></label>
               <div class="sl-f"><span class="sl-l" id="slHl">Harvested</span>
                 <div class="sl-seg" role="radiogroup" aria-labelledby="slHl">
@@ -60,7 +60,7 @@
                 <span class="sl-pre"><b>&#8358;</b><input name="price" type="number" inputmode="numeric" min="1" max="5000000" step="1" placeholder="0" required></span>
                 <small class="sl-err" role="alert" hidden></small></label>
               <label class="sl-f"><span class="sl-l">Sold</span>
-            <span class="sl-sel"><select name="unit" required><option value="" disabled selected>Choose a unit</option><option>per kg</option><option>per basket</option><option>per crate</option><option>per bag</option><option>per bundle</option><option>per bunch</option><option>per tuber</option><option>per tonne</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=57#chev"/></svg></span>
+            <span class="sl-sel"><select name="unit" required><option value="" disabled selected>Choose a unit</option><option>per kg</option><option>per basket</option><option>per crate</option><option>per bag</option><option>per bundle</option><option>per bunch</option><option>per tuber</option><option>per tonne</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=58#chev"/></svg></span>
             <small class="sl-err" role="alert" hidden></small></label>
               <label class="sl-f"><span class="sl-l">Quantity available</span>
                 <input name="qty" type="number" inputmode="numeric" min="1" max="100000" step="1" placeholder="e.g. 40" required>
@@ -74,7 +74,7 @@
             <h2 id="slWh">Pickup and contact</h2>
             <div class="sl-grid">
               <label class="sl-f"><span class="sl-l">State</span>
-            <span class="sl-sel"><select name="state" required><option value="" disabled selected>Choose a state</option><option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option><option>Anambra</option><option>Bauchi</option><option>Bayelsa</option><option>Benue</option><option>Borno</option><option>Cross River</option><option>Delta</option><option>Ebonyi</option><option>Edo</option><option>Ekiti</option><option>Enugu</option><option>FCT Abuja</option><option>Gombe</option><option>Imo</option><option>Jigawa</option><option>Kaduna</option><option>Kano</option><option>Katsina</option><option>Kebbi</option><option>Kogi</option><option>Kwara</option><option>Lagos</option><option>Nasarawa</option><option>Niger</option><option>Ogun</option><option>Ondo</option><option>Osun</option><option>Oyo</option><option>Plateau</option><option>Rivers</option><option>Sokoto</option><option>Taraba</option><option>Yobe</option><option>Zamfara</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=57#chev"/></svg></span>
+            <span class="sl-sel"><select name="state" required><option value="" disabled selected>Choose a state</option><option>Abia</option><option>Adamawa</option><option>Akwa Ibom</option><option>Anambra</option><option>Bauchi</option><option>Bayelsa</option><option>Benue</option><option>Borno</option><option>Cross River</option><option>Delta</option><option>Ebonyi</option><option>Edo</option><option>Ekiti</option><option>Enugu</option><option>FCT Abuja</option><option>Gombe</option><option>Imo</option><option>Jigawa</option><option>Kaduna</option><option>Kano</option><option>Katsina</option><option>Kebbi</option><option>Kogi</option><option>Kwara</option><option>Lagos</option><option>Nasarawa</option><option>Niger</option><option>Ogun</option><option>Ondo</option><option>Osun</option><option>Oyo</option><option>Plateau</option><option>Rivers</option><option>Sokoto</option><option>Taraba</option><option>Yobe</option><option>Zamfara</option></select><svg class="i"><use href="assets/icons/sprite.svg?v=58#chev"/></svg></span>
             <small class="sl-err" role="alert" hidden></small></label>
               <label class="sl-f"><span class="sl-l">Town or area</span>
                 <input name="town" type="text" maxlength="60" autocomplete="off" placeholder="e.g. Uyo" required>
@@ -95,7 +95,7 @@
           </section>
 
           <div class="sl-actions">
-            <button class="btn btn-dark sl-submit" type="submit"><span class="sl-lbl">Publish product</span><span class="ico"><svg class="i"><use href="assets/icons/sprite.svg?v=57#arrow"/></svg></span></button>
+            <button class="btn btn-dark sl-submit" type="submit"><span class="sl-lbl">Publish product</span><span class="ico"><svg class="i"><use href="assets/icons/sprite.svg?v=58#arrow"/></svg></span></button>
             <p class="sl-formerr" id="slFormErr" role="alert" hidden></p>
           </div>
         </form>
@@ -109,13 +109,13 @@
     </div>
   </div>
 
-  <div data-include="components/mobile-dock.html?v=57"></div>
-  <div data-include="components/mobile-panel.html?v=57"></div>
-  <div data-include="components/auth-dialog.html?v=57"></div>
+  <div data-include="components/mobile-dock.html?v=58"></div>
+  <div data-include="components/mobile-panel.html?v=58"></div>
+  <div data-include="components/auth-dialog.html?v=58"></div>
 
-  <script src="js/main.js?v=57"></script>
-  <script src="js/layout.js?v=57"></script>
-  <script src="js/auth.js?v=57"></script>
-  <script src="js/sell.js?v=57"></script>
+  <script src="js/main.js?v=58"></script>
+  <script src="js/layout.js?v=58"></script>
+  <script src="js/auth.js?v=58"></script>
+  <script src="js/sell.js?v=58"></script>
 </body>
 </html>
