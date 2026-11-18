@@ -62,7 +62,7 @@ main{display:block;min-width:0;padding-bottom:110px}
 .scrim.open{opacity:.5;pointer-events:auto}
 .panel{position:fixed;z-index:70;top:0;right:0;bottom:0;width:min(88vw,380px);background:var(--surface);border-left:1.5px solid var(--line);display:flex;flex-direction:column;gap:18px;
   padding:calc(env(safe-area-inset-top,0px) + 18px) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 22px) 22px;
-  transform:translateX(102%);visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s;overflow:auto}
+  transform:translateX(102%);visibility:hidden;transition:transform .55s var(--ease),visibility 0s .55s;overflow-x:hidden;overflow-y:auto}
 .panel.open{transform:none;visibility:visible;transition:transform .55s var(--ease)}
 .panel-top{display:flex;justify-content:space-between;align-items:center}
 .panel ul{list-style:none;margin:8px 0 0;padding:0;display:grid}

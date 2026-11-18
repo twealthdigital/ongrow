@@ -71,9 +71,14 @@ body.in-market .am[data-tone="dark"]{background:var(--pane)}
 .dock a.is-raised span{max-width:96px;opacity:1;margin-left:8px}
 
 /* ---------- sell gate dialog ---------- */
-.au-scrim{position:fixed;inset:0;z-index:95;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .4s}
-.au-scrim.open{opacity:.55;pointer-events:auto}
-.au{--mint:#8EDB78;position:fixed;z-index:100;width:min(420px,calc(100vw - 32px));border-radius:32px;background:var(--ink);color:#fff;
+.au-scrim{position:fixed;inset:0;z-index:95;background:rgba(13,17,11,.55);opacity:0;pointer-events:none;transition:opacity .4s}
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .au-scrim{background:rgba(13,17,11,.34);-webkit-backdrop-filter:blur(10px) saturate(1.05);backdrop-filter:blur(10px) saturate(1.05)}
+}
+.au-scrim.open{opacity:1;pointer-events:auto}
+/* the header stays sharp and clickable above the blur while the dialog is open */
+body.au-open .head{z-index:97}
+.au{--mint:#8EDB78;position:fixed;z-index:100;width:min(460px,calc(100vw - 32px));border-radius:32px;background:var(--ink);color:#fff;
   box-shadow:0 40px 80px -20px rgba(8,18,6,.6),0 0 0 1px rgba(255,255,255,.06);
   opacity:0;visibility:hidden;transform:translateY(-12px) scale(.6);transform-origin:var(--ox,50%) var(--oy,50%);
   transition:opacity .25s,transform .45s var(--ease),visibility 0s .45s}
@@ -82,7 +87,8 @@ body.in-market .am[data-tone="dark"]{background:var(--pane)}
 .au.is-pop{max-height:calc(100dvh - var(--top,0px) - 16px)}
 .au-tail{display:none;position:absolute;top:-8px;left:calc(var(--tail,50%) - 9px);width:18px;height:18px;border-radius:4px;background:var(--ink);transform:rotate(45deg)}
 .au.is-pop .au-tail{display:block}
-.au-in{position:relative;max-height:inherit;overflow:auto;overscroll-behavior:contain;border-radius:inherit;padding:30px 28px 28px}
+.au-in{position:relative;max-height:inherit;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border-radius:inherit;padding:30px 28px 28px}
+.au-clip{position:absolute;inset:0 0 auto 0;height:140px;overflow:hidden;border-radius:inherit;pointer-events:none}
 .au-leaf{position:absolute;right:-30px;top:-34px;width:170px;height:170px;color:#fff;--rib:var(--ink);opacity:.06;transform:rotate(14deg);pointer-events:none}
 .au-x{position:absolute;z-index:2;top:18px;right:18px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;transition:background .3s,color .3s,transform .4s var(--ease)}
 .au-x:hover{background:#fff;color:var(--ink);transform:rotate(90deg)}

@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=52#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=53#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){
@@ -213,7 +213,7 @@
       setMode(o.mode || 'signup', false);
       forms.forEach(function(f){ f.reset(); clearErrors(f); resetEye(f); });
       dlg.inert = false;
-      if (!st.pop){ scrim.classList.add('open'); body.classList.add('lock'); }
+      scrim.classList.add('open'); body.classList.add('au-open'); if (!st.pop) body.classList.add('lock');
       if (a) a.classList.add('is-raised');
       placeDialog();
       requestAnimationFrame(function(){ requestAnimationFrame(function(){ dlg.classList.add('open'); }); });
@@ -222,7 +222,7 @@
     function closeAuth(restore){
       if (!st.open) return;
       st.open = false;
-      dlg.classList.remove('open'); dlg.inert = true; scrim.classList.remove('open'); body.classList.remove('lock');
+      dlg.classList.remove('open'); dlg.inert = true; scrim.classList.remove('open'); body.classList.remove('au-open'); body.classList.remove('lock');
       if (st.anchor) st.anchor.classList.remove('is-raised');
       if (restore && st.opener && st.opener.focus && document.contains(st.opener)) st.opener.focus({ preventScroll:true });
       st.anchor = null;
