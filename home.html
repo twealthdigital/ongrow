@@ -9,17 +9,18 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=DM+Sans:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="css/base.css?v=51">
   <link rel="stylesheet" href="css/components.css?v=51">
-  <link rel="stylesheet" href="css/layout.css?v=51">
+  <link rel="stylesheet" href="css/layout.css?v=52">
   <link rel="stylesheet" href="css/home.css?v=51">
   <link rel="stylesheet" href="css/market.css?v=51">
   <link rel="stylesheet" href="css/guide.css?v=51">
+  <link rel="stylesheet" href="css/auth.css?v=52">
 </head>
 <body data-page="home">
   <div class="wrap">
-    <div data-include="components/header.html?v=51"></div>
+    <div data-include="components/header.html?v=52"></div>
 
     <div class="content">
-      <div data-include="components/side-rail.html?v=51"></div>
+      <div data-include="components/side-rail.html?v=52"></div>
 
       <main>
         <section id="home">
@@ -121,7 +122,7 @@
           </aside>
         </section>
 
-        <section id="market" aria-labelledby="mTitle">
+        <section id="market" data-tone="dark" aria-labelledby="mTitle">
           <div class="m-in">
             <div class="m-head">
               <span class="m-eyebrow">Live market</span>
@@ -153,7 +154,7 @@
             <button class="co-arr" id="coNext" type="button" aria-label="Next basket"><svg class="i"><use href="assets/icons/sprite.svg?v=51#arrow"/></svg></button>
           </div>
         </section>
-        <section id="guide" aria-labelledby="gTitle">
+        <section id="guide" data-tone="dark" aria-labelledby="gTitle">
           <div class="g-head">
             <span class="g-eyebrow">Farmer guide</span>
             <h2 id="gTitle"><span>Grown well,</span><span class="outline">listed better.</span></h2>
@@ -232,9 +233,11 @@
 
   <div data-include="components/mobile-dock.html?v=51"></div>
   <div data-include="components/mobile-panel.html?v=51"></div>
+  <div data-include="components/auth-dialog.html?v=52"></div>
 
   <script src="js/main.js?v=51"></script>
   <script src="js/layout.js?v=51"></script>
+  <script src="js/auth.js?v=52"></script>
   <script src="js/home.js?v=51"></script>
   <script src="js/market.js?v=51"></script>
   <script src="js/guide.js?v=51"></script>

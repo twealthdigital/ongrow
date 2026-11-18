@@ -1,0 +1,153 @@
+/* Auth: account pill, account dropdown, the sell gate dialog and the toast */
+
+/* ---------- account pill (desktop rail, under the menu) ---------- */
+.rail-account{display:none}
+.acct-btn .acct-init{display:none}
+.acct-btn[data-state="in"] svg{display:none}
+.acct-btn[data-state="in"] .acct-init{display:block;font:700 19px/1 var(--font-display);text-transform:uppercase}
+@media (min-width:1100px){
+  .rail-account{--acct-bg:var(--ink);--acct-fg:#fff;--acct-chip:rgba(255,255,255,.14);display:block;padding:12px;border-radius:28px;background:var(--acct-bg);color:var(--acct-fg);
+    transition:background-color .45s var(--ease),color .45s var(--ease)}
+  .rail-account[data-tone="dark"]{--acct-bg:var(--soft);--acct-fg:var(--ink);--acct-chip:rgba(13,17,11,.09)}
+  body.in-market .rail-account[data-tone="dark"]{--acct-bg:var(--pane)}
+  .rail-account .acct-btn{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--acct-chip);color:inherit;
+    transition:background .3s,color .3s,transform .4s var(--ease);-webkit-tap-highlight-color:transparent}
+  .rail-account .acct-btn svg{width:22px;height:22px;stroke-width:2}
+  .rail-account .acct-btn:hover,.rail-account .acct-btn[aria-expanded="true"]{background:var(--green);color:#fff}
+  .rail-account .acct-btn:active{transform:scale(.92)}
+  .rail-account .acct-btn:focus-visible{outline-color:var(--leaf)}
+}
+/* mobile header button: it is a .circle, only the initial needs a look */
+.acct-mob[data-state="in"]{background:var(--green);color:#fff;box-shadow:none}
+.acct-mob[data-state="in"] .acct-init{font-size:18px}
+
+/* ---------- account dropdown ---------- */
+.am{--mint:#8EDB78;position:fixed;z-index:96;left:0;top:0;width:264px;border-radius:26px;background:var(--ink);color:#fff;
+  box-shadow:0 28px 56px -16px rgba(8,18,6,.6);opacity:0;visibility:hidden;transform:scale(.6);transform-origin:var(--ox,0) var(--oy,0);
+  transition:opacity .22s,transform .4s var(--ease),visibility 0s .4s}
+.am.open{opacity:1;visibility:visible;transform:none;transition:opacity .25s,transform .55s var(--ease)}
+.am[data-tone="dark"]{background:var(--soft);color:var(--ink)}
+body.in-market .am[data-tone="dark"]{background:var(--pane)}
+.am[data-tone="paper"]{background:var(--surface);color:var(--ink);box-shadow:0 28px 56px -16px rgba(8,18,6,.4),0 0 0 1.5px var(--line)}
+.am-body{position:relative;display:grid;gap:10px;padding:18px}
+.am-tail{position:absolute;width:16px;height:16px;border-radius:4px;background:inherit;transform:rotate(45deg)}
+.am.is-side .am-tail{left:-7px;top:calc(var(--tail,30px) - 8px)}
+.am.is-drop .am-tail{top:-7px;right:calc(var(--tail,24px) - 8px)}
+.am[data-tone="paper"] .am-tail{box-shadow:-1.5px -1.5px 0 var(--line)}
+.am-title{font:600 24px/1.05 var(--font-display);letter-spacing:-.035em}
+.am-sub{margin-top:-4px;font-size:14px;line-height:1.4;opacity:.7}
+.am-who{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;align-items:center;margin-bottom:4px}
+.am-av{grid-row:span 2;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--green);color:#fff;font:700 20px/1 var(--font-display);text-transform:uppercase}
+.am-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 20px/1.1 var(--font-display);letter-spacing:-.03em}
+.am-mail{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;opacity:.65}
+.am-item{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;height:50px;padding:0 8px 0 20px;border-radius:999px;background:rgba(255,255,255,.09);color:inherit;font-weight:700;text-align:left;
+  transition:background .3s,color .3s,transform .4s var(--ease)}
+.am-item:hover{background:rgba(255,255,255,.17)}
+.am-item:active{transform:scale(.97)}
+.am-go{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.14);transition:transform .4s var(--ease)}
+.am-go .i{width:18px;height:18px}
+.am-item:hover .am-go{transform:translateX(3px)}
+.am-item.is-main{background:var(--mint);color:var(--ink)}
+.am-item.is-main:hover{background:#fff}
+.am-item.is-main .am-go{background:var(--ink);color:#fff}
+.am[data-tone="dark"] .am-item,.am[data-tone="paper"] .am-item{background:rgba(13,17,11,.07)}
+.am[data-tone="dark"] .am-item:hover,.am[data-tone="paper"] .am-item:hover{background:rgba(13,17,11,.13)}
+.am[data-tone="dark"] .am-go,.am[data-tone="paper"] .am-go{background:rgba(13,17,11,.1)}
+.am[data-tone="dark"] .am-item.is-main,.am[data-tone="paper"] .am-item.is-main{background:var(--ink);color:#fff}
+.am[data-tone="dark"] .am-item.is-main:hover,.am[data-tone="paper"] .am-item.is-main:hover{background:var(--green-d)}
+.am[data-tone="dark"] .am-item.is-main .am-go,.am[data-tone="paper"] .am-item.is-main .am-go{background:#fff;color:var(--ink)}
+.am .am-item:focus-visible{outline-color:var(--mint)}
+.am[data-tone="dark"] .am-item:focus-visible,.am[data-tone="paper"] .am-item:focus-visible{outline-color:var(--green)}
+.am.open .am-body>*{animation:auRise .5s var(--ease) both}
+.am.open .am-body>:nth-child(2){animation-delay:.05s}
+.am.open .am-body>:nth-child(3){animation-delay:.1s}
+
+/* ---------- Sell and Start selling lift while the dialog is open ---------- */
+.nav-pill a.is-raised,.nav-pill a.is-raised:hover{background:var(--green);color:#fff;transform:translateY(-4px) scale(1.08);box-shadow:0 14px 26px -10px rgba(13,17,11,.6);
+  transition:background .3s,color .3s,transform .55s cubic-bezier(.3,1.5,.5,1),box-shadow .4s}
+.btn.is-raised{transform:translateY(-3px);box-shadow:0 16px 28px -12px rgba(13,17,11,.55);transition:color .35s,transform .55s cubic-bezier(.3,1.5,.5,1),box-shadow .4s}
+.btn.is-raised::before{transform:translateY(0)!important;border-radius:0!important}
+.dock a.is-raised{background:var(--green)!important;color:#fff!important}
+.dock a.is-raised span{max-width:96px;opacity:1;margin-left:8px}
+
+/* ---------- sell gate dialog ---------- */
+.au-scrim{position:fixed;inset:0;z-index:95;background:var(--ink);opacity:0;pointer-events:none;transition:opacity .4s}
+.au-scrim.open{opacity:.55;pointer-events:auto}
+.au{--mint:#8EDB78;position:fixed;z-index:100;width:min(420px,calc(100vw - 32px));border-radius:32px;background:var(--ink);color:#fff;
+  box-shadow:0 40px 80px -20px rgba(8,18,6,.6),0 0 0 1px rgba(255,255,255,.06);
+  opacity:0;visibility:hidden;transform:translateY(-12px) scale(.6);transform-origin:var(--ox,50%) var(--oy,50%);
+  transition:opacity .25s,transform .45s var(--ease),visibility 0s .45s}
+.au.open{opacity:1;visibility:visible;transform:none;transition:opacity .3s,transform .65s var(--ease)}
+.au:not(.is-pop){inset:0;margin:auto;height:fit-content;max-height:calc(100dvh - 32px)}
+.au.is-pop{max-height:calc(100dvh - var(--top,0px) - 16px)}
+.au-tail{display:none;position:absolute;top:-8px;left:calc(var(--tail,50%) - 9px);width:18px;height:18px;border-radius:4px;background:var(--ink);transform:rotate(45deg)}
+.au.is-pop .au-tail{display:block}
+.au-in{position:relative;max-height:inherit;overflow:auto;overscroll-behavior:contain;border-radius:inherit;padding:30px 28px 28px}
+.au-leaf{position:absolute;right:-30px;top:-34px;width:170px;height:170px;color:#fff;--rib:var(--ink);opacity:.06;transform:rotate(14deg);pointer-events:none}
+.au-x{position:absolute;z-index:2;top:18px;right:18px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;transition:background .3s,color .3s,transform .4s var(--ease)}
+.au-x:hover{background:#fff;color:var(--ink);transform:rotate(90deg)}
+.au :focus-visible{outline-color:var(--mint)}
+
+.au-head{position:relative;display:grid;gap:14px;justify-items:start;padding-right:46px}
+.au-chip{display:inline-block;padding:7px 11px;border-radius:999px;background:rgba(142,219,120,.13);color:var(--mint);font:600 11.5px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase}
+.au h2{font:600 clamp(34px,4.4vw,44px)/.98 var(--font-display);letter-spacing:-.04em}
+.au h2 span{display:block}
+.au .outline{-webkit-text-stroke-color:var(--mint)}
+@supports not (-webkit-text-stroke:1px #000){.au .outline{color:var(--mint)}}
+.au-head p{max-width:34ch;font-size:15px;line-height:1.5;color:rgba(255,255,255,.7)}
+
+.au-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;margin-top:22px;padding:5px;border-radius:999px;background:rgba(255,255,255,.07)}
+.au-thumb{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:999px;background:var(--mint);transition:transform .5s var(--ease)}
+.au[data-mode="signin"] .au-thumb{transform:translateX(100%)}
+.au-tabs button{position:relative;z-index:1;height:42px;border-radius:999px;color:rgba(255,255,255,.72);font-weight:700;transition:color .3s}
+.au-tabs button[aria-selected="true"]{color:var(--ink)}
+
+.au-form{display:grid;gap:16px;margin-top:20px}
+.au-form[hidden]{display:none}
+.au-form:not([hidden])>*{animation:auRise .55s var(--ease) both}
+.au-form>:nth-child(2){animation-delay:.05s}
+.au-form>:nth-child(3){animation-delay:.1s}
+.au-form>:nth-child(4){animation-delay:.15s}
+.au-form>:nth-child(5){animation-delay:.2s}
+.au-form.shake{animation:auShake .42s}
+.au-f{display:grid;gap:8px}
+.au-f>span:first-child{font:600 12px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.au-f input{display:block;width:100%;height:54px;padding:0 18px;border:0;border-radius:16px;background:rgba(255,255,255,.07);color:#fff;font:500 16px/1 var(--font-body);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);transition:box-shadow .25s,background .25s}
+.au-f input::placeholder{color:rgba(255,255,255,.34)}
+.au-f input:hover{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+.au-f input:focus{outline:0;background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 2px var(--mint),0 0 0 5px rgba(142,219,120,.16)}
+.au-f input:-webkit-autofill{-webkit-text-fill-color:#fff;caret-color:#fff;-webkit-box-shadow:inset 0 0 0 1000px #1c2218,inset 0 0 0 1.5px rgba(255,255,255,.14)}
+.au-f.has-err input{box-shadow:inset 0 0 0 2px #FF9B88}
+.au-f.has-err input:focus{box-shadow:inset 0 0 0 2px #FF9B88,0 0 0 5px rgba(255,155,136,.18)}
+.au-pw{position:relative;display:block}
+.au-pw input{padding-right:84px}
+.au-eye{position:absolute;top:8px;right:8px;height:38px;padding:0 12px;border-radius:12px;background:rgba(142,219,120,.12);color:var(--mint);font:700 11.5px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;transition:background .3s}
+.au-eye:hover{background:rgba(142,219,120,.24)}
+.au-err{font-size:13px;line-height:1.4;color:#FFB4A6}
+.au-err[hidden]{display:none}
+
+.au-submit{width:100%;justify-content:space-between;margin-top:4px;background:var(--mint);color:var(--ink)}
+.au-submit::before{background:#fff}
+.au-submit .ico{background:var(--ink);color:#fff}
+.au-submit.is-busy{pointer-events:none;opacity:.7}
+.au-swap{text-align:center;font-size:14px;color:rgba(255,255,255,.6)}
+.au-swap button{color:var(--mint);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.au-swap button:hover{color:#fff}
+
+@keyframes auRise{from{opacity:0;transform:translateY(14px)}}
+@keyframes auShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+
+/* phones: the dialog is a bottom sheet */
+@media (max-width:719.98px){
+  .au:not(.is-pop){inset:auto 0 0 0;margin:0;width:100%;max-height:92dvh;border-radius:30px 30px 0 0;transform:translateY(104%);transform-origin:50% 100%}
+  .au:not(.is-pop).open{transform:none}
+  .au-in{padding:26px 22px calc(env(safe-area-inset-bottom,0px) + 24px)}
+  .au-x{top:16px;right:16px}
+}
+
+/* ---------- toast ---------- */
+.au-toast{position:fixed;z-index:110;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 88px);max-width:calc(100vw - 32px);padding:13px 20px;border-radius:999px;background:var(--ink);color:#fff;font-weight:600;
+  box-shadow:0 18px 36px -12px rgba(8,18,6,.6);opacity:0;transform:translate(-50%,18px);pointer-events:none;transition:opacity .3s,transform .5s var(--ease)}
+.au-toast.show{opacity:1;transform:translate(-50%,0)}
+@media (min-width:1100px){.au-toast{bottom:32px}}

@@ -1,0 +1,64 @@
+<div class="au-scrim" id="auScrim"></div>
+
+<section class="au" id="auth" role="dialog" aria-modal="true" aria-labelledby="auTitle" data-mode="signup" inert>
+  <span class="au-tail" aria-hidden="true"></span>
+  <div class="au-in">
+    <svg class="au-leaf" aria-hidden="true"><use href="assets/icons/sprite.svg?v=52#leaf"/></svg>
+    <button class="au-x" id="auClose" type="button" aria-label="Close"><svg class="i"><use href="assets/icons/sprite.svg?v=52#close"/></svg></button>
+
+    <header class="au-head">
+      <span class="au-chip" id="auChip">Before you sell</span>
+      <h2 id="auTitle"><span id="auT1">Start selling</span><span class="outline" id="auT2">in a minute</span></h2>
+      <p id="auSub">Make a free account, then list your produce and reach buyers near you.</p>
+    </header>
+
+    <div class="au-tabs" role="tablist" aria-label="Sign up or sign in">
+      <span class="au-thumb" aria-hidden="true"></span>
+      <button type="button" role="tab" id="auTabUp" data-mode="signup" aria-selected="true" aria-controls="auFormUp">Sign up</button>
+      <button type="button" role="tab" id="auTabIn" data-mode="signin" aria-selected="false" aria-controls="auFormIn">Sign in</button>
+    </div>
+
+    <form class="au-form" id="auFormUp" data-mode="signup" role="tabpanel" aria-labelledby="auTabUp" novalidate>
+      <label class="au-f"><span>Full name</span>
+        <input name="name" type="text" autocomplete="name" autocapitalize="words" placeholder="Your full name" required>
+        <small class="au-err" role="alert" hidden></small>
+      </label>
+      <label class="au-f"><span>Email</span>
+        <input name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required>
+        <small class="au-err" role="alert" hidden></small>
+      </label>
+      <label class="au-f"><span>Password</span>
+        <span class="au-pw">
+          <input name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" required>
+          <button class="au-eye" type="button" aria-label="Show password" aria-pressed="false">Show</button>
+        </span>
+        <small class="au-err" role="alert" hidden></small>
+      </label>
+      <button class="btn au-submit" type="submit"><span class="au-lbl">Create account</span><span class="ico"><svg class="i"><use href="assets/icons/sprite.svg?v=52#arrow"/></svg></span></button>
+      <p class="au-swap">Already have an account? <button type="button" data-mode="signin">Sign in</button></p>
+    </form>
+
+    <form class="au-form" id="auFormIn" data-mode="signin" role="tabpanel" aria-labelledby="auTabIn" novalidate hidden>
+      <label class="au-f"><span>Email</span>
+        <input name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="you@example.com" required>
+        <small class="au-err" role="alert" hidden></small>
+      </label>
+      <label class="au-f"><span>Password</span>
+        <span class="au-pw">
+          <input name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+          <button class="au-eye" type="button" aria-label="Show password" aria-pressed="false">Show</button>
+        </span>
+        <small class="au-err" role="alert" hidden></small>
+      </label>
+      <button class="btn au-submit" type="submit"><span class="au-lbl">Sign in</span><span class="ico"><svg class="i"><use href="assets/icons/sprite.svg?v=52#arrow"/></svg></span></button>
+      <p class="au-swap">New to Ohgrow? <button type="button" data-mode="signup">Create an account</button></p>
+    </form>
+  </div>
+</section>
+
+<div class="am" id="acctMenu" role="menu" aria-label="Account" data-tone="light" inert>
+  <span class="am-tail" aria-hidden="true"></span>
+  <div class="am-body"></div>
+</div>
+
+<div class="au-toast" id="auToast" role="status" aria-live="polite"></div>
