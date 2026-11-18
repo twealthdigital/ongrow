@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=47#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=48#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -341,29 +341,66 @@
     }
     $('#rfReset').addEventListener('click', resetAll);
 
-    /* ---------- collections: ready-made baskets ---------- */
+    /* ---------- collections: ready-made baskets (3 card carousel on desktop, stacked cards on phones) ---------- */
     var BUNDLES = [
-      { n:'Stew starter',  t:'dark',  d:'Everything for a rich pot of stew, picked the same morning.',        items:['Ripe tomatoes', 'Sweet peppers', 'Leafy greens'] },
-      { n:'Green kitchen', t:'green', d:'Crunchy, leafy and bright for salads, steaming and stir-fries.',     items:['Fresh broccoli', 'Leafy greens', 'Sweet peppers'] },
-      { n:'Vitamin boost', t:'light', d:'Juicy oranges, broccoli and tomatoes to keep the week fresh.',       items:['Juicy oranges', 'Fresh broccoli', 'Ripe tomatoes'] }
+      { n:'Stew starter',  t:'dark',  d:'Everything for a rich pot of stew, picked the same morning.',            items:['Ripe tomatoes', 'Sweet peppers', 'Leafy greens'] },
+      { n:'Yam night',     t:'light', d:'Yam with fresh tomatoes and greens for a proper pot of vegetable sauce.', items:['Yam tubers', 'Ripe tomatoes', 'Leafy greens'] },
+      { n:'Street roast',  t:'green', d:'Corn, plantain and yam ready for the fire, the way the roadside does it.', items:['Sweet corn', 'Plantain bunch', 'Yam tubers'] },
+      { n:'Green kitchen', t:'dark',  d:'Crunchy, leafy and bright for salads, steaming and stir fries.',         items:['Fresh broccoli', 'Leafy greens', 'Sweet peppers'] },
+      { n:'Fry up',        t:'light', d:'Plantain, tomatoes and peppers for golden fried plantain with a hot sauce.', items:['Plantain bunch', 'Ripe tomatoes', 'Sweet peppers'] },
+      { n:'Vitamin boost', t:'green', d:'Juicy oranges, broccoli and tomatoes to keep the week fresh.',           items:['Juicy oranges', 'Fresh broccoli', 'Ripe tomatoes'] },
+      { n:'Weekend feast', t:'dark',  d:'Yam, sweet corn and broccoli for a big family table on Sunday.',         items:['Yam tubers', 'Sweet corn', 'Fresh broccoli'] },
+      { n:'Snack basket',  t:'light', d:'Sweet corn, plantain and oranges for easy snacking all week.',           items:['Sweet corn', 'Juicy oranges', 'Plantain bunch'] }
     ];
     var coGrid = $('#coGrid');
     if (coGrid){
+      var pad2 = function(x){ return (x < 10 ? '0' : '') + x; };
       coGrid.innerHTML = BUNDLES.map(function(b, i){
         var ps = b.items.map(function(n){ return byName[n]; }), sum = ps.reduce(function(a, p){ return a + p.p; }, 0);
         return '<article class="co-card" data-tone="' + b.t + '" data-i="' + i + '" style="--i:' + i + '">' +
+          '<span class="co-no" aria-hidden="true">' + pad2(i + 1) + '</span>' +
           '<div class="co-art" aria-hidden="true">' + ps.map(function(p){ return art(p, ''); }).join('') + '</div>' +
           '<p class="co-n">' + ps.length + ' items</p><h3>' + esc(b.n) + '</h3><p class="co-d">' + esc(b.d) + '</p>' +
           '<p class="co-list">' + ps.map(function(p){ return esc(p.n); }).join(' \u00B7 ') + '</p>' +
           '<div class="co-foot"><div class="co-price"><span>Basket total</span><b>' + fmt(sum) + '</b></div>' +
           '<button class="btn co-add" type="button" aria-label="Add the ' + esc(b.n) + ' basket to cart"><span>Add basket</span><span class="ico">' + ic('plus') + '</span></button></div></article>';
       }).join('');
+
+      var coCards = $$('.co-card', coGrid), coDots = $('#coDots'), coNum = $('#coNum'), coDesk = window.matchMedia('(min-width:1100px)'), coCur = 0, coN = BUNDLES.length;
+      $('#coTot').textContent = '/ ' + pad2(coN);
+      coDots.innerHTML = BUNDLES.map(function(b){ return '<button type="button" aria-label="Show ' + esc(b.n) + '"></button>'; }).join('');
+      function coGo(i){
+        coCur = ((i % coN) + coN) % coN;
+        coCards.forEach(function(c, k){
+          var d = ((k - coCur) % coN + coN) % coN; if (d > coN / 2) d -= coN;
+          var on = d === 0;
+          c.dataset.pos = on ? '0' : d === 1 ? '1' : d === -1 ? '-1' : 'x';
+          if (coDesk.matches) c.setAttribute('aria-hidden', on ? 'false' : 'true'); else c.removeAttribute('aria-hidden');
+          c.querySelector('.co-add').tabIndex = !coDesk.matches || on ? 0 : -1;
+        });
+        $$('button', coDots).forEach(function(x, k){ x.classList.toggle('on', k === coCur); });
+        coNum.textContent = pad2(coCur + 1); coNum.classList.remove('tick'); void coNum.offsetWidth; coNum.classList.add('tick');
+      }
+      coGo(0);
+      if (coDesk.addEventListener) coDesk.addEventListener('change', function(){ coGo(coCur); });
+      $('#coPrev').addEventListener('click', function(){ coGo(coCur - 1); });
+      $('#coNext').addEventListener('click', function(){ coGo(coCur + 1); });
+      coDots.addEventListener('click', function(e){
+        var x = e.target.closest('button'); if (x) coGo($$('button', coDots).indexOf(x));
+      });
+      $('#collections').addEventListener('keydown', function(e){
+        if (!coDesk.matches) return;
+        if (e.key === 'ArrowLeft') coGo(coCur - 1); else if (e.key === 'ArrowRight') coGo(coCur + 1);
+      });
+
       var coT = 0;
       coGrid.addEventListener('click', function(e){
+        var card = e.target.closest('.co-card'); if (!card) return;
+        if (coDesk.matches && card.dataset.pos !== '0'){ coGo(+card.dataset.i); return; }   /* tap a side card to bring it forward */
         var btn = e.target.closest('.co-add'); if (!btn) return;
-        var card = btn.closest('.co-card'), b = BUNDLES[+card.dataset.i];
-        b.items.forEach(function(n){ add(n, 1); });
-        fly(card.querySelector('.co-art img, .co-art svg'));
+        var b = BUNDLES[+card.dataset.i];
+        b.items.forEach(function(n){ add(n, 1); });   /* all three go into the cart */
+        $$('.co-art img, .co-art svg', card).forEach(function(im, k){ setTimeout(function(){ fly(im); }, k * 150); });   /* and all three pictures fly there */
         var t = btn.querySelector('span'); t.textContent = 'Added to cart'; btn.classList.add('done');
         clearTimeout(coT); coT = setTimeout(function(){ t.textContent = 'Add basket'; btn.classList.remove('done'); }, 2000);
       });
