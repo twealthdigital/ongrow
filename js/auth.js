@@ -49,7 +49,7 @@
   var initial = function(u){ return u.name.trim().charAt(0); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
   function arrow(){
-    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=56#arrow"/></svg>'; return s;
+    var s = el('span', 'am-go'); s.innerHTML = '<svg class="i"><use href="assets/icons/sprite.svg?v=57#arrow"/></svg>'; return s;
   }
 
   O.ready.then(function(){

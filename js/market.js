@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=56#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=57#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -13,6 +13,18 @@
     { d:'Golden plantains with a deep natural sweetness. Fry, roast or boil them.', n:'Plantain bunch', c:'Fruits',       p:6500,  u:'per bunch',     s:'Ogun',    f:'Okeowo Farm',        h:'today', o:0, v:1, i:'plantain.png', y:'plantain',          t:'#F8EFC2' },
     { d:'Sweet, tender cobs harvested young. Boil or roast fresh, or cut off the kernels for soups.', n:'Sweet corn',     c:'Grains',       p:12000, u:'per bag of 50', s:'Oyo',     f:'Ibadan Fields',      h:'week',  o:0, v:0, i:'corn.png', y:'maize',             t:'#FBF0B5' }
   ];
+  /* products listed from the sell page. They live in this browser until there is a server. */
+  try{
+    (JSON.parse(localStorage.getItem('ohgrow.listings')) || []).forEach(function(l){
+      if (!l || !l.name || !l.photos || !l.photos[0]) return;
+      var n = l.name, taken = function(x){ return P.some(function(q){ return q.n === x; }); };
+      if (taken(n)) n = l.name + ' (' + l.farm + ')';
+      if (taken(n)) return;
+      P.unshift({ d:l.desc, n:n, c:l.cat, p:l.price, u:l.unit, s:l.state, f:l.farm, h:l.harvest === 'today' ? 'today' : 'week', o:l.organic ? 1 : 0, v:0, i:l.photos[0], t:'#E3EDDA' });
+    });
+  }catch(_){}
+  /* the price filter always reaches the dearest product, so nothing is hidden by default */
+  var TOP = 50000; P.forEach(function(p){ if (p.p > TOP) TOP = Math.ceil(p.p / 5000) * 5000; });
   var byName = {}; P.forEach(function(p){ byName[p.n] = p; });
   var fmt = function(n){ return '\u20A6' + n.toLocaleString('en-NG'); };
   var ic = function(n){ return '<svg class="i"><use href="' + SP + n + '"/></svg>'; };
@@ -71,7 +83,7 @@
     var mk = $('#market'); if (!mk) return;
     var body = document.body, grid = $('#mGrid'), rail = $('.rail'), rt = $('#railToggle');
     var smooth = O.reduce ? 'auto' : 'smooth';
-    var DEF = { cat:'all', fresh:'any', max:50000, st:'all', org:false, ver:false, q:'', sort:'rec', page:1 };
+    var DEF = { cat:'all', fresh:'any', max:TOP, st:'all', org:false, ver:false, q:'', sort:'rec', page:1 };
     var small = window.matchMedia('(max-width:1099.98px)'), pager = $('#mPager');
     var pageSize = function(){ return small.matches ? 4 : 9; };   /* phones and tablets: 2 x 2, desktop: 3 x 3 */
     var F = Object.assign({}, DEF);
@@ -119,7 +131,7 @@
     var scrim = $('#mScrim'), drawer = $('#cDrawer'), cList = $('#cList'), pd = $('#pd');
 
     function art(p, cls){
-      if (p && p.i) return '<img class="' + cls + '" src="' + IMG + p.i + '" alt="" loading="lazy" draggable="false"' + (p.y ? ' data-y="' + p.y + '"' : '') + '>';
+      if (p && p.i) return '<img class="' + cls + '" src="' + (/^data:/.test(p.i) ? p.i : IMG + p.i) + '" alt="" loading="lazy" draggable="false"' + (p.y ? ' data-y="' + p.y + '"' : '') + '>';
       if (p && p.y) return '<svg class="' + cls + '"><use href="' + SP + p.y + '"/></svg>';
       return '';
     }
@@ -342,6 +354,7 @@
       });
     });
     var range = $('#fPrice'), out = $('#fPriceOut');
+    range.max = TOP; range.value = TOP; out.textContent = fmt(TOP);
     range.addEventListener('input', function(){ F.max = +range.value; out.textContent = fmt(F.max); render(); });
     sel.addEventListener('change', function(){ F.st = sel.value; render(); });
     $('#fOrganic').addEventListener('change', function(e){ F.org = e.target.checked; render(); });
