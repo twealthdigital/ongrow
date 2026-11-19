@@ -159,3 +159,77 @@
     setTimeout(queue, 400); setTimeout(queue, 1200); sync();
   });
 })();
+
+
+/* custom dropdown for every <select> on the site: a styled button + listbox. The native select stays hidden as the source of truth,
+   so forms, validation and .value keep working. Placeholder options (empty value, disabled) are not listed. */
+(function(){
+  var O = window.Ohgrow;
+  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); };
+  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=66#chev"/></svg>';
+  function ddUpgrade(sel){
+    if (!sel || sel.tagName !== 'SELECT' || sel.closest('.dd') || sel.hasAttribute('data-native') || sel.multiple) return;
+    var w = document.createElement('div'), btn = document.createElement('button'), menu = document.createElement('ul'), hl = -1;
+    w.className = 'dd'; btn.type = 'button'; btn.className = 'dd-btn'; btn.setAttribute('aria-haspopup', 'listbox'); btn.setAttribute('aria-expanded', 'false');
+    var lab = sel.getAttribute('aria-label'), grp = sel.closest('.sl-f'), gl = grp && grp.querySelector('.sl-l');
+    if (lab || gl) btn.setAttribute('aria-label', lab || gl.firstChild.textContent.trim());
+    menu.className = 'dd-menu'; menu.setAttribute('role', 'listbox');
+    sel.parentNode.insertBefore(w, sel); w.appendChild(sel); sel.tabIndex = -1; w.appendChild(btn); w.appendChild(menu);
+    var ph = function(o){ return !!o && o.disabled && o.value === ''; };
+    var ok = function(i){ var o = sel.options[i]; return !!o && !o.disabled; };
+    function paint(){
+      var o = sel.options[sel.selectedIndex];
+      btn.innerHTML = '<span>' + esc(o ? o.textContent : '') + '</span>' + CHEV;
+      btn.classList.toggle('is-ph', ph(o)); btn.disabled = sel.disabled;
+      menu.innerHTML = Array.prototype.map.call(sel.options, function(x, i){
+        if (ph(x)) return '';
+        return '<li class="dd-opt' + (x.disabled ? ' dis' : '') + '" role="option" data-i="' + i + '" aria-selected="' + (i === sel.selectedIndex) + '"' + (x.disabled ? ' aria-disabled="true"' : '') + '>' + esc(x.textContent) + '</li>';
+      }).join('');
+    }
+    function mark(i){
+      hl = i;
+      Array.prototype.forEach.call(menu.children, function(li){ li.classList.toggle('hl', +li.dataset.i === hl); });
+      var cur = menu.querySelector('.hl'); if (cur) cur.scrollIntoView({ block:'nearest' });
+    }
+    function move(from, dir){ var i = from + dir; while (i >= 0 && i < sel.options.length){ if (ok(i) && !ph(sel.options[i])) return i; i += dir; } return from; }
+    function open(){
+      var r = w.getBoundingClientRect(), need = Math.min(236, menu.scrollHeight) + 16;
+      w.classList.toggle('up', window.innerHeight - r.bottom < need && r.top > need);
+      w.classList.add('open'); btn.setAttribute('aria-expanded', 'true');
+      mark(ok(sel.selectedIndex) ? sel.selectedIndex : move(-1, 1));
+    }
+    function close(){ w.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); }
+    function pick(i){
+      if (!ok(i)) return;
+      if (i !== sel.selectedIndex){ sel.selectedIndex = i; sel.dispatchEvent(new Event('input', { bubbles:true })); sel.dispatchEvent(new Event('change', { bubbles:true })); }
+      paint(); close();
+    }
+    btn.addEventListener('click', function(){ if (w.classList.contains('open')) close(); else open(); });
+    menu.addEventListener('click', function(e){ var li = e.target.closest('.dd-opt'); if (li && !li.classList.contains('dis')){ pick(+li.dataset.i); btn.focus({ preventScroll:true }); } });
+    btn.addEventListener('keydown', function(e){
+      var isOpen = w.classList.contains('open');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); if (!isOpen) open(); else mark(move(hl, e.key === 'ArrowDown' ? 1 : -1)); }
+      else if (e.key === 'Home' && isOpen){ e.preventDefault(); mark(move(-1, 1)); }
+      else if (e.key === 'End' && isOpen){ e.preventDefault(); mark(move(sel.options.length, -1)); }
+      else if ((e.key === 'Enter' || e.key === ' ') && isOpen){ e.preventDefault(); pick(hl); }
+      else if (e.key === 'Escape' && isOpen){ e.stopPropagation(); close(); }
+      else if (e.key === 'Tab') close();
+    });
+    document.addEventListener('click', function(e){ if (!w.contains(e.target)) close(); });
+    sel.addEventListener('dd-sync', paint);
+    if (sel.form) sel.form.addEventListener('reset', function(){ setTimeout(paint, 0); });
+    paint();
+  }
+  O.dropdown = ddUpgrade;
+  O.ready.then(function(){
+    Array.prototype.forEach.call(document.querySelectorAll('select'), ddUpgrade);
+    if ('MutationObserver' in window){
+      new MutationObserver(function(ms){
+        ms.forEach(function(m){ Array.prototype.forEach.call(m.addedNodes, function(n){
+          if (n.nodeType !== 1) return;
+          if (n.tagName === 'SELECT') ddUpgrade(n); else if (n.querySelectorAll) Array.prototype.forEach.call(n.querySelectorAll('select'), ddUpgrade);
+        }); });
+      }).observe(document.body, { childList:true, subtree:true });
+    }
+  });
+})();

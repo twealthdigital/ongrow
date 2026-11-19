@@ -36,7 +36,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=65#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=66#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */
@@ -184,6 +184,7 @@
       f.o_today_p.value = n.today || ''; f.o_tomorrow_p.value = n.tomorrow || ''; f.o_week_p.value = n.week || '';
       f.fee.value = f.delivery.checked ? (o.fee || '') : '';
       photos = l.photos.slice(); drawThumbs(); photoError('');
+      $$('select', form).forEach(function(x){ x.dispatchEvent(new Event('dd-sync')); });
       $$('.sl-f', form).forEach(clearErr); formErr.hidden = true;
     }
     function enterEdit(l){

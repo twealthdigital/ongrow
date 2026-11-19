@@ -146,3 +146,12 @@
   .sl-acts{grid-column:auto;flex-direction:column;align-items:stretch;justify-content:center}
   .sl-acts .sl-del,.sl-acts .sl-edit{justify-content:center}
 }
+
+/* form dropdowns look like the other fields */
+.sl-sel>svg{display:none}
+.sl-sel .dd-btn{height:52px;padding:0 16px 0 18px;border-radius:18px;background:var(--bg);font:500 16px/1.2 var(--font-body);box-shadow:inset 0 0 0 1.5px var(--line)}
+.sl-sel .dd-btn:hover{background:#fff}
+.sl-sel .dd.open .dd-btn,.sl-sel .dd-btn:focus-visible{background:#fff;box-shadow:inset 0 0 0 2px var(--green);outline:none}
+.sl-sel .dd-btn.is-ph{color:#7C8775}
+.sl-sel .dd-menu{border-radius:22px}
+.sl-f.has-err .dd-btn{box-shadow:inset 0 0 0 2px #D8452F}
