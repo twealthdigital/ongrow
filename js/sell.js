@@ -36,7 +36,7 @@
 
   var fmt = function(n){ return '\u20A6' + Number(n).toLocaleString('en-NG'); };
   function el(tag, cls, text){ var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
-  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=70#' + id); s.appendChild(u); return s; }
+  function icon(id){ var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); s.setAttribute('class', 'i'); u.setAttribute('href', 'assets/icons/sprite.svg?v=71#' + id); s.appendChild(u); return s; }
 
   O.ready.then(function(){
     /* the shared header, side bar and menu use in-page links (#market, #guide) that only exist on the home page */

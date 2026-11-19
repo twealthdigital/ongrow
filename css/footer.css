@@ -1,0 +1,54 @@
+/* Footer: full width, solid green, a sliding ticker, big statement, link columns and an oversized wordmark cropped at the bottom */
+.ft{position:relative;isolation:isolate;color:#fff;margin-top:0}
+.ft::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--green);box-shadow:0 0 0 100vmax var(--green);clip-path:inset(0 -100vmax)}
+.ft-tick{overflow:hidden;padding:18px 0;border-bottom:1.5px solid rgba(255,255,255,.22);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ft-tick-track{display:flex;align-items:center;gap:26px;width:max-content;animation:ftTick 42s linear infinite}
+.ft-tick-track span{font:600 clamp(18px,2vw,24px)/1 var(--font-display);letter-spacing:-.02em;white-space:nowrap}
+.ft-tick-track .i{width:20px;height:20px;color:#D6F5C9;flex:none}
+@keyframes ftTick{to{transform:translateX(calc(-50% - 13px))}}
+
+.ft-in{padding-top:clamp(44px,6vw,80px)}
+.ft-top{display:grid;gap:clamp(36px,5vw,64px);grid-template-columns:minmax(0,1fr)}
+.ft-lead{display:grid;gap:24px;justify-items:start;align-content:start}
+.ft-brand{display:inline-flex;align-items:center;gap:12px}
+.ft-brand .tile{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#fff;color:var(--green)}
+.ft-brand .tile svg{width:26px;height:26px}
+.ft-brand .word{font:600 28px/1 var(--font-display);letter-spacing:-.04em}
+.ft-lead h2{font:600 clamp(36px,5.2vw,68px)/.98 var(--font-display);letter-spacing:-.04em}
+.ft-lead h2 span{display:block}
+.ft-lead h2 .outline{-webkit-text-stroke-color:#fff}
+@supports not (-webkit-text-stroke:1px #000){.ft-lead h2 .outline{color:#fff}}
+.ft-btns{display:flex;flex-wrap:wrap;gap:12px}
+.ft .btn{background:#fff;color:var(--ink)}
+.ft .btn .ico{background:var(--ink);color:#fff}
+.ft .btn:hover{color:#fff}
+.ft .btn::before{background:var(--ink)}
+.ft .btn-ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.6)}
+.ft .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.ft-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 24px;align-content:start}
+.ft-cols h3{margin:0 0 16px;font:700 12.5px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.ft-cols ul{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.ft-cols a{position:relative;display:inline-block;font:600 clamp(17px,1.6vw,20px)/1.2 var(--font-body);transition:color .3s,transform .45s var(--ease)}
+.ft-cols a::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;border-radius:2px;background:#D6F5C9;transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.ft-cols a:hover{color:#D6F5C9;transform:translateX(4px)}
+.ft-cols a:hover::after{transform:scaleX(1)}
+
+/* the wordmark is cut off at the bottom edge */
+.ft-word{--fs:clamp(96px,25vw,352px);height:calc(var(--fs)*.64);margin-top:clamp(30px,4.5vw,60px);overflow:hidden;text-align:center;white-space:nowrap;user-select:none;
+  font:800 var(--fs)/.9 var(--font-display);letter-spacing:-.06em;color:rgba(255,255,255,.09);-webkit-text-stroke:1.5px rgba(255,255,255,.32);
+  -webkit-mask-image:linear-gradient(to bottom,#000 45%,transparent 100%);mask-image:linear-gradient(to bottom,#000 45%,transparent 100%)}
+.ft-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;padding:20px 0 28px;border-top:1.5px solid rgba(255,255,255,.22)}
+.ft-bar p{margin:0;font-size:14px;color:rgba(255,255,255,.8)}
+.ft-top-btn{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 6px 0 18px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font:700 14px/1 var(--font-body);transition:background .3s,color .3s}
+.ft-up{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#fff;color:var(--green);transition:transform .45s var(--ease)}
+.ft-up .i{width:18px;height:18px;transform:rotate(-90deg)}
+.ft-top-btn:hover{background:#fff;color:var(--ink)}
+.ft-top-btn:hover .ft-up{transform:translateY(-3px);background:var(--ink);color:#fff}
+
+@media (min-width:900px){
+  .ft-top{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start}
+  .ft-cols{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+/* phones: leave room for the floating dock */
+@media (max-width:1099.98px){.ft-bar{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 98px)}}
+@media (prefers-reduced-motion:reduce){.ft-tick-track{animation:none}}

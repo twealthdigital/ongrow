@@ -167,7 +167,7 @@
 (function(){
   var O = window.Ohgrow;
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); };
-  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=70#chev"/></svg>';
+  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=71#chev"/></svg>';
   function ddUpgrade(sel){
     if (!sel || sel.tagName !== 'SELECT' || sel.closest('.dd') || sel.hasAttribute('data-native') || sel.multiple) return;
     var w = document.createElement('div'), btn = document.createElement('button'), menu = document.createElement('ul'), hl = -1;
@@ -232,5 +232,15 @@
         }); });
       }).observe(document.body, { childList:true, subtree:true });
     }
+  });
+})();
+
+/* footer: year and back to top (the footer is on every page that has the shell) */
+(function(){
+  var O = window.Ohgrow;
+  O.ready.then(function(){ var y = document.getElementById('ftYear'); if (y) y.textContent = new Date().getFullYear(); });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.ft-top-btn')) return;
+    window.scrollTo({ top:0, behavior: O.reduce ? 'auto' : 'smooth' });
   });
 })();
