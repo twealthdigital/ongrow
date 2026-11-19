@@ -29,7 +29,17 @@
 .sv-card p{color:var(--cmut);font-size:15.5px;line-height:1.5}
 .sv-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .sv-cta[hidden],.sv-cta .btn[hidden]{display:none}
-@media (max-width:699.98px){.sv-card{min-height:0;gap:10px}.sv-ic{margin-bottom:6px}}
+/* phones: two by two */
+@media (max-width:699.98px){
+  .sv-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .sv-card{min-height:0;gap:8px;padding:16px 14px 18px;border-radius:28px}
+  .sv-ic{width:44px;height:44px;margin-bottom:6px}
+  .sv-ic .i{width:20px;height:20px}
+  .sv-n{right:14px;top:10px;font-size:34px}
+  .sv-card h3{font-size:18px;overflow-wrap:anywhere}
+  .sv-card p{font-size:13px;line-height:1.45}
+  .sv-tabs{margin:26px 0 18px}
+}
 @media (prefers-reduced-motion:reduce){.sv-card{animation:none}}
 
 @media (min-width:1100px){
