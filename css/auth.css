@@ -87,7 +87,11 @@ body.au-open .head{z-index:97}
 .au.is-pop{max-height:calc(100dvh - var(--top,0px) - 16px)}
 .au-tail{display:none;position:absolute;top:-8px;left:calc(var(--tail,50%) - 9px);width:18px;height:18px;border-radius:4px;background:var(--ink);transform:rotate(45deg)}
 .au.is-pop .au-tail{display:block}
-.au-in{position:relative;max-height:inherit;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border-radius:inherit;padding:30px 28px 28px}
+.au-in{position:relative;max-height:inherit;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;border-radius:inherit;padding:30px 28px 28px;scrollbar-width:thin;scrollbar-color:var(--mint) transparent}
+.au-in::-webkit-scrollbar{width:10px;height:0}
+.au-in::-webkit-scrollbar-track{background:transparent;margin-block:22px}
+.au-in::-webkit-scrollbar-thumb{min-height:40px;border:3px solid transparent;border-radius:999px;background:var(--mint);background-clip:padding-box}
+.au-in::-webkit-scrollbar-thumb:hover{background:#fff;background-clip:padding-box}
 .au-clip{position:absolute;inset:0 0 auto 0;height:140px;overflow:hidden;border-radius:inherit;pointer-events:none}
 .au-leaf{position:absolute;right:-30px;top:-34px;width:170px;height:170px;color:#fff;--rib:var(--ink);opacity:.06;transform:rotate(14deg);pointer-events:none}
 .au-x{position:absolute;z-index:2;top:18px;right:18px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;transition:background .3s,color .3s,transform .4s var(--ease)}
@@ -145,6 +149,37 @@ body.au-open .head{z-index:97}
 @keyframes auShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 
 /* phones: the dialog is a bottom sheet */
+/* short screens: tighter spacing so the whole form fits without scrolling */
+@media (max-height:860px){
+  .au-in{padding:24px 26px 22px}
+  .au-head{gap:10px}
+  .au h2{font-size:clamp(30px,3.6vw,38px)}
+  .au-head p{font-size:14px}
+  .au-tabs{margin-top:16px}
+  .au-tabs button{height:38px}
+  .au-form{gap:12px;margin-top:16px}
+  .au-f{gap:6px}
+  .au-f input{height:48px}
+  .au-eye{top:6px;height:36px}
+  .au-submit{height:48px}
+  .au-submit .ico{width:36px;height:36px}
+}
+@media (max-height:700px){
+  .au-head p{display:none}
+  .au-clip{display:none}
+  .au-in{padding:20px 24px 18px}
+  .au-tabs{margin-top:12px}
+  .au-form{gap:10px;margin-top:12px}
+  .au-f input{height:44px}
+  .au-eye{top:4px;height:36px}
+  .au-submit{height:46px;margin-top:2px}
+  .au-submit .ico{width:34px;height:34px}
+}
+@media (max-height:640px){
+  .au-chip{display:none}
+  .au h2{font-size:28px}
+}
+
 @media (max-width:719.98px){
   .au:not(.is-pop){inset:auto 0 0 0;margin:0;width:100%;max-height:92dvh;border-radius:30px 30px 0 0;transform:translateY(104%);transform-origin:50% 100%}
   .au:not(.is-pop).open{transform:none}

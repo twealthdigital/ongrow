@@ -1,5 +1,5 @@
 /* Services: what Ohgrow gives farmers and buyers. Light section after the dark guide. */
-#services{position:relative;padding:clamp(84px,10vw,120px) 0 clamp(64px,8vw,96px)}
+#services{position:relative;overflow-x:clip;padding:clamp(84px,10vw,120px) 0 clamp(64px,8vw,96px)}
 .sv-head{position:relative;display:grid;gap:18px;justify-items:start}
 .sv-ghost{display:none}
 .sv-eyebrow{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--ink);color:#8EDB78;font:700 12.5px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase}
