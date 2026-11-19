@@ -141,6 +141,7 @@
         if (dock.contains(el) || el.classList.contains('m-scrim') || el.classList.contains('au-scrim')) continue;
         var c = rgba(getComputedStyle(el).backgroundColor);
         if (c && c.a >= .6) return (.2126 * c.r + .7152 * c.g + .0722 * c.b) / 255 < .5;
+        if (el.getAttribute('data-tone') === 'dark') return true;
       }
       return false;
     }
@@ -166,7 +167,7 @@
 (function(){
   var O = window.Ohgrow;
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); };
-  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=69#chev"/></svg>';
+  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=70#chev"/></svg>';
   function ddUpgrade(sel){
     if (!sel || sel.tagName !== 'SELECT' || sel.closest('.dd') || sel.hasAttribute('data-native') || sel.multiple) return;
     var w = document.createElement('div'), btn = document.createElement('button'), menu = document.createElement('ul'), hl = -1;
