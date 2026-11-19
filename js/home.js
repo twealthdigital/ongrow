@@ -1,6 +1,6 @@
 (function(){
   var O = window.Ohgrow, $ = O.$;
-  var SPRITE = 'assets/icons/sprite.svg?v=64#';
+  var SPRITE = 'assets/icons/sprite.svg?v=65#';
 
   O.ready.then(function(){
     /* hero entrance: headline slides up, hero image */
@@ -220,5 +220,35 @@
     window.addEventListener('resize', function(){ measure(); render(); });
 
     measure(); render(); syncMode(); start();
+  });
+})();
+
+/* services: For farmers / For buyers switch */
+(function(){
+  var O = window.Ohgrow;
+  O.ready.then(function(){
+    var tabs = document.getElementById('svTabs'); if(!tabs) return;
+    var btns = Array.prototype.slice.call(tabs.querySelectorAll('button')), ind = tabs.querySelector('.sv-ind');
+    var sell = document.getElementById('svSell'), browse = document.getElementById('svBrowse');
+    function place(){
+      var on = tabs.querySelector('.is-on');
+      ind.style.width = on.offsetWidth + 'px'; ind.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+    }
+    function pick(b, focus){
+      btns.forEach(function(x){
+        var is = x === b; x.classList.toggle('is-on', is); x.setAttribute('aria-selected', is); x.tabIndex = is ? 0 : -1;
+        document.getElementById(x.dataset.p).hidden = !is;
+      });
+      var farmers = b.dataset.p === 'svFarm'; sell.hidden = !farmers; browse.hidden = farmers;
+      place(); if(focus) b.focus();
+    }
+    btns.forEach(function(b){ b.addEventListener('click', function(){ pick(b); }); });
+    tabs.addEventListener('keydown', function(e){
+      var i = btns.indexOf(document.activeElement); if(i < 0) return;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ e.preventDefault(); pick(btns[(i + (e.key === 'ArrowRight' ? 1 : btns.length - 1)) % btns.length], true); }
+    });
+    ind.style.transition = 'none'; place(); void ind.offsetWidth; ind.style.transition = '';
+    window.addEventListener('resize', place);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ ind.style.transition = 'none'; place(); void ind.offsetWidth; ind.style.transition = ''; });
   });
 })();

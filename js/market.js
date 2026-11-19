@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=64#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=65#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
