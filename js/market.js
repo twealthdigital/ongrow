@@ -1,7 +1,7 @@
 /* Market section: products, filters, cart, and the rail that drops into the section on scroll. */
 (function(){
   var O = window.Ohgrow, $ = O.$, $$ = O.$$;
-  var SP = 'assets/icons/sprite.svg?v=66#', IMG = 'assets/images/';
+  var SP = 'assets/icons/sprite.svg?v=67#', IMG = 'assets/images/';
 
   var P = [
     { d:'Crisp, deep-green heads harvested this morning. Lovely steamed, roasted or stir-fried.', n:'Fresh broccoli', c:'Vegetables',   p:38000, u:'per basket',    s:'Plateau', f:'Jos Highland Farms', h:'today', o:1, v:1, i:'product-image.png', t:'#DCEEC9' },
@@ -456,17 +456,17 @@
       var open = inM && !off && desk.matches && !(rail && rail.classList.contains('is-collapsed'));
       body.classList.toggle('filters-open', open);
     }
-    var co = $('#collections'), cl = $('.rail-link[data-nav="collections"]'), gd = $('#guide'), gl = $('.rail-link[data-nav="guide"]'), cur = 'home';
+    var co = $('#collections'), cl = $('.rail-link[data-nav="collections"]'), gd = $('#guide'), gl = $('.rail-link[data-nav="guide"]'), sv = $('#services'), sl = $('.rail-link[data-nav="services"]'), cur = 'home';
     function mark(el, on){ if (!el) return; el.classList.toggle('is-active', on); if (on) el.setAttribute('aria-current', 'true'); else el.removeAttribute('aria-current'); }
     function setNav(sec){
-      var top = sec === 'home' ? 'home' : sec === 'guide' ? 'how' : 'market';   /* header + dock: Collections still counts as shopping, the guide is How it works */
+      var top = sec === 'home' ? 'home' : sec === 'guide' ? 'how' : sec === 'services' ? '' : 'market';   /* header + dock: Collections still counts as shopping, the guide is How it works */
       $$('.nav-pill a,.dock a').forEach(function(a){
         var on = a.dataset.nav === top;
         a.classList.toggle('is-active', on);
         if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
       });
       if (O.placePill) O.placePill();
-      mark(fl, sec === 'market'); mark(cl, sec === 'collections'); mark(gl, sec === 'guide');
+      mark(fl, sec === 'market'); mark(cl, sec === 'collections'); mark(gl, sec === 'guide'); mark(sl, sec === 'services');
     }
     var head = $('.head'), clamp = function(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); };
     function paintHead(){   /* the header is green only where the market sits under it */
@@ -484,6 +484,7 @@
       if (mk.getBoundingClientRect().top < vh * (cur === 'market' ? .62 : .45)) sec = 'market';
       if (co && co.getBoundingClientRect().top < vh * (cur === 'collections' ? .62 : .45)) sec = 'collections';
       if (gd && gd.getBoundingClientRect().top < vh * (cur === 'guide' ? .62 : .45)) sec = 'guide';
+      if (sv && sv.getBoundingClientRect().top < vh * (cur === 'services' ? .62 : .45)) sec = 'services';
       if (sec === cur) return;
       cur = sec; inM = sec === 'market'; off = false;
       body.classList.toggle('in-market', inM);
@@ -500,13 +501,14 @@
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
       var a = e.target.closest('a'); if (!a) return;
       var nav = a.dataset.nav, isCart = a.classList.contains('cart');
-      var toM = nav === 'market' || nav === 'filters', toH = nav === 'home' || a.classList.contains('brand'), toC = nav === 'collections' && !!co, toG = (nav === 'guide' || nav === 'how') && !!gd;
-      if (!toM && !toH && !toC && !toG && !isCart) return;
+      var toM = nav === 'market' || nav === 'filters', toH = nav === 'home' || a.classList.contains('brand'), toC = nav === 'collections' && !!co, toG = (nav === 'guide' || nav === 'how') && !!gd, toS = nav === 'services' && !!sv;
+      if (!toM && !toH && !toC && !toG && !toS && !isCart) return;
       e.preventDefault(); e.stopPropagation();
       var pc = $('#closePanel'); if ($('#panel.open') && pc) pc.click();
       if (isCart){ openCart(); return; }
       closeSheet();
-      if (toG) gd.scrollIntoView({ behavior:smooth, block:'start' });
+      if (toS) sv.scrollIntoView({ behavior:smooth, block:'start' });
+      else if (toG) gd.scrollIntoView({ behavior:smooth, block:'start' });
       else if (toC) co.scrollIntoView({ behavior:smooth, block:'start' });
       else if (toM){
         if (nav === 'filters' && inM){ off = !off; syncOpen(); return; }
@@ -515,6 +517,7 @@
     }, true);
 
     render(); renderCart(); spy(); paintHead(); syncOpen();
+    if (sv && window.location.hash === '#services') setTimeout(function(){ sv.scrollIntoView({ block:'start' }); }, 350);   /* arriving from another page */
 
     /* "My products" (account menu) asks for a product's dialog, or reports that a listing was removed */
     document.addEventListener('ohgrow:view-product', function(e){

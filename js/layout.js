@@ -166,7 +166,7 @@
 (function(){
   var O = window.Ohgrow;
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); };
-  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=66#chev"/></svg>';
+  var CHEV = '<svg class="i"><use href="assets/icons/sprite.svg?v=67#chev"/></svg>';
   function ddUpgrade(sel){
     if (!sel || sel.tagName !== 'SELECT' || sel.closest('.dd') || sel.hasAttribute('data-native') || sel.multiple) return;
     var w = document.createElement('div'), btn = document.createElement('button'), menu = document.createElement('ul'), hl = -1;
